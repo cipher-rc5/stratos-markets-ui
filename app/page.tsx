@@ -171,8 +171,8 @@ const StrategyCard = ({
     {/* Top Info */}
     <div className="p-3 flex justify-between items-start z-10">
       <div className="flex flex-col">
-        <span className="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Strategy</span>
-        <span className="text-[11px] font-bold text-white tracking-wider">{strategy.name}</span>
+        <span className="text-xs text-gray-500 uppercase tracking-widest mb-1">Strategy</span>
+        <span className="text-sm font-bold text-white tracking-wider">{strategy.name}</span>
       </div>
       <div className="h-2 w-0.5 bg-[#ccff00]/20 group-hover:bg-[#ccff00] transition-colors"></div>
     </div>
@@ -195,19 +195,20 @@ const StrategyCard = ({
         <div className="flex justify-between items-end">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] text-gray-500">ROI:</span>
-              <span className={`text-xs font-bold ${strategy.performance.roi > 0 ? "text-[#ccff00]" : "text-red-500"}`}>
+              <span className="text-xs text-gray-500">ROI:</span>
+              <span className={`text-sm font-bold ${strategy.performance.roi > 0 ? "text-[#ccff00]" : "text-red-500"}`}>
                 {strategy.performance.roi > 0 ? "+" : ""}
                 {strategy.performance.roi}%
               </span>
             </div>
-            <div className="text-[9px] text-gray-600">{strategy.subscribers} subscribers</div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Sharpe:</span>
+              <span className="text-sm font-bold text-white">{strategy.performance.sharpeRatio}</span>
+            </div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] font-bold text-white">
-              {strategy.pricing.amount} {strategy.pricing.currency}
-            </div>
-            <div className="text-[9px] text-gray-500 mt-0.5">v{strategy.version}</div>
+            <span className="text-xs text-gray-500">Subs:</span>
+            <span className="text-sm font-bold text-white ml-1">{strategy.subscribers}</span>
           </div>
         </div>
       </div>
@@ -493,178 +494,141 @@ export default function StratosPage() {
       </header>
 
       {/* --- Problem/Solution Section --- */}
-      <section className="relative py-32 px-6 overflow-hidden">
-        {/* Diagonal lines background */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-[#ccff00] to-transparent transform rotate-12"></div>
-          <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-[#ccff00] to-transparent transform -rotate-12"></div>
-        </div>
-
+      <section className="relative py-24 px-6 overflow-hidden">
         <div className="max-w-[1400px] mx-auto relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 hidden xl:block">
-            <div
-              className="text-[80px] font-bold text-transparent bg-clip-text bg-gradient-to-b from-red-500/20 via-[#ccff00]/30 to-[#ccff00]/20 font-['Orbitron'] leading-none tracking-tighter"
-              style={{ writingMode: "vertical-rl", textOrientation: "upright" }}
-            >
-              STRATOS
-            </div>
-          </div>
-
-          {/* Problem Section */}
-          <div className="mb-20">
-            <div className="mb-12">
-              <div className="inline-block border border-red-500/30 px-4 py-1.5 mb-6">
-                <span className="text-red-500 text-[10px] font-bold tracking-[0.2em] uppercase">
-                  System Status: Critical
-                </span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
-                Most Are <span className="text-red-500">Unaware</span> of DeFi Mechanics
-              </h2>
-              <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
-                The complexity barrier prevents mainstream adoption. Institutional-grade tools remain inaccessible.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Stat 1 */}
-              <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">87%</div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Hidden Complexity</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  87% of potential users cite complexity as the primary barrier to DeFi adoption and participation.
-                </p>
-              </div>
-
-              {/* Stat 2 */}
-              <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">$180B</div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Untapped Liquidity</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Billions in capital remain on sidelines due to lack of accessible tools and education.
-                </p>
-              </div>
-
-              {/* Stat 3 */}
-              <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">72hrs</div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learning Curve</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Average time required to understand basic DeFi concepts without proper guidance systems.
-                </p>
+          <div className="flex gap-12">
+            {/* Vertical STRATOS Text */}
+            <div className="hidden xl:block flex-shrink-0">
+              <div
+                className="text-[110px] font-bold text-gray-200 font-['Orbitron'] leading-none tracking-tighter"
+                style={{
+                  writingMode: "vertical-rl",
+                  textOrientation: "upright",
+                  textShadow: "0 0 2px #ccff00, 0 0 4px #ccff00, 0 0 8px #ccff00",
+                }}
+              >
+                STRATOS
               </div>
             </div>
-          </div>
 
-          {/* Solution Section */}
-          <div>
-            <div className="mb-12">
-              <div className="inline-block border border-[#ccff00]/30 px-4 py-1.5 mb-6">
-                <span className="text-[#ccff00] text-[10px] font-bold tracking-[0.2em] uppercase">
-                  System Status: Optimized
-                </span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
-                Stratos <span className="text-[#ccff00]">Simplifies</span> Access
-              </h2>
-              <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
-                Transform complex DeFi mechanics into executable strategies. No technical expertise required.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Solution 1 */}
-              <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
-                  <Shield size={28} className="text-[#ccff00]" />
+            {/* Main Content Area */}
+            <div className="flex-1">
+              {/* Problem Section */}
+              <div className="mb-20">
+                <div className="mb-12">
+                  <div className="inline-block border border-red-500/30 px-4 py-1.5 mb-6">
+                    <span className="text-red-500 text-[10px] font-bold tracking-[0.2em] uppercase">
+                      System Status: Critical
+                    </span>
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
+                    Most Are <span className="text-red-500">Unaware</span> of DeFi Mechanics
+                  </h2>
+                  <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
+                    The complexity barrier prevents mainstream adoption. Institutional-grade tools remain inaccessible.
+                  </p>
                 </div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Pre-Built Strategies</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                  Access verified, institutional-grade strategies without understanding the underlying code. One-click
-                  deployment with full transparency.
-                </p>
-                <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
-                  <BarChart3 size={14} />
-                  <span>VERIFIED & AUDITED</span>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Stat 1 */}
+                  <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">87%</div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Hidden Complexity</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      87% of potential users cite complexity as the primary barrier to DeFi adoption and participation.
+                    </p>
+                  </div>
+
+                  {/* Stat 2 */}
+                  <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">$180B</div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Untapped Liquidity</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      Billions in capital remain on sidelines due to lack of accessible tools and education.
+                    </p>
+                  </div>
+
+                  {/* Stat 3 */}
+                  <div className="relative border border-red-900/20 bg-black p-8 hover:border-red-500/30 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">72hrs</div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learning Curve</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      Average time required to understand basic DeFi concepts without proper guidance systems.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Solution 2 */}
-              <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
-                  <Zap size={28} className="text-[#ccff00]" />
+              {/* Solution Section */}
+              <div>
+                <div className="mb-12">
+                  <div className="inline-block border border-[#ccff00]/30 px-4 py-1.5 mb-6">
+                    <span className="text-[#ccff00] text-[10px] font-bold tracking-[0.2em] uppercase">
+                      System Status: Optimized
+                    </span>
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
+                    Stratos <span className="text-[#ccff00]">Simplifies</span> Access
+                  </h2>
+                  <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
+                    Transform complex DeFi mechanics into executable strategies. No technical expertise required.
+                  </p>
                 </div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Autonomous Execution</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                  AI agents handle complexity automatically. Set parameters once, let the system optimize and execute
-                  continuously.
-                </p>
-                <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
-                  <Activity size={14} />
-                  <span>24/7 OPERATION</span>
-                </div>
-              </div>
 
-              {/* Solution 3 */}
-              <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
-                  <Users size={28} className="text-[#ccff00]" />
-                </div>
-                <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learn By Doing</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                  Build intuition through practical experience. Real-time feedback and transparent performance metrics
-                  accelerate understanding.
-                </p>
-                <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
-                  <TrendingUp size={14} />
-                  <span>INSTANT FEEDBACK</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Solution 1 */}
+                  <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
+                      <Shield size={28} className="text-[#ccff00]" />
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Pre-Built Strategies</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      Access verified, institutional-grade strategies without understanding the underlying code.
+                      One-click deployment with full transparency.
+                    </p>
+                    <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
+                      <BarChart3 size={14} />
+                      <span>VERIFIED & AUDITED</span>
+                    </div>
+                  </div>
 
-      {/* --- Filter Bar --- */}
-      <section className="relative py-8 px-6 border-b border-gray-800">
-        <div className="max-w-[1920px] mx-auto">
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
-            {/* Category Filters */}
-            <div className="flex flex-wrap gap-3">
-              {["ALL STRATEGIES", "YIELD FARMING", "ARBITRAGE", "MEV", "VERIFIED"].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`text-xs font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 ${
-                    activeFilter === filter
-                      ? "bg-[#ccff00] text-black"
-                      : "bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600"
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
+                  {/* Solution 2 */}
+                  <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
+                      <Zap size={28} className="text-[#ccff00]" />
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Autonomous Execution</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      AI agents handle complexity automatically. Set parameters once, let the system optimize and
+                      execute continuously.
+                    </p>
+                    <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
+                      <Activity size={14} />
+                      <span>24/7 OPERATION</span>
+                    </div>
+                  </div>
 
-            {/* Search Bar */}
-            <div className="w-full md:w-auto">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="SEARCH_DB"
-                  className="bg-transparent border border-gray-800 text-white text-xs font-mono tracking-wider uppercase px-6 py-3 w-full md:w-[300px] focus:border-[#ccff00] focus:outline-none transition-colors placeholder:text-gray-700"
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                  </svg>
+                  {/* Solution 3 */}
+                  <div className="relative border border-[#ccff00]/20 bg-black p-8 hover:border-[#ccff00]/50 transition-all duration-300 group">
+                    <div className="absolute top-0 left-0 w-2 h-full bg-[#ccff00] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
+                      <Users size={28} className="text-[#ccff00]" />
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learn By Doing</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      Build intuition through practical experience. Real-time feedback and transparent performance
+                      metrics accelerate understanding.
+                    </p>
+                    <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
+                      <TrendingUp size={14} />
+                      <span>INSTANT FEEDBACK</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -678,6 +642,44 @@ export default function StratosPage() {
           <div className="mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">MARKETPLACE</h2>
             <p className="text-gray-500 text-sm uppercase tracking-wider">LIVE FEEDS // VERIFIED ALPHA</p>
+          </div>
+
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
+              {/* Category Filters */}
+              <div className="flex flex-wrap gap-3">
+                {["ALL STRATEGIES", "YIELD FARMING", "ARBITRAGE", "MEV", "VERIFIED"].map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    className={`text-xs font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 ${
+                      activeFilter === filter
+                        ? "bg-[#ccff00] text-black"
+                        : "bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600"
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Bar - Increased width */}
+              <div className="w-full md:w-auto">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="SEARCH_DB"
+                    className="bg-transparent border border-gray-800 text-white text-xs font-mono tracking-wider uppercase px-6 py-3 w-full md:w-[450px] focus:border-[#ccff00] focus:outline-none transition-colors placeholder:text-gray-700"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.35-4.35" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -747,13 +749,6 @@ export default function StratosPage() {
               </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* --- Large Vertical STRATOS Divider --- */}
-      <section className="relative py-32 px-6 overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          
         </div>
       </section>
 
