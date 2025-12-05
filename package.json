@@ -43,6 +43,7 @@
     "@solana-program/system": "latest",
     "@solana-program/token": "latest",
     "@solana/kit": "latest",
+    "@solana/web3.js": "^1.95.8",
     "@vercel/analytics": "latest",
     "@xyflow/react": "latest",
     "autoprefixer": "^10.4.20",
