@@ -125,6 +125,25 @@
     @apply bg-background text-foreground;
   }
 
+  /* Added smooth page transition styles */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
   /* Custom scrollbar styling to match Stratos neon aesthetic */
   ::-webkit-scrollbar {
     width: 12px;

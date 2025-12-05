@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import {
   Menu,
   X,
@@ -99,22 +100,22 @@ const StratosLogo = () => (
       alt="Stratos Rook"
       width={32}
       height={48}
-      className="h-8 w-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 brightness-0 invert group-hover:brightness-100 group-hover:invert-0"
+      className="w-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 brightness-0 invert group-hover:brightness-100 group-hover:invert-0 h-10"
     />
     <Image
       src="/stratos-logo.svg"
       alt="STRATOS"
       width={180}
       height={40}
-      className="h-6 w-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+      className="w-auto opacity-90 group-hover:opacity-100 transition-opacity duration-300 h-10"
     />
   </div>
 )
 
-const NavLink = ({ text, active = false }: { text: string; active?: boolean }) => (
+const NavLink = ({ text, active = false, href = "#" }: { text: string; active?: boolean; href?: string }) => (
   <a
-    href="#"
-    className={`text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
+    href={href}
+    className={`tracking-[0.15em] uppercase transition-colors duration-300 font-medium text-lg ${
       active ? "text-[#ccff00]" : "text-gray-400 hover:text-white"
     }`}
   >
@@ -166,13 +167,13 @@ const StrategyCard = ({
 }) => (
   <div
     onClick={onClick}
-    className="group relative border border-gray-800 bg-[#0a0a0a] overflow-hidden hover:border-[#ccff00] transition-colors duration-500 cursor-pointer h-[200px] flex flex-col justify-between"
+    className="group relative border border-gray-800 bg-[#0a0a0a] overflow-hidden hover:border-[#ccff00] transition-colors duration-500 cursor-pointer flex flex-col justify-between h-[230px]"
   >
     {/* Top Info */}
-    <div className="p-3 flex justify-between items-start z-10">
+    <div className="p-3 flex justify-between items-start z-10 py-3">
       <div className="flex flex-col">
-        <span className="text-xs text-gray-500 uppercase tracking-widest mb-1">Strategy</span>
-        <span className="text-sm font-bold text-white tracking-wider">{strategy.name}</span>
+        <span className="text-gray-500 uppercase tracking-widest mb-1 text-xl">Strategy</span>
+        <span className="font-bold text-white tracking-wider text-lg">{strategy.name}</span>
       </div>
       <div className="h-2 w-0.5 bg-[#ccff00]/20 group-hover:bg-[#ccff00] transition-colors"></div>
     </div>
@@ -195,19 +196,19 @@ const StrategyCard = ({
         <div className="flex justify-between items-end">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">ROI:</span>
+              <span className="text-gray-500 text-base">ROI:</span>
               <span className={`text-sm font-bold ${strategy.performance.roi > 0 ? "text-[#ccff00]" : "text-red-500"}`}>
                 {strategy.performance.roi > 0 ? "+" : ""}
                 {strategy.performance.roi}%
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Sharpe:</span>
+              <span className="text-gray-500 text-base">Sharpe:</span>
               <span className="text-sm font-bold text-white">{strategy.performance.sharpeRatio}</span>
             </div>
           </div>
           <div className="text-right">
-            <span className="text-xs text-gray-500">Subs:</span>
+            <span className="text-gray-500 text-base">Subs:</span>
             <span className="text-sm font-bold text-white ml-1">{strategy.subscribers}</span>
           </div>
         </div>
@@ -231,7 +232,7 @@ const StrategyDetailModal = ({
       <div className="border-b border-gray-800 p-6 flex justify-between items-start">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">{strategy.name}</h2>
-          <p className="text-gray-400 text-sm">{strategy.description}</p>
+          <p className="text-gray-400 text-base">{strategy.description}</p>
         </div>
         <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
           <X size={24} />
@@ -243,10 +244,10 @@ const StrategyDetailModal = ({
         {/* Left Column */}
         <div className="space-y-6">
           <div>
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Performance</h3>
+            <h3 className="font-bold text-gray-500 uppercase tracking-widest mb-3 text-base">Performance</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">ROI</span>
+                <span className="text-gray-400 text-base">ROI</span>
                 <span
                   className={`text-lg font-bold ${strategy.performance.roi > 0 ? "text-[#ccff00]" : "text-red-500"}`}
                 >
@@ -255,21 +256,21 @@ const StrategyDetailModal = ({
                 </span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Sharpe Ratio</span>
+                <span className="text-gray-400 text-base">Sharpe Ratio</span>
                 <span className="text-lg font-bold text-white">{strategy.performance.sharpeRatio}</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Max Drawdown</span>
+                <span className="text-gray-400 text-base">Max Drawdown</span>
                 <span className="text-lg font-bold text-red-500">{strategy.performance.maxDrawdown}%</span>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Tags</h3>
+            <h3 className="font-bold text-gray-500 uppercase tracking-widest mb-3 text-base">Tags</h3>
             <div className="flex flex-wrap gap-2">
               {strategy.tags.map((tag) => (
-                <span key={tag} className="text-xs border border-gray-800 px-3 py-1 text-gray-400">
+                <span key={tag} className="border border-gray-800 px-3 py-1 text-gray-400 text-base">
                   {tag}
                 </span>
               ))}
@@ -283,26 +284,26 @@ const StrategyDetailModal = ({
             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Details</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Strategy ID</span>
+                <span className="text-gray-400 text-base">Strategy ID</span>
                 <span className="text-sm font-mono text-white">{strategy.id}</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Creator</span>
+                <span className="text-gray-400 text-base">Creator</span>
                 <span className="text-sm font-mono text-white">{strategy.creator}</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Version</span>
+                <span className="text-gray-400 text-base">Version</span>
                 <span className="text-sm font-mono text-white">{strategy.version}</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-900 pb-2">
-                <span className="text-sm text-gray-400">Subscribers</span>
+                <span className="text-gray-400 text-base">Subscribers</span>
                 <span className="text-lg font-bold text-[#ccff00]">{strategy.subscribers}</span>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Pricing</h3>
+            <h3 className="font-bold text-gray-500 uppercase tracking-widest mb-3 text-base">Pricing</h3>
             <div className="bg-[#ccff00] text-black p-4 flex items-center justify-between">
               <div>
                 <div className="text-xs uppercase tracking-wider opacity-60">Subscription Fee</div>
@@ -385,14 +386,14 @@ export default function StratosPage() {
         <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex justify-between items-center">
           <div className="flex items-center gap-8">
             <StratosLogo />
-            <NavLink text="MARKETPLACE" active={true} />
+            <NavLink text="MARKETPLACE" active={true} href="/" />
           </div>
 
           <div className="hidden md:flex items-center gap-12">
-            <NavLink text="Agents" />
-            <NavLink text="Create" />
+            <NavLink text="Agents" href="/agents" />
+            <NavLink text="Create" href="/create" />
             <NavLink text="Learn" />
-            <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black text-xs font-bold px-6 py-2.5 tracking-widest uppercase transition-colors">
+            <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold px-6 py-2.5 tracking-widest uppercase transition-colors text-xl">
               Launch
             </button>
           </div>
@@ -407,9 +408,9 @@ export default function StratosPage() {
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden">
-          <NavLink text="MARKETPLACE" active={true} />
-          <NavLink text="Agents" />
-          <NavLink text="Create" />
+          <NavLink text="MARKETPLACE" active={true} href="/" />
+          <NavLink text="Agents" href="/agents" />
+          <NavLink text="Create" href="/create" />
           <NavLink text="Learn" />
           <button className="bg-[#ccff00] text-black text-xs font-bold px-8 py-3 tracking-widest uppercase">
             Launch
@@ -438,7 +439,7 @@ export default function StratosPage() {
             <div className="lg:col-span-8">
               <div className="inline-flex items-center gap-2 mb-6 border border-[#ccff00]/30 px-3 py-1 bg-[#ccff00]/5">
                 <div className="w-2 h-2 bg-[#ccff00] animate-pulse"></div>
-                <span className="text-[#ccff00] text-[10px] font-bold uppercase tracking-[0.2em]">
+                <span className="text-[#ccff00] font-bold uppercase tracking-[0.2em] text-sm">
                   System Status: Live V1.0
                 </span>
               </div>
@@ -456,20 +457,26 @@ export default function StratosPage() {
               </h1>
 
               <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mt-4">
-                <p className="text-gray-400 text-sm md:text-lg max-w-xl tracking-wide border-l border-gray-700 pl-4">
+                <p className="text-gray-400 max-w-xl tracking-wide border-l border-gray-700 pl-4 text-xl font-semibold">
                   Monetize your alpha. Consume institutional quality data. <br />
                   Let AI agents execute the rest.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 mt-12">
-                <button className="bg-[#ccff00] hover:bg-white text-black text-sm font-bold px-10 py-4 uppercase tracking-wider transition-colors flex items-center justify-center gap-2 group">
+                <a
+                  href="/agents"
+                  className="bg-[#ccff00] hover:bg-white text-black font-bold px-10 py-4 uppercase tracking-wider transition-colors flex items-center justify-center gap-2 group text-base"
+                >
                   Explore Marketplace{" "}
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button className="border border-gray-700 hover:border-[#ccff00] text-gray-400 hover:text-[#ccff00] text-sm font-bold px-10 py-4 tracking-wider uppercase transition-all">
+                </a>
+                <a
+                  href="/create"
+                  className="border border-gray-700 hover:border-[#ccff00] text-gray-400 hover:text-[#ccff00] font-bold px-10 py-4 tracking-wider uppercase transition-all text-base"
+                >
                   Start Uploading
-                </button>
+                </a>
               </div>
             </div>
 
@@ -498,18 +505,7 @@ export default function StratosPage() {
         <div className="max-w-[1400px] mx-auto relative">
           <div className="flex gap-12">
             {/* Vertical STRATOS Text */}
-            <div className="hidden xl:block flex-shrink-0">
-              <div
-                className="text-[110px] font-bold text-gray-200 font-['Orbitron'] leading-none tracking-tighter"
-                style={{
-                  writingMode: "vertical-rl",
-                  textOrientation: "upright",
-                  textShadow: "0 0 2px #ccff00, 0 0 4px #ccff00, 0 0 8px #ccff00",
-                }}
-              >
-                STRATOS
-              </div>
-            </div>
+            <div className="hidden xl:block flex-shrink-0"></div>
 
             {/* Main Content Area */}
             <div className="flex-1">
@@ -517,14 +513,14 @@ export default function StratosPage() {
               <div className="mb-20">
                 <div className="mb-12">
                   <div className="inline-block border border-red-500/30 px-4 py-1.5 mb-6">
-                    <span className="text-red-500 text-[10px] font-bold tracking-[0.2em] uppercase">
+                    <span className="text-red-500 font-bold tracking-[0.2em] uppercase text-sm">
                       System Status: Critical
                     </span>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
                     Most Are <span className="text-red-500">Unaware</span> of DeFi Mechanics
                   </h2>
-                  <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
+                  <p className="text-gray-400 tracking-wide max-w-2xl text-lg">
                     The complexity barrier prevents mainstream adoption. Institutional-grade tools remain inaccessible.
                   </p>
                 </div>
@@ -535,7 +531,7 @@ export default function StratosPage() {
                     <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">87%</div>
                     <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Hidden Complexity</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">
+                    <p className="text-gray-400 leading-relaxed text-base">
                       87% of potential users cite complexity as the primary barrier to DeFi adoption and participation.
                     </p>
                   </div>
@@ -545,7 +541,7 @@ export default function StratosPage() {
                     <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">$180B</div>
                     <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Untapped Liquidity</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">
+                    <p className="text-gray-400 leading-relaxed text-base">
                       Billions in capital remain on sidelines due to lack of accessible tools and education.
                     </p>
                   </div>
@@ -555,7 +551,7 @@ export default function StratosPage() {
                     <div className="absolute top-0 left-0 w-2 h-full bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="text-6xl font-bold text-red-500 mb-4 font-['Orbitron']">72hrs</div>
                     <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learning Curve</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">
+                    <p className="text-gray-400 leading-relaxed text-base">
                       Average time required to understand basic DeFi concepts without proper guidance systems.
                     </p>
                   </div>
@@ -566,14 +562,14 @@ export default function StratosPage() {
               <div>
                 <div className="mb-12">
                   <div className="inline-block border border-[#ccff00]/30 px-4 py-1.5 mb-6">
-                    <span className="text-[#ccff00] text-[10px] font-bold tracking-[0.2em] uppercase">
+                    <span className="text-[#ccff00] font-bold tracking-[0.2em] uppercase text-sm">
                       System Status: Optimized
                     </span>
                   </div>
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-['Orbitron']">
                     Stratos <span className="text-[#ccff00]">Simplifies</span> Access
                   </h2>
-                  <p className="text-gray-400 text-sm tracking-wide max-w-2xl">
+                  <p className="text-gray-400 tracking-wide max-w-2xl text-base font-semibold">
                     Transform complex DeFi mechanics into executable strategies. No technical expertise required.
                   </p>
                 </div>
@@ -585,14 +581,14 @@ export default function StratosPage() {
                     <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
                       <Shield size={28} className="text-[#ccff00]" />
                     </div>
-                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Pre-Built Strategies</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                    <h3 className="font-bold text-white mb-3 tracking-wider uppercase text-lg">Pre-Built Strategies</h3>
+                    <p className="text-gray-400 leading-relaxed mb-4 text-lg">
                       Access verified, institutional-grade strategies without understanding the underlying code.
                       One-click deployment with full transparency.
                     </p>
                     <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
                       <BarChart3 size={14} />
-                      <span>VERIFIED & AUDITED</span>
+                      <span className="text-base">VERIFIED & AUDITED</span>
                     </div>
                   </div>
 
@@ -602,14 +598,14 @@ export default function StratosPage() {
                     <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
                       <Zap size={28} className="text-[#ccff00]" />
                     </div>
-                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Autonomous Execution</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                    <h3 className="font-bold text-white mb-3 tracking-wider uppercase text-lg">Autonomous Execution</h3>
+                    <p className="text-gray-400 leading-relaxed mb-4 text-lg">
                       AI agents handle complexity automatically. Set parameters once, let the system optimize and
                       execute continuously.
                     </p>
                     <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
                       <Activity size={14} />
-                      <span>24/7 OPERATION</span>
+                      <span className="text-base">24/7 OPERATION</span>
                     </div>
                   </div>
 
@@ -619,14 +615,14 @@ export default function StratosPage() {
                     <div className="w-14 h-14 border border-[#ccff00]/50 flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
                       <Users size={28} className="text-[#ccff00]" />
                     </div>
-                    <h3 className="text-sm font-bold text-white mb-3 tracking-wider uppercase">Learn By Doing</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                    <h3 className="font-bold text-white mb-3 tracking-wider uppercase text-lg">Learn By Doing</h3>
+                    <p className="text-gray-400 leading-relaxed mb-4 text-lg">
                       Build intuition through practical experience. Real-time feedback and transparent performance
                       metrics accelerate understanding.
                     </p>
                     <div className="flex items-center gap-2 text-[#ccff00] text-[10px] font-bold tracking-wider">
                       <TrendingUp size={14} />
-                      <span>INSTANT FEEDBACK</span>
+                      <span className="text-base">INSTANT FEEDBACK</span>
                     </div>
                   </div>
                 </div>
@@ -652,7 +648,7 @@ export default function StratosPage() {
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`text-xs font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 ${
+                    className={`font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 text-sm ${
                       activeFilter === filter
                         ? "bg-[#ccff00] text-black"
                         : "bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600"
@@ -706,10 +702,10 @@ export default function StratosPage() {
               <h3 className="text-2xl font-bold text-white mb-6 tracking-wider uppercase font-['Orbitron']">
                 Creator Hub
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">
+              <p className="text-gray-400 leading-relaxed mb-8 text-lg">
                 Turn scripts into revenue. Wrap in MCP. Set dynamic pricing models. Real-time P&L tracking.
               </p>
-              <button className="text-white text-xs font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2">
+              <button className="text-white font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2 text-base">
                 Initiate Upload
                 <ChevronRight size={14} />
               </button>
@@ -723,10 +719,10 @@ export default function StratosPage() {
               <h3 className="text-2xl font-bold text-white mb-6 tracking-wider uppercase font-['Orbitron']">
                 Enterprise
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">
+              <p className="text-gray-400 leading-relaxed mb-8 text-lg">
                 White-label marketplaces for quant shops. Dedicated SLAs. Encrypted execution environments.
               </p>
-              <button className="text-white text-xs font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2">
+              <button className="text-white font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2 text-base">
                 Request Access
                 <ChevronRight size={14} />
               </button>
@@ -740,10 +736,10 @@ export default function StratosPage() {
               <h3 className="text-2xl font-bold text-white mb-6 tracking-wider uppercase font-['Orbitron']">
                 Agents Framework
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">
+              <p className="text-gray-400 leading-relaxed mb-8 text-lg">
                 Native SDKs for autonomous agents. Compose strategies programmatically. Go, Python, JS.
               </p>
-              <button className="text-white text-xs font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2">
+              <button className="text-white font-bold tracking-wider uppercase hover:text-[#ccff00] transition-colors flex items-center gap-2 text-base">
                 View Documentation
                 <ChevronRight size={14} />
               </button>
@@ -759,7 +755,7 @@ export default function StratosPage() {
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Ready to <span className="text-[#ccff00]">Launch?</span>
           </h2>
-          <p className="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
+          <p className="text-gray-400 mb-12 max-w-2xl mx-auto text-lg">
             Join thousands of traders and creators building the future of decentralized finance
           </p>
           <button className="bg-[#ccff00] hover:bg-white text-black text-sm font-bold px-12 py-5 uppercase tracking-wider transition-colors">
@@ -771,8 +767,8 @@ export default function StratosPage() {
       {/* --- Footer --- */}
       <footer className="border-t border-gray-900 bg-black pt-20 pb-10">
         <div className="max-w-[1920px] mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="col-span-1">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-12 mb-16">
+            <div className="col-span-1 md:col-span-2">
               <StratosLogo />
               <p className="mt-6 text-gray-500 text-xs leading-relaxed max-w-xs">
                 Stratos defines the intersection of high-stakes strategy and digital ownership. Secured by the
@@ -783,43 +779,87 @@ export default function StratosPage() {
             <div className="col-span-1">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-6">Platform</h4>
               <ul className="space-y-4 text-gray-500 text-xs uppercase tracking-wide">
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">Agents</li>
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">Create</li>
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">Marketplace</li>
+                <li>
+                  <Link href="/agents" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Agents
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/create" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Create
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/agents" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Marketplace
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/learn" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Learn
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div className="col-span-1">
               <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-6">Company</h4>
               <ul className="space-y-4 text-gray-500 text-xs uppercase tracking-wide">
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">About Stratos</li>
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">Careers</li>
-                <li className="hover:text-[#ccff00] cursor-pointer transition-colors">Legal</li>
+                <li>
+                  <Link href="/about" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    About
+                  </Link>
+                </li>
               </ul>
             </div>
 
-            <div className="col-span-1 flex flex-col gap-4">
-              <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-2">Join the Network</h4>
-              <div className="flex gap-4">
-                <div className="h-10 w-10 border border-gray-800 flex items-center justify-center hover:border-[#ccff00] hover:text-[#ccff00] cursor-pointer transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                  </svg>
-                </div>
-                <div className="h-10 w-10 border border-gray-800 flex items-center justify-center hover:border-[#ccff00] hover:text-[#ccff00] cursor-pointer transition-colors">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.077.077 0 00.041.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z" />
-                  </svg>
-                </div>
-              </div>
+            <div className="col-span-1">
+              <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-6">Legal</h4>
+              <ul className="space-y-4 text-gray-500 text-xs uppercase tracking-wide">
+                <li>
+                  <Link href="/legal/terms" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/privacy" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/cookies" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Cookies
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="col-span-1">
+              <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-6">Resources</h4>
+              <ul className="space-y-4 text-gray-500 text-xs uppercase tracking-wide">
+                <li>
+                  <Link href="/api-docs" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    API
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/security" className="hover:text-[#ccff00] cursor-pointer transition-colors">
+                    Security
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest">
             <span>© 2025 Stratos Inc. All rights reserved.</span>
             <div className="flex gap-8 mt-4 md:mt-0">
-              <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
-              <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>
+              <Link href="/legal/privacy" className="hover:text-white cursor-pointer transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/legal/terms" className="hover:text-white cursor-pointer transition-colors">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>
