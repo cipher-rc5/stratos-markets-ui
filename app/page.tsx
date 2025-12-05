@@ -356,7 +356,7 @@ const FeatureSection = ({
       className="border border-gray-800 bg-[#0a0a0a]/50 p-8 hover:border-[#ccff00]/50 transition-all duration-500"
       style={{ transform: `translateY(${offset}px)` }}
     >
-      <div className="w-12 h-12 border border-[#ccff00] flex items-center justify-center mb-6">
+      <div className="w-12 h-12 border border-[#ccff00] flex items-center justify-center mb-6 group-hover:bg-[#ccff00]/10 transition-colors">
         <Icon size={24} className="text-[#ccff00]" />
       </div>
       <h3 className="text-xl font-bold text-white mb-3 tracking-wide">{title}</h3>
@@ -384,6 +384,49 @@ export default function StratosPage() {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        {/* Animated grid background and moving lines for visual movement */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_70%,transparent_100%)]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#ccff00]/5 via-transparent to-transparent" />
+        </div>
+
+        {/* Animated diagonal lines for movement effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div
+            className="absolute top-0 left-[20%] w-[1px] h-full bg-gradient-to-b from-transparent via-[#ccff00]/30 to-transparent animate-pulse"
+            style={{ animationDelay: "0s", animationDuration: "3s" }}
+          />
+          <div
+            className="absolute top-0 right-[30%] w-[1px] h-full bg-gradient-to-b from-transparent via-[#ccff00]/20 to-transparent animate-pulse"
+            style={{ animationDelay: "1s", animationDuration: "4s" }}
+          />
+          <div className="absolute left-0 top-[40%] h-[1px] w-full bg-gradient-to-r from-transparent via-[#ccff00]/10 to-transparent" />
+          <div
+            className="absolute left-0 top-[60%] h-[1px] w-full bg-gradient-to-r from-transparent via-[#ccff00]/15 to-transparent"
+            style={{ animationDelay: "2s" }}
+          />
+        </div>
+
+        {/* Curved accent lines */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M0,300 Q400,100 800,300 T1600,300" stroke="#ccff00" strokeWidth="1" fill="none" opacity="0.3" />
+          <path d="M0,500 Q600,400 1200,500 T2400,500" stroke="#ccff00" strokeWidth="1" fill="none" opacity="0.2" />
+        </svg>
+
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          <img
+            src="/stratos-rook.svg"
+            alt=""
+            className="w-[800px] h-[800px] object-contain"
+            style={{
+              filter: "drop-shadow(0 0 80px rgba(204, 255, 0, 0.3))",
+            }}
+          />
+        </div>
+
         <div className="max-w-[1920px] mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Main Text */}
@@ -613,10 +656,7 @@ export default function StratosPage() {
               {/* Search Bar - Increased width */}
               <div className="w-full md:w-auto">
                 <div className="relative">
-                  
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
-                    
-                  </div>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700"></div>
                 </div>
               </div>
             </div>

@@ -224,19 +224,20 @@ export default function LearnPage() {
           <h2 className="text-3xl font-bold font-['Orbitron'] mb-12">Popular Articles</h2>
           <div className="space-y-4">
             {[
-              "Understanding DeFi Liquidity Pools",
-              "Building Your First Arbitrage Strategy",
-              "Risk Management Best Practices",
-              "Optimizing Gas Efficiency",
-              "MEV Protection Strategies",
+              { title: "Understanding DeFi Liquidity Pools", link: "/learn/articles/understanding-liquidity-pools" },
+              { title: "Building Your First Arbitrage Strategy", link: "/learn/articles/building-arbitrage-strategy" },
+              { title: "Risk Management Best Practices", link: "/learn/articles/risk-management" },
+              { title: "Optimizing Gas Efficiency", link: "/learn/articles/gas-optimization" },
+              { title: "MEV Protection Strategies", link: "/learn/articles/mev-protection" },
             ].map((article, i) => (
-              <div
+              <Link
                 key={i}
+                href={article.link}
                 className="bg-black border border-gray-900 p-6 hover:border-[#ccff00]/50 transition-all cursor-pointer group flex items-center justify-between"
               >
-                <h4 className="text-sm group-hover:text-[#ccff00] transition-colors">{article}</h4>
-                <span className="text-xs text-gray-600">→</span>
-              </div>
+                <h4 className="text-sm group-hover:text-[#ccff00] transition-colors">{article.title}</h4>
+                <span className="text-xs text-gray-600 group-hover:text-[#ccff00] transition-colors">→</span>
+              </Link>
             ))}
           </div>
         </div>
