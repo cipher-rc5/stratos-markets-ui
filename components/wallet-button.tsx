@@ -1,7 +1,6 @@
 "use client"
 
-import { usePrivy } from "@privy-io/react-auth"
-import { useLogin, useLogout } from "@privy-io/react-auth"
+import { usePrivy, useLogin, useLogout } from "@privy-io/react-auth"
 import { useState } from "react"
 import { UserProfileModal } from "./user-profile-modal"
 import { useUserProfileStore } from "@/lib/user-profile-store"

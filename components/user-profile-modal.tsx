@@ -2,8 +2,7 @@
 
 import type React from "react"
 
-import { usePrivy } from "@privy-io/react-auth"
-import { useLogout } from "@privy-io/react-auth"
+import { usePrivy, useLogout } from "@privy-io/react-auth"
 import { useState, useEffect } from "react"
 import { useUserProfileStore } from "@/lib/user-profile-store"
 import { X, User, Wallet, LogOut, Copy, Check, Upload } from "lucide-react"

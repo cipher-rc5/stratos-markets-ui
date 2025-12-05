@@ -110,9 +110,6 @@ importers:
       '@solana/kit':
         specifier: latest
         version: 5.0.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.0.2)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/web3.js':
-        specifier: ^1.95.8
-        version: 1.98.4(bufferutil@4.0.9)(typescript@5.0.2)(utf-8-validate@5.0.10)
       '@vercel/analytics':
         specifier: latest
         version: 1.6.1(next@16.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
