@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 import { Orbitron, Rajdhani } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { PageTransition } from "@/components/page-transition"
+import { PrivyClientProvider } from "@/components/privy-client-provider"
 import "./globals.css"
 
-// Added Orbitron and Rajdhani fonts for the futuristic Stratos design
 const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-orbitron",
@@ -50,7 +50,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${orbitron.variable} ${rajdhani.variable} font-rajdhani antialiased`}>
-        <PageTransition>{children}</PageTransition>
+        <PrivyClientProvider>
+          <PageTransition>{children}</PageTransition>
+        </PrivyClientProvider>
         <Analytics />
       </body>
     </html>

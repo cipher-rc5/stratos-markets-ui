@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { WalletButton } from "./wallet-button"
 
 const StratosLogo = () => (
   <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
@@ -36,9 +37,6 @@ export default function Navbar() {
 
   const marketplaceActive = (isHome || isMarketplace || isCreate) && !isLearn
 
-  const ctaText = isLearn || isMarketplace ? "Connect" : "Launch"
-  const ctaHref = isLearn || isMarketplace ? "/agents" : "/agents"
-
   return (
     <>
       <nav className="border-b bg-black/90 backdrop-blur-md border-gray-800 py-3 z-50 fixed top-0 left-0 right-0">
@@ -53,11 +51,7 @@ export default function Navbar() {
             <NavLink text="Create" active={isCreate} href="/create" />
             <NavLink text="Portfolio" active={isPortfolio} href="/portfolio" />
             <NavLink text="Learn" active={isLearn} href="/learn" />
-            <Link href={ctaHref}>
-              <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold px-6 py-2.5 tracking-widest uppercase transition-colors text-xl">
-                {ctaText}
-              </button>
-            </Link>
+            <WalletButton />
           </div>
 
           <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -68,7 +62,6 @@ export default function Navbar() {
 
       <div className="pt-20" />
 
-      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden">
           <NavLink text="MARKETPLACE" active={marketplaceActive} href="/agents" />
@@ -76,11 +69,7 @@ export default function Navbar() {
           <NavLink text="Create" active={isCreate} href="/create" />
           <NavLink text="Portfolio" active={isPortfolio} href="/portfolio" />
           <NavLink text="Learn" active={isLearn} href="/learn" />
-          <Link href={ctaHref}>
-            <button className="bg-[#ccff00] text-black text-xs font-bold px-8 py-3 tracking-widest uppercase">
-              {ctaText}
-            </button>
-          </Link>
+          <WalletButton />
         </div>
       )}
     </>
