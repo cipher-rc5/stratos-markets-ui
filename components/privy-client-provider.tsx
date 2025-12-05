@@ -1,7 +1,7 @@
 'use client';
-import { echo } from '@/lib/chain';
 import { PrivyProvider } from '@privy-io/react-auth';
 import type React from 'react';
+import { echo } from '../lib/chain';
 
 export function PrivyClientProvider({ children }: { children: React.ReactNode }) {
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || '';

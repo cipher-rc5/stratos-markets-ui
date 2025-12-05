@@ -1,9 +1,9 @@
 'use client';
-import { useUserProfileStore } from '@/lib/user-profile-store';
-import { useLogin, useLogout, usePrivy } from '@privy-io/react-auth';
-import type { WalletWithMetadata } from '@privy-io/react-auth';
+import { useLogin, usePrivy } from '@privy-io/react-auth';
+import { type WalletWithMetadata } from '@privy-io/react-auth';
 import { User, Wallet } from 'lucide-react';
 import { useState } from 'react';
+import { useUserProfileStore } from '../lib/user-profile-store';
 import { UserProfileModal } from './user-profile-modal';
 
 export function WalletButton() {

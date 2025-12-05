@@ -1,12 +1,12 @@
 'use client';
-import { echo } from '@/lib/chain';
-import { useUserProfileStore } from '@/lib/user-profile-store';
 import { useLogout, usePrivy } from '@privy-io/react-auth';
 import { type WalletWithMetadata } from '@privy-io/react-auth';
 import { Check, Copy, LogOut, Upload, User, Wallet, X } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { createPublicClient, formatEther, http } from 'viem';
+import { echo } from '../lib/chain';
+import { useUserProfileStore } from '../lib/user-profile-store';
 
 export function UserProfileModal({ onCloseAction }: { onCloseAction: () => void }) {
   const { user } = usePrivy();
