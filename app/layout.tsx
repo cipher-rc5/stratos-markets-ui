@@ -1,9 +1,9 @@
-import { PageTransition } from '@/components/page-transition';
-import { PrivyClientProvider } from '@/components/privy-client-provider';
 import { Analytics } from '@vercel/analytics/next';
 import { type Metadata } from 'next';
 import { Orbitron, Rajdhani } from 'next/font/google';
 import type React from 'react';
+import { PageTransition } from '../components/page-transition';
+import { PrivyClientProvider } from '../components/privy-client-provider';
 import './globals.css';
 
 const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron', display: 'swap' });

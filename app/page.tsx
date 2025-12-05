@@ -1,9 +1,9 @@
 'use client';
-import Navbar from '@/components/navbar';
 import { Activity, ArrowRight, BarChart3, ChevronRight, Shield, Terminal, TrendingUp, Users, X, Zap } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import Navbar from '../components/navbar';
 
 // --- Types ---
 interface Strategy {

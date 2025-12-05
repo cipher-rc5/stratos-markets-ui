@@ -1,8 +1,8 @@
 'use client';
-import Navbar from '@/components/navbar';
 import { BookOpen, Code, Search, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import Navbar from '../../components/navbar';
 
 const learningPaths = [{
   title: 'Getting Started',

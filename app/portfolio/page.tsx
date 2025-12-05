@@ -1,8 +1,8 @@
 'use client';
-import Navbar from '@/components/navbar';
 import { Activity, BarChart3, DollarSign, PieChart, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
+import Navbar from '../../components/navbar';
 
 const positions = [{
   id: 1,

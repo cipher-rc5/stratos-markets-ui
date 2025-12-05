@@ -2,8 +2,8 @@
 import { addEdge, Background, BackgroundVariant, type Connection, Controls, type Edge, MiniMap, type Node, ReactFlow, useEdgesState, useNodesState } from '@xyflow/react';
 import { useCallback, useState } from 'react';
 import '@xyflow/react/dist/style.css';
-import Navbar from '@/components/navbar';
 import { Download, Play, Plus, Save } from 'lucide-react';
+import Navbar from '../../components/navbar';
 
 const StratosLogo = () => (
   <div className='flex items-center gap-4 hover:opacity-80 transition-opacity'>

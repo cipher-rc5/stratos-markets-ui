@@ -1,8 +1,8 @@
 'use client';
-import Navbar from '@/components/navbar';
 import Image from 'next/image';
 import Link from 'next/link';
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
+import { useState } from 'react';
+import Navbar from '../../components/navbar';
 
 // Sample strategy data matching the structure from the main page
 const strategies = [{
