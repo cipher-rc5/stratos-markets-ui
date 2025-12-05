@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import Navbar from "@/components/navbar"
 
 // Sample strategy data matching the structure from the main page
 const strategies = [
@@ -158,7 +159,7 @@ function StratosLogo() {
 export default function AgentsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedStrategy, setSelectedStrategy] = useState<string | null>(null)
+  const [selectedStrategy, setSelectedStrategy] = useState<any | null>(null)
 
   const filteredStrategies = strategies.filter((strategy) => {
     const matchesCategory = selectedCategory === "all" || strategy.category === selectedCategory
@@ -170,43 +171,9 @@ export default function AgentsPage() {
     return matchesCategory && matchesSearch
   })
 
-  const selectedStrategyData = strategies.find((s) => s.id === selectedStrategy)
-
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <nav className="border-b border-gray-900 bg-black/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-[1920px] mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
-          <StratosLogo />
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-12 text-xs uppercase tracking-wider">
-            <Link
-              href="/agents"
-              className="text-[#ccff00] hover:text-white transition-colors font-bold border-b-2 border-[#ccff00] pb-1"
-            >
-              Agents
-            </Link>
-            <Link href="/create" className="text-gray-400 hover:text-white transition-colors">
-              Create
-            </Link>
-            <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-              Learn
-            </Link>
-          </div>
-
-          <button className="hidden md:block bg-[#ccff00] text-black px-6 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-[#b8e600] transition-colors">
-            Launch
-          </button>
-
-          {/* Mobile Menu Button */}
-          <button className="md:hidden text-white">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-black text-white font-rajdhani">
+      <Navbar />
 
       {/* Main Content */}
       <div className="max-w-[1920px] mx-auto px-6 md:px-12 py-12">
@@ -305,7 +272,7 @@ export default function AgentsPage() {
               {filteredStrategies.map((strategy) => (
                 <div
                   key={strategy.id}
-                  onClick={() => setSelectedStrategy(strategy.id)}
+                  onClick={() => setSelectedStrategy(strategy)}
                   className="bg-black border border-gray-900 rounded-lg p-5 hover:border-[#ccff00]/50 transition-all cursor-pointer group relative overflow-hidden"
                 >
                   {/* Rook Icon */}
@@ -387,7 +354,7 @@ export default function AgentsPage() {
       </div>
 
       {/* Strategy Detail Modal */}
-      {selectedStrategy && selectedStrategyData && (
+      {selectedStrategy && (
         <div
           className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-6"
           onClick={() => setSelectedStrategy(null)}
@@ -400,8 +367,8 @@ export default function AgentsPage() {
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-[#ccff00] mb-2">{selectedStrategyData.name}</h2>
-                  <p className="text-gray-400 text-sm">{selectedStrategyData.description}</p>
+                  <h2 className="text-2xl font-bold text-[#ccff00] mb-2">{selectedStrategy.name}</h2>
+                  <p className="text-gray-400 text-sm">{selectedStrategy.description}</p>
                 </div>
                 <button
                   onClick={() => setSelectedStrategy(null)}
@@ -417,21 +384,19 @@ export default function AgentsPage() {
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
                   <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-2">Creator</div>
-                  <div className="text-white font-mono text-sm">{selectedStrategyData.creator}</div>
+                  <div className="text-white font-mono text-sm">{selectedStrategy.creator}</div>
                 </div>
                 <div>
                   <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-2">Version</div>
-                  <div className="text-white font-mono text-sm">{selectedStrategyData.version}</div>
+                  <div className="text-white font-mono text-sm">{selectedStrategy.version}</div>
                 </div>
                 <div>
                   <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-2">Subscribers</div>
-                  <div className="text-white text-sm">{selectedStrategyData.subscribers}</div>
+                  <div className="text-white text-sm">{selectedStrategy.subscribers}</div>
                 </div>
                 <div>
                   <div className="text-[10px] text-gray-600 uppercase tracking-widest mb-2">Created</div>
-                  <div className="text-white text-sm">
-                    {new Date(selectedStrategyData.createdAt).toLocaleDateString()}
-                  </div>
+                  <div className="text-white text-sm">{new Date(selectedStrategy.createdAt).toLocaleDateString()}</div>
                 </div>
               </div>
 
@@ -441,17 +406,15 @@ export default function AgentsPage() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="bg-gray-900/50 border border-gray-800 rounded p-4">
                     <div className="text-[10px] text-gray-600 uppercase tracking-wider mb-2">ROI</div>
-                    <div className="text-2xl font-bold text-[#ccff00]">+{selectedStrategyData.performance.roi}%</div>
+                    <div className="text-2xl font-bold text-[#ccff00]">+{selectedStrategy.performance.roi}%</div>
                   </div>
                   <div className="bg-gray-900/50 border border-gray-800 rounded p-4">
                     <div className="text-[10px] text-gray-600 uppercase tracking-wider mb-2">Sharpe Ratio</div>
-                    <div className="text-2xl font-bold text-white">{selectedStrategyData.performance.sharpeRatio}</div>
+                    <div className="text-2xl font-bold text-white">{selectedStrategy.performance.sharpeRatio}</div>
                   </div>
                   <div className="bg-gray-900/50 border border-gray-800 rounded p-4">
                     <div className="text-[10px] text-gray-600 uppercase tracking-wider mb-2">Max Drawdown</div>
-                    <div className="text-2xl font-bold text-red-500">
-                      {selectedStrategyData.performance.maxDrawdown}%
-                    </div>
+                    <div className="text-2xl font-bold text-red-500">{selectedStrategy.performance.maxDrawdown}%</div>
                   </div>
                 </div>
               </div>
@@ -463,10 +426,10 @@ export default function AgentsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-[10px] text-gray-600 uppercase tracking-wider mb-1">
-                        {selectedStrategyData.pricing.type}
+                        {selectedStrategy.pricing.type}
                       </div>
                       <div className="text-2xl font-bold text-[#ccff00]">
-                        {selectedStrategyData.pricing.amount} {selectedStrategyData.pricing.currency}
+                        {selectedStrategy.pricing.amount} {selectedStrategy.pricing.currency}
                       </div>
                     </div>
                     <button className="bg-[#ccff00] text-black px-6 py-3 text-xs font-bold uppercase tracking-wider hover:bg-[#b8e600] transition-colors">
@@ -480,7 +443,7 @@ export default function AgentsPage() {
               <div>
                 <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Tags</h3>
                 <div className="flex flex-wrap gap-2">
-                  {selectedStrategyData.tags.map((tag) => (
+                  {selectedStrategy.tags.map((tag) => (
                     <span
                       key={tag}
                       className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded text-xs text-gray-400 uppercase tracking-wide"

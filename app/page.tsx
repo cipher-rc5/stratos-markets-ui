@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import {
-  Menu,
   X,
   TrendingUp,
   Shield,
@@ -16,6 +15,7 @@ import {
   Terminal,
 } from "lucide-react"
 import Image from "next/image"
+import Navbar from "@/components/navbar"
 
 // --- Types ---
 interface Strategy {
@@ -113,14 +113,14 @@ const StratosLogo = () => (
 )
 
 const NavLink = ({ text, active = false, href = "#" }: { text: string; active?: boolean; href?: string }) => (
-  <a
+  <Link
     href={href}
     className={`tracking-[0.15em] uppercase transition-colors duration-300 font-medium text-lg ${
       active ? "text-[#ccff00]" : "text-gray-400 hover:text-white"
     }`}
   >
     {text}
-  </a>
+  </Link>
 )
 
 const TerminalInterface = () => {
@@ -369,70 +369,21 @@ export default function StratosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [selectedStrategy, setSelectedStrategy] = useState<Strategy | null>(null)
-  const [activeFilter, setActiveFilter] = useState("ALL STRATEGIES")
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-rajdhani selection:bg-[#ccff00] selection:text-black">
-      {/* --- Navbar --- */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled ? "bg-black/90 backdrop-blur-md border-gray-800 py-3" : "bg-transparent border-transparent py-4"}`}
-      >
-        <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex justify-between items-center">
-          <div className="flex items-center gap-8">
-            <StratosLogo />
-            <NavLink text="MARKETPLACE" active={true} href="/" />
-          </div>
+    <div className="min-h-screen bg-black text-white font-rajdhani overflow-x-hidden">
+      <Navbar />
 
-          <div className="hidden md:flex items-center gap-12">
-            <NavLink text="Agents" href="/agents" />
-            <NavLink text="Create" href="/create" />
-            <NavLink text="Learn" />
-            <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold px-6 py-2.5 tracking-widest uppercase transition-colors text-xl">
-              Launch
-            </button>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden">
-          <NavLink text="MARKETPLACE" active={true} href="/" />
-          <NavLink text="Agents" href="/agents" />
-          <NavLink text="Create" href="/create" />
-          <NavLink text="Learn" />
-          <button className="bg-[#ccff00] text-black text-xs font-bold px-8 py-3 tracking-widest uppercase">
-            Launch
-          </button>
-        </div>
-      )}
-
-      {/* --- Hero Section - New hero matching reference image --- */}
-      <header className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
-        {/* Background Neon Lines */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-full h-[800px] opacity-20">
-            <svg className="w-full h-full" preserveAspectRatio="none">
-              <path d="M-100,0 Q500,400 1000,0" fill="none" stroke="#ccff00" strokeWidth="1" className="blur-sm" />
-              <path d="M-100,50 Q500,450 1100,0" fill="none" stroke="#ccff00" strokeWidth="2" className="opacity-50" />
-              <path d="M0,600 Q800,400 2000,100" fill="none" stroke="white" strokeWidth="0.5" className="opacity-10" />
-            </svg>
-          </div>
-          {/* Noise texture overlay */}
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 mix-blend-overlay"></div>
-        </div>
-
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
         <div className="max-w-[1920px] mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Main Text */}
@@ -464,19 +415,19 @@ export default function StratosPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-6 mt-12">
-                <a
+                <Link
                   href="/agents"
                   className="bg-[#ccff00] hover:bg-white text-black font-bold px-10 py-4 uppercase tracking-wider transition-colors flex items-center justify-center gap-2 group text-base"
                 >
                   Explore Marketplace{" "}
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/create"
                   className="border border-gray-700 hover:border-[#ccff00] text-gray-400 hover:text-[#ccff00] font-bold px-10 py-4 tracking-wider uppercase transition-all text-base"
                 >
                   Start Uploading
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -498,7 +449,7 @@ export default function StratosPage() {
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* --- Problem/Solution Section --- */}
       <section className="relative py-24 px-6 overflow-hidden">
@@ -647,9 +598,9 @@ export default function StratosPage() {
                 {["ALL STRATEGIES", "YIELD FARMING", "ARBITRAGE", "MEV", "VERIFIED"].map((filter) => (
                   <button
                     key={filter}
-                    onClick={() => setActiveFilter(filter)}
+                    onClick={() => {}}
                     className={`font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 text-sm ${
-                      activeFilter === filter
+                      false
                         ? "bg-[#ccff00] text-black"
                         : "bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600"
                     }`}
@@ -662,16 +613,9 @@ export default function StratosPage() {
               {/* Search Bar - Increased width */}
               <div className="w-full md:w-auto">
                 <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="SEARCH_DB"
-                    className="bg-transparent border border-gray-800 text-white text-xs font-mono tracking-wider uppercase px-6 py-3 w-full md:w-[450px] focus:border-[#ccff00] focus:outline-none transition-colors placeholder:text-gray-700"
-                  />
+                  
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <circle cx="11" cy="11" r="8" />
-                      <path d="m21 21-4.35-4.35" />
-                    </svg>
+                    
                   </div>
                 </div>
               </div>
@@ -854,11 +798,23 @@ export default function StratosPage() {
           <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest">
             <span>© 2025 Stratos Inc. All rights reserved.</span>
             <div className="flex gap-8 mt-4 md:mt-0">
-              <Link href="/legal/privacy" className="hover:text-white cursor-pointer transition-colors">
-                Privacy Policy
+              <Link
+                href="https://twitter.com/stratosinc"
+                className="hover:text-[#ccff00] cursor-pointer transition-colors"
+              >
+                Twitter
               </Link>
-              <Link href="/legal/terms" className="hover:text-white cursor-pointer transition-colors">
-                Terms of Service
+              <Link
+                href="https://discord.com/invite/stratos"
+                className="hover:text-[#ccff00] cursor-pointer transition-colors"
+              >
+                Discord
+              </Link>
+              <Link
+                href="https://github.com/stratosinc"
+                className="hover:text-[#ccff00] cursor-pointer transition-colors"
+              >
+                GitHub
               </Link>
             </div>
           </div>

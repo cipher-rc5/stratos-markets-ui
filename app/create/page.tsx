@@ -15,13 +15,13 @@ import {
   BackgroundVariant,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
-import { Menu, X, Plus, Play, Save, Download } from "lucide-react"
-import Image from "next/image"
+import { Plus, Play, Save, Download } from "lucide-react"
+import Navbar from "@/components/navbar"
 
 const StratosLogo = () => (
-  <div className="flex items-center gap-4">
-    <Image src="/stratos-rook.svg" alt="Stratos" width={36} height={36} className="opacity-90" />
-    <Image src="/stratos-logo.svg" alt="Stratos" width={160} height={32} className="opacity-90" />
+  <div className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+    <img src="/stratos-rook.svg" alt="Stratos" width={36} height={36} className="opacity-90" />
+    <img src="/stratos-logo.svg" alt="Stratos" width={160} height={32} className="opacity-90" />
   </div>
 )
 
@@ -92,7 +92,6 @@ const instruments = [
 export default function CreatePage() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string | null>("data")
 
   const onConnect = useCallback(
@@ -122,41 +121,7 @@ export default function CreatePage() {
 
   return (
     <div className="h-screen bg-[#050505] text-white font-rajdhani overflow-hidden flex flex-col">
-      {/* --- Navbar --- */}
-      <nav className="border-b bg-black/90 backdrop-blur-md border-gray-800 py-3 z-50">
-        <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex justify-between items-center">
-          <div className="flex items-center gap-8">
-            <StratosLogo />
-            <NavLink text="MARKETPLACE" href="/" />
-          </div>
-
-          <div className="hidden md:flex items-center gap-12">
-            <NavLink text="Agents" href="/agents" />
-            <NavLink text="Create" active={true} href="/create" />
-            <NavLink text="Learn" />
-            <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold px-6 py-2.5 tracking-widest uppercase transition-colors text-xl">
-              Launch
-            </button>
-          </div>
-
-          <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden">
-          <NavLink text="MARKETPLACE" href="/" />
-          <NavLink text="Agents" href="/agents" />
-          <NavLink text="Create" active={true} href="/create" />
-          <NavLink text="Learn" />
-          <button className="bg-[#ccff00] text-black text-xs font-bold px-8 py-3 tracking-widest uppercase">
-            Launch
-          </button>
-        </div>
-      )}
+      <Navbar />
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
