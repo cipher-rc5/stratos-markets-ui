@@ -14,7 +14,7 @@ Any changes you make to your deployed app will be automatically pushed to this r
 
 Your project is live at:
 
-**[https://vercel.com/zerocreativity-systems/v0-stratos-page-recreation](https://vercel.com/zerocreativity-systems/stratos-markets-ui)**
+**[https://vercel.com/zerocreativity-systems/stratos-markets-ui](https://vercel.com/zerocreativity-systems/stratos-markets-ui)**
 
 ## Build your app
 
