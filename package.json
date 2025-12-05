@@ -84,5 +84,14 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "@walletconnect/logger": "2.1.2",
+    "pino": "7.11.0",
+    "pino-std-serializers": "4.0.0",
+    "thread-stream": "0.15.2",
+    "on-exit-leak-free": "0.2.0",
+    "sonic-boom": "2.8.0",
+    "process-warning": "1.0.0"
   }
 }
