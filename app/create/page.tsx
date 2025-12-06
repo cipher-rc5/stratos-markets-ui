@@ -5,22 +5,22 @@ import '@xyflow/react/dist/style.css';
 import { Download, Play, Plus, Save } from 'lucide-react';
 import Navbar from '../../components/navbar';
 
-const StratosLogo = () => (
-  <div className='flex items-center gap-4 hover:opacity-80 transition-opacity'>
-    <img src='/stratos-rook.svg' alt='Stratos' width={36} height={36} className='opacity-90' />
-    <img src='/stratos-logo.svg' alt='Stratos' width={160} height={32} className='opacity-90' />
-  </div>
-);
+// const StratosLogo = () => (
+//   <div className='flex items-center gap-4 hover:opacity-80 transition-opacity'>
+//     <img src='/stratos-rook.svg' alt='Stratos' width={36} height={36} className='opacity-90' />
+//     <img src='/stratos-logo.svg' alt='Stratos' width={160} height={32} className='opacity-90' />
+//   </div>
+// );
 
-const NavLink = ({ text, active = false, href = '#' }: { text: string, active?: boolean, href?: string }) => (
-  <a
-    href={href}
-    className={`tracking-[0.15em] uppercase transition-colors duration-300 font-medium text-lg ${
-      active ? 'text-[#ccff00]' : 'text-gray-400 hover:text-white'
-    }`}>
-    {text}
-  </a>
-);
+// const NavLink = ({ text, active = false, href = '#' }: { text: string, active?: boolean, href?: string }) => (
+//   <a
+//     href={href}
+//     className={`tracking-[0.15em] uppercase transition-colors duration-300 font-medium text-lg ${
+//       active ? 'text-[#ccff00]' : 'text-gray-400 hover:text-white'
+//     }`}>
+//     {text}
+//   </a>
+// );
 
 // Initial nodes for strategy building
 const initialNodes: Node[] = [{
