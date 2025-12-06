@@ -1,75 +1,88 @@
-'use client';
-import { Menu, X } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { WalletButton } from './wallet-button';
+"use client"
+
+import { useState } from "react"
+import { Menu, X } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const StratosLogo = () => (
-  <Link href='/' className='flex items-center gap-4 hover:opacity-80 transition-opacity'>
-    <Image src='/stratos-rook.svg' alt='Stratos' width={36} height={36} className='opacity-90' />
-    <Image src='/stratos-logo.svg' alt='Stratos' width={160} height={32} className='opacity-90' />
+  <Link href="/" className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+    <Image src="/stratos-rook.svg" alt="Stratos" width={36} height={36} className="opacity-90" />
+    <Image src="/stratos-logo.svg" alt="Stratos" width={160} height={32} className="opacity-90" />
   </Link>
-);
+)
 
-const NavLink = ({ text, active = false, href = '#' }: { text: string, active?: boolean, href?: string }) => (
+const NavLink = ({ text, active = false, href = "#" }: { text: string; active?: boolean; href?: string }) => (
   <Link
     href={href}
     className={`tracking-[0.15em] uppercase transition-colors duration-300 font-medium text-lg ${
-      active ? 'text-[#ccff00]' : 'text-gray-400 hover:text-white'
-    }`}>
+      active ? "text-[#ccff00]" : "text-gray-400 hover:text-white"
+    }`}
+  >
     {text}
   </Link>
-);
+)
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
 
-  const isHome = pathname === '/';
-  const isMarketplace = pathname === '/agents';
-  const isCreate = pathname === '/create';
-  const isLearn = pathname === '/learn';
-  const isPortfolio = pathname === '/portfolio';
+  const isHome = pathname === "/"
+  const isMarketplace = pathname === "/agents"
+  const isCreate = pathname === "/create"
+  const isLearn = pathname === "/learn"
+  const isPortfolio = pathname === "/portfolio"
 
-  const marketplaceActive = (isHome || isMarketplace || isCreate) && !isLearn;
+  const marketplaceActive = (isHome || isMarketplace || isCreate) && !isLearn
+
+  const ctaText = isLearn || isMarketplace ? "Connect" : "Launch"
+  const ctaHref = isLearn || isMarketplace ? "/agents" : "/agents"
 
   return (
     <>
-      <nav className='border-b bg-black/90 backdrop-blur-md border-gray-800 py-3 z-50 fixed top-0 left-0 right-0'>
-        <div className='max-w-[1920px] mx-auto px-6 md:px-12 flex justify-between items-center'>
-          <div className='flex items-center gap-8'>
+      <nav className="border-b bg-black/90 backdrop-blur-md border-gray-800 py-3 z-50 fixed top-0 left-0 right-0">
+        <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex justify-between items-center">
+          <div className="flex items-center gap-8">
             <StratosLogo />
-            <NavLink text='MARKETPLACE' active={marketplaceActive} href='/agents' />
+            <NavLink text="MARKETPLACE" active={marketplaceActive} href="/agents" />
           </div>
 
-          <div className='hidden md:flex items-center gap-12'>
-            <NavLink text='Agents' active={isMarketplace} href='/agents' />
-            <NavLink text='Create' active={isCreate} href='/create' />
-            <NavLink text='Portfolio' active={isPortfolio} href='/portfolio' />
-            <NavLink text='Learn' active={isLearn} href='/learn' />
-            <WalletButton />
+          <div className="hidden md:flex items-center gap-12">
+            <NavLink text="Agents" active={isMarketplace} href="/agents" />
+            <NavLink text="Create" active={isCreate} href="/create" />
+            <NavLink text="Portfolio" active={isPortfolio} href="/portfolio" />
+            <NavLink text="Learn" active={isLearn} href="/learn" />
+            <Link href={ctaHref}>
+              <button className="bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold px-6 py-2.5 tracking-widest uppercase transition-colors text-xl">
+                {ctaText}
+              </button>
+            </Link>
           </div>
 
-          <button className='md:hidden text-white' onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </nav>
 
-      <div className='pt-20' />
+      <div className="pt-20" />
 
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className='fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden'>
-          <NavLink text='MARKETPLACE' active={marketplaceActive} href='/agents' />
-          <NavLink text='Agents' active={isMarketplace} href='/agents' />
-          <NavLink text='Create' active={isCreate} href='/create' />
-          <NavLink text='Portfolio' active={isPortfolio} href='/portfolio' />
-          <NavLink text='Learn' active={isLearn} href='/learn' />
-          <WalletButton />
+        <div className="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 md:hidden">
+          <NavLink text="MARKETPLACE" active={marketplaceActive} href="/agents" />
+          <NavLink text="Agents" active={isMarketplace} href="/agents" />
+          <NavLink text="Create" active={isCreate} href="/create" />
+          <NavLink text="Portfolio" active={isPortfolio} href="/portfolio" />
+          <NavLink text="Learn" active={isLearn} href="/learn" />
+          <Link href={ctaHref}>
+            <button className="bg-[#ccff00] text-black text-xs font-bold px-8 py-3 tracking-widest uppercase">
+              {ctaText}
+            </button>
+          </Link>
         </div>
       )}
     </>
-  );
+  )
 }
