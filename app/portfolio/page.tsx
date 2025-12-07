@@ -32,22 +32,28 @@ import {
   TrendingDown,
 } from "lucide-react"
 import Navbar from "../../components/navbar"
+import { usePortfolio, usePortfolioHistory, useTransactions } from "@/lib/hooks/use-portfolio"
 
 export default function PortfolioPage() {
   const [walletAddress, setWalletAddress] = useState("")
   const [searchAddress, setSearchAddress] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [timeframe, setTimeframe] = useState<"24h" | "7d" | "30d" | "all">("7d")
   const [selectedTab, setSelectedTab] = useState<
     "overview" | "tokens" | "nfts" | "protocols" | "transactions" | "analytics"
   >("overview")
   const [selectedChain, setSelectedChain] = useState<string>("all")
 
+  // Fetch portfolio data from API
+  const { portfolio, loading: portfolioLoading, error: portfolioError } = usePortfolio(walletAddress || null)
+  const { history, loading: historyLoading } = usePortfolioHistory(walletAddress || null, timeframe)
+  const { transactions, loading: transactionsLoading } = useTransactions(walletAddress || null)
+  
+  const isLoading = portfolioLoading || historyLoading || transactionsLoading
+
   const fetchWalletData = async (address: string) => {
-    setIsLoading(true)
     console.log("[v0] Fetching data for wallet:", address)
 
-    // Simulate API call delay
+    // Data will be fetched automatically by hooks
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     setWalletAddress(address)

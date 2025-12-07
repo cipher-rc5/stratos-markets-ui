@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Navbar from "@/components/navbar"
+import { apiClient } from "@/lib/api-client"
 
 // Sample strategy data matching the structure from the main page
 const strategies = [
@@ -443,9 +444,9 @@ export default function AgentsPage() {
               <div>
                 <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-4">Tags</h3>
                 <div className="flex flex-wrap gap-2">
-                  {selectedStrategy.tags.map((tag) => (
+                  {selectedStrategy.tags.map((tag: string, idx: number) => (
                     <span
-                      key={tag}
+                      key={tag || idx}
                       className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded text-xs text-gray-400 uppercase tracking-wide"
                     >
                       {tag}

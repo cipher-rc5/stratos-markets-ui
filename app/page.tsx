@@ -16,80 +16,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import Navbar from "@/components/navbar"
-
-// --- Types ---
-interface Strategy {
-  id: string
-  name: string
-  description: string
-  creator: string
-  version: string
-  performance: {
-    roi: number
-    sharpeRatio: number
-    maxDrawdown: number
-  }
-  pricing: {
-    type: string
-    amount: number
-    currency: string
-  }
-  tags: string[]
-  subscribers: number
-  createdAt: string
-}
-
-// --- Sample Strategy Data ---
-const sampleStrategies: Strategy[] = [
-  {
-    id: "strat_abc123",
-    name: "DCA Bitcoin Strategy",
-    description: "Automated dollar-cost averaging for BTC with dynamic entry points",
-    creator: "0x1234...",
-    version: "1.2.0",
-    performance: { roi: 24.5, sharpeRatio: 1.8, maxDrawdown: -12.3 },
-    pricing: { type: "flat", amount: 100, currency: "USDC" },
-    tags: ["DCA", "Bitcoin", "Long-term"],
-    subscribers: 342,
-    createdAt: "2025-12-03T19:46:25.828Z",
-  },
-  {
-    id: "strat_def456",
-    name: "Grid Trading Master",
-    description: "Multi-level grid strategy optimized for ranging markets",
-    creator: "0x5678...",
-    version: "2.1.5",
-    performance: { roi: 18.2, sharpeRatio: 2.1, maxDrawdown: -8.7 },
-    pricing: { type: "flat", amount: 150, currency: "USDC" },
-    tags: ["Grid", "Range", "Stable"],
-    subscribers: 527,
-    createdAt: "2025-11-15T10:30:15.123Z",
-  },
-  {
-    id: "strat_ghi789",
-    name: "Alpha Momentum",
-    description: "Trend-following algorithm with volatility filters",
-    creator: "0x9abc...",
-    version: "3.0.2",
-    performance: { roi: 42.8, sharpeRatio: 1.5, maxDrawdown: -18.9 },
-    pricing: { type: "flat", amount: 250, currency: "USDC" },
-    tags: ["Momentum", "High-risk", "Trending"],
-    subscribers: 891,
-    createdAt: "2025-10-22T14:22:40.456Z",
-  },
-  {
-    id: "strat_jkl012",
-    name: "Mean Reversion Pro",
-    description: "Statistical arbitrage on multiple timeframes",
-    creator: "0xdef0...",
-    version: "1.8.3",
-    performance: { roi: 15.6, sharpeRatio: 2.3, maxDrawdown: -6.2 },
-    pricing: { type: "flat", amount: 200, currency: "USDC" },
-    tags: ["Mean-reversion", "Stats", "Low-volatility"],
-    subscribers: 445,
-    createdAt: "2025-09-30T08:15:20.789Z",
-  },
-]
+import { useStrategies, type Strategy } from "@/lib/hooks/use-strategies"
 
 // --- Components ---
 
@@ -369,6 +296,12 @@ export default function StratosPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [selectedStrategy, setSelectedStrategy] = useState<Strategy | null>(null)
+  const [categoryFilter, setCategoryFilter] = useState<string>("")
+  
+  // Fetch strategies from API
+  const { strategies, loading, error } = useStrategies({
+    category: categoryFilter || undefined,
+  })
 
   useEffect(() => {
     const handleScroll = () => {
@@ -663,9 +596,23 @@ export default function StratosPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sampleStrategies.map((strategy) => (
-              <StrategyCard key={strategy.id} strategy={strategy} onClick={() => setSelectedStrategy(strategy)} />
-            ))}
+            {loading ? (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                Loading strategies...
+              </div>
+            ) : error ? (
+              <div className="col-span-full text-center py-12 text-red-500">
+                Error: {error}
+              </div>
+            ) : strategies.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                No strategies found
+              </div>
+            ) : (
+              strategies.map((strategy) => (
+                <StrategyCard key={strategy.id} strategy={strategy} onClick={() => setSelectedStrategy(strategy)} />
+              ))
+            )}
           </div>
 
           {selectedStrategy && (
