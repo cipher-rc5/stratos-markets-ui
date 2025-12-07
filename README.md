@@ -39,7 +39,7 @@
 
 ### Installation
 
-```bash
+\`\`\`bash
 # Clone the repository
 git clone https://github.com/cipher-rc5/stratos-markets-ui.git
 cd stratos-markets-ui
@@ -52,7 +52,7 @@ cp env.example .env.local
 
 # Start the development server
 bun dev
-```
+\`\`\`
 
 Visit `http://localhost:3000` to see the app in action! 🎉
 
@@ -64,7 +64,7 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 
 ## 🏗️ Architecture
 
-```
+\`\`\`
 ┌─────────────────────────────────────────────────┐
 │              Frontend (Next.js)                  │
 │  ┌──────────────┐  ┌─────────────────────────┐ │
@@ -96,7 +96,7 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 │  │  portfolio   │  │  market      │            │
 │  └──────────────┘  └──────────────┘            │
 └─────────────────────────────────────────────────┘
-```
+\`\`\`
 
 ## 🛠️ Tech Stack
 
@@ -124,40 +124,40 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 
 ### Strategies
 
-```
+\`\`\`
 GET    /api/strategies          - List all strategies
 GET    /api/strategies/:id      - Get strategy details
 POST   /api/strategies          - Create strategy
 PATCH  /api/strategies/:id      - Update strategy
 DELETE /api/strategies/:id      - Delete strategy
 POST   /api/strategies/:id/subscribe   - Subscribe to strategy
-```
+\`\`\`
 
 ### Agents
 
-```
+\`\`\`
 GET    /api/agents              - List all agents
 GET    /api/agents/:id          - Get agent details
 POST   /api/agents              - Deploy agent
 POST   /api/agents/:id/execute  - Execute agent
 GET    /api/agents/:id/execute  - Get execution history
-```
+\`\`\`
 
 ### Portfolio
 
-```
+\`\`\`
 GET    /api/portfolio                    - Get portfolio
 GET    /api/portfolio/history            - Get historical data
 GET    /api/portfolio/transactions       - Get transactions
-```
+\`\`\`
 
 ### Market Data
 
-```
+\`\`\`
 GET    /api/market                       - List market data
 GET    /api/market/:symbol               - Get asset details
 GET    /api/market/:symbol/chart         - Get chart data
-```
+\`\`\`
 
 See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete details.
 
@@ -220,7 +220,7 @@ Live market intelligence:
 
 ## 🧪 Testing
 
-```bash
+\`\`\`bash
 # Run tests with Bun's built-in test runner
 bun test
 
@@ -229,13 +229,13 @@ bun test --watch
 
 # Coverage
 bun test --coverage
-```
+\`\`\`
 
 ## 📝 Environment Variables
 
 Create a `.env.local` file:
 
-```env
+\`\`\`env
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 
@@ -246,7 +246,7 @@ NEXT_PUBLIC_INFURA_API_KEY=
 # Authentication
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=http://localhost:3000
-```
+\`\`\`
 
 ## 🤝 Contributing
 

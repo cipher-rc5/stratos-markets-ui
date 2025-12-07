@@ -4,10 +4,10 @@ This document provides comprehensive documentation for all API endpoints integra
 
 ## Base URL
 
-```
+\`\`\`
 Development: http://localhost:3000/api
 Production: https://your-domain.com/api
-```
+\`\`\`
 
 ## Authentication
 
@@ -40,7 +40,7 @@ List all trading strategies with optional filtering and pagination.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": [
@@ -62,7 +62,7 @@ List all trading strategies with optional filtering and pagination.
   ],
   "meta": { "total": 100, "limit": 20, "offset": 0, "hasMore": true }
 }
-```
+\`\`\`
 
 #### GET `/api/strategies/[id]`
 
@@ -70,7 +70,7 @@ Get detailed information about a specific strategy.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": {
@@ -79,7 +79,7 @@ Get detailed information about a specific strategy.
     ...
   }
 }
-```
+\`\`\`
 
 #### POST `/api/strategies`
 
@@ -87,7 +87,7 @@ Create a new trading strategy.
 
 **Request Body:**
 
-```json
+\`\`\`json
 {
   "name": "My Strategy",
   "description": "Strategy description",
@@ -99,7 +99,7 @@ Create a new trading strategy.
   "category": "arbitrage",
   "riskLevel": "medium"
 }
-```
+\`\`\`
 
 #### PATCH `/api/strategies/[id]`
 
@@ -115,9 +115,9 @@ Subscribe to a strategy.
 
 **Request Body:**
 
-```json
+\`\`\`json
 { "walletAddress": "0x..." }
-```
+\`\`\`
 
 #### DELETE `/api/strategies/[id]/subscribe`
 
@@ -149,7 +149,7 @@ List all AI agents with optional filtering.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": [
@@ -166,7 +166,7 @@ List all AI agents with optional filtering.
     }
   ]
 }
-```
+\`\`\`
 
 #### GET `/api/agents/[id]`
 
@@ -190,9 +190,9 @@ Execute an agent.
 
 **Request Body:**
 
-```json
+\`\`\`json
 { "walletAddress": "0x...", "parameters": { "custom": "params" } }
-```
+\`\`\`
 
 #### GET `/api/agents/[id]/execute`
 
@@ -218,7 +218,7 @@ Get portfolio data for a wallet.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": {
@@ -249,7 +249,7 @@ Get portfolio data for a wallet.
     "lastUpdated": "2025-12-07T..."
   }
 }
-```
+\`\`\`
 
 #### POST `/api/portfolio`
 
@@ -266,7 +266,7 @@ Get historical portfolio data.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": [
@@ -283,7 +283,7 @@ Get historical portfolio data.
     "dataPoints": 30
   }
 }
-```
+\`\`\`
 
 #### GET `/api/portfolio/transactions`
 
@@ -314,7 +314,7 @@ Get market data for multiple assets.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": [
@@ -331,7 +331,7 @@ Get market data for multiple assets.
     }
   ]
 }
-```
+\`\`\`
 
 #### GET `/api/market/[symbol]`
 
@@ -339,7 +339,7 @@ Get detailed market data for a specific asset.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": {
@@ -353,7 +353,7 @@ Get detailed market data for a specific asset.
     "technicalIndicators": { "rsi": 62.5, "macd": 125.3, "movingAverage50": 41200.0, "movingAverage200": 38500.0 }
   }
 }
-```
+\`\`\`
 
 #### GET `/api/market/[symbol]/chart`
 
@@ -366,7 +366,7 @@ Get chart/OHLCV data for an asset.
 
 **Response:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": [
@@ -381,7 +381,7 @@ Get chart/OHLCV data for an asset.
   ],
   "meta": { "symbol": "BTC", "interval": "1h", "dataPoints": 100 }
 }
-```
+\`\`\`
 
 ---
 
@@ -389,7 +389,7 @@ Get chart/OHLCV data for an asset.
 
 The application includes a TypeScript API client for easy integration:
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies
@@ -400,13 +400,13 @@ const portfolio = await apiClient.portfolio.get('0x...');
 
 // Execute agent
 const execution = await apiClient.agents.execute('agent_001', '0x...', { amount: 1000 });
-```
+\`\`\`
 
 ## React Hooks
 
 Use the provided hooks for automatic data fetching and state management:
 
-```typescript
+\`\`\`typescript
 import { useMarketData } from '@/lib/hooks/use-market';
 import { usePortfolio } from '@/lib/hooks/use-portfolio';
 import { useStrategies } from '@/lib/hooks/use-strategies';
@@ -418,7 +418,7 @@ function MyComponent() {
 
   // Use the data...
 }
-```
+\`\`\`
 
 ## Error Handling
 
@@ -426,19 +426,19 @@ All API responses follow this structure:
 
 **Success:**
 
-```json
+\`\`\`json
 {
   "success": true,
   "data": {...},
   "meta": {...}
 }
-```
+\`\`\`
 
 **Error:**
 
-```json
+\`\`\`json
 { "success": false, "error": "Error message" }
-```
+\`\`\`
 
 ## Rate Limiting
 
@@ -449,7 +449,7 @@ In production, implement rate limiting:
 
 ## Development with Bun
 
-```bash
+\`\`\`bash
 # Install dependencies
 bun install
 
@@ -464,7 +464,7 @@ bun run next start
 
 # Run tests
 bun test
-```
+\`\`\`
 
 ## Environment Variables
 

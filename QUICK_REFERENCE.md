@@ -2,7 +2,7 @@
 
 ## 📋 Essential Commands
 
-```bash
+\`\`\`bash
 # Development
 bun install          # Install dependencies
 bun dev              # Start dev server (http://localhost:3000)
@@ -16,13 +16,13 @@ bun test --watch     # Watch mode
 # Utilities
 bun --version        # Check Bun version
 bun upgrade          # Upgrade Bun
-```
+\`\`\`
 
 ## 🔗 Quick API Examples
 
 ### Strategies
 
-```bash
+\`\`\`bash
 # List all strategies
 curl http://localhost:3000/api/strategies
 
@@ -36,11 +36,11 @@ curl http://localhost:3000/api/strategies/strat_abc123
 curl -X POST http://localhost:3000/api/strategies/strat_abc123/subscribe \
   -H "Content-Type: application/json" \
   -d '{"walletAddress":"0x..."}'
-```
+\`\`\`
 
 ### Agents
 
-```bash
+\`\`\`bash
 # List agents
 curl http://localhost:3000/api/agents
 
@@ -51,11 +51,11 @@ curl "http://localhost:3000/api/agents?type=trading&verified=true"
 curl -X POST http://localhost:3000/api/agents/agent_001/execute \
   -H "Content-Type: application/json" \
   -d '{"walletAddress":"0x...","parameters":{}}'
-```
+\`\`\`
 
 ### Portfolio
 
-```bash
+\`\`\`bash
 # Get portfolio
 curl "http://localhost:3000/api/portfolio?walletAddress=0x..."
 
@@ -64,11 +64,11 @@ curl "http://localhost:3000/api/portfolio/history?walletAddress=0x...&timeframe=
 
 # Get transactions
 curl "http://localhost:3000/api/portfolio/transactions?walletAddress=0x..."
-```
+\`\`\`
 
 ### Market Data
 
-```bash
+\`\`\`bash
 # Get market data
 curl "http://localhost:3000/api/market?symbols=BTC,ETH"
 
@@ -77,13 +77,13 @@ curl http://localhost:3000/api/market/BTC
 
 # Get chart data
 curl "http://localhost:3000/api/market/BTC/chart?interval=1h&limit=100"
-```
+\`\`\`
 
 ## 💻 Code Snippets
 
 ### Using API Client
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Strategies
@@ -103,11 +103,11 @@ const history = await apiClient.portfolio.getHistory('0x...', '30d');
 const marketData = await apiClient.market.list({ symbols: ['BTC', 'ETH'] });
 const btc = await apiClient.market.get('BTC');
 const chart = await apiClient.market.getChart('BTC', '1h', 100);
-```
+\`\`\`
 
 ### Using React Hooks
 
-```typescript
+\`\`\`typescript
 import { useMarketData } from '@/lib/hooks/use-market';
 import { usePortfolio } from '@/lib/hooks/use-portfolio';
 import { useStrategies, useStrategy } from '@/lib/hooks/use-strategies';
@@ -127,11 +127,11 @@ function MyComponent() {
 
   return <div>{/* Your UI */}</div>;
 }
-```
+\`\`\`
 
 ### Creating a New Component
 
-```typescript
+\`\`\`typescript
 'use client';
 
 import { useStrategies } from '@/lib/hooks/use-strategies';
@@ -154,11 +154,11 @@ export default function StrategiesList() {
     </div>
   );
 }
-```
+\`\`\`
 
 ## 📁 Project Structure
 
-```
+\`\`\`
 stratos-markets-ui/
 ├── app/
 │   ├── api/              # API routes (22 endpoints)
@@ -171,7 +171,7 @@ stratos-markets-ui/
 ├── components/           # React components
 ├── public/               # Static assets
 └── [docs].md            # Documentation
-```
+\`\`\`
 
 ## 🎯 Common Tasks
 
@@ -196,7 +196,7 @@ stratos-markets-ui/
 
 ## 🔍 Debugging
 
-```bash
+\`\`\`bash
 # Check server logs
 # Look at terminal where `bun dev` is running
 
@@ -207,7 +207,7 @@ stratos-markets-ui/
 # Add to .env.local:
 NODE_ENV=development
 NEXT_PUBLIC_DEBUG=true
-```
+\`\`\`
 
 ## 📊 Mock Data Available
 
@@ -265,13 +265,13 @@ NEXT_PUBLIC_DEBUG=true
 
 ## 🔑 Environment Variables
 
-```env
+\`\`\`env
 # .env.local
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key
 NEXT_PUBLIC_ALCHEMY_API_KEY=
 NEXT_PUBLIC_INFURA_API_KEY=
-```
+\`\`\`
 
 ## 🚨 Troubleshooting
 
@@ -285,7 +285,7 @@ NEXT_PUBLIC_INFURA_API_KEY=
 
 ## 📞 Quick Help
 
-```bash
+\`\`\`bash
 # Bun help
 bun --help
 
@@ -297,7 +297,7 @@ bun --version
 
 # Upgrade Bun
 bun upgrade
-```
+\`\`\`
 
 ---
 

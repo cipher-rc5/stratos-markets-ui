@@ -97,7 +97,7 @@ Created comprehensive TypeScript API client (`/lib/api-client.ts`):
 
 **Example Usage:**
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies
@@ -108,7 +108,7 @@ const portfolio = await apiClient.portfolio.get('0xYourWallet');
 
 // Execute agent
 const execution = await apiClient.agents.execute('agent_001', '0xWallet', { amount: 1000 });
-```
+\`\`\`
 
 ### 4. ✅ React Hooks
 
@@ -134,7 +134,7 @@ Created custom React hooks for easy data fetching:
 
 **Example Usage:**
 
-```typescript
+\`\`\`typescript
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
@@ -145,7 +145,7 @@ function MyComponent() {
 
   return <div>{/* Render strategies */}</div>;
 }
-```
+\`\`\`
 
 ### 5. ✅ Frontend Integration
 
@@ -170,7 +170,7 @@ Created comprehensive documentation:
 
 ### New API Files (11 files)
 
-```
+\`\`\`
 app/api/
 ├── strategies/
 │   ├── route.ts                          # Strategy list/create
@@ -191,43 +191,43 @@ app/api/
     └── [symbol]/
         ├── route.ts                      # Asset details
         └── chart/route.ts                # Chart data
-```
+\`\`\`
 
 ### New Library Files (4 files)
 
-```
+\`\`\`
 lib/
 ├── api-client.ts                         # API client
 └── hooks/
     ├── use-strategies.ts                 # Strategy hooks
     ├── use-portfolio.ts                  # Portfolio hooks
     └── use-market.ts                     # Market hooks
-```
+\`\`\`
 
 ### Configuration Files (4 files)
 
-```
+\`\`\`
 .gitignore                                # Updated for Bun
 package.json                              # Updated scripts
 env.example                               # Environment template
-```
+\`\`\`
 
 ### Documentation Files (4 files)
 
-```
+\`\`\`
 README.md                                 # Project README
 SETUP_GUIDE.md                           # Setup guide
 API_DOCUMENTATION.md                     # API docs
 INTEGRATION_SUMMARY.md                   # This file
-```
+\`\`\`
 
 ### Updated Files (3 files)
 
-```
+\`\`\`
 app/page.tsx                             # Uses useStrategies hook
 app/agents/page.tsx                      # Imports API client
 app/portfolio/page.tsx                   # Uses portfolio hooks
-```
+\`\`\`
 
 **Total: 26 files created/modified**
 
@@ -237,9 +237,9 @@ app/portfolio/page.tsx                   # Uses portfolio hooks
 
 ### 1. Start the Development Server
 
-```bash
+\`\`\`bash
 bun dev
-```
+\`\`\`
 
 Server will start at: `http://localhost:3000`
 
@@ -247,25 +247,25 @@ Server will start at: `http://localhost:3000`
 
 **List Strategies:**
 
-```bash
+\`\`\`bash
 curl http://localhost:3000/api/strategies
-```
+\`\`\`
 
 **Get Portfolio:**
 
-```bash
+\`\`\`bash
 curl "http://localhost:3000/api/portfolio?walletAddress=0x1234567890abcdef"
-```
+\`\`\`
 
 **Get Market Data:**
 
-```bash
+\`\`\`bash
 curl "http://localhost:3000/api/market?symbols=BTC,ETH"
-```
+\`\`\`
 
 ### 3. Use in Frontend
 
-```typescript
+\`\`\`typescript
 // Import hooks
 import { useMarketData } from '@/lib/hooks/use-market';
 import { usePortfolio } from '@/lib/hooks/use-portfolio';
@@ -280,7 +280,7 @@ function MyComponent() {
   // Use the data in your component
   return <div>{/* Your UI */}</div>;
 }
-```
+\`\`\`
 
 ---
 
@@ -337,13 +337,13 @@ function MyComponent() {
 
 ### Commands
 
-```bash
+\`\`\`bash
 bun install          # Install dependencies
 bun dev              # Start dev server
 bun run build        # Build for production
 bun start            # Start production server
 bun test             # Run tests
-```
+\`\`\`
 
 ---
 

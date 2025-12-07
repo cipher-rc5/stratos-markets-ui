@@ -14,7 +14,7 @@ This guide will help you set up and run the Stratos Markets UI application using
 
 If you haven't installed Bun yet:
 
-```bash
+\`\`\`bash
 # macOS/Linux
 curl -fsSL https://bun.sh/install | bash
 
@@ -23,20 +23,20 @@ curl -fsSL https://bun.sh/install | bash
 
 # Or using npm
 npm install -g bun
-```
+\`\`\`
 
 ### 2. Clone the Repository
 
-```bash
+\`\`\`bash
 git clone https://github.com/your-repo/stratos-markets-ui.git
 cd stratos-markets-ui
-```
+\`\`\`
 
 ### 3. Install Dependencies
 
-```bash
+\`\`\`bash
 bun install
-```
+\`\`\`
 
 This will install all project dependencies using Bun's fast package manager.
 
@@ -44,13 +44,13 @@ This will install all project dependencies using Bun's fast package manager.
 
 Create a `.env.local` file in the root directory:
 
-```bash
+\`\`\`bash
 cp env.example .env.local
-```
+\`\`\`
 
 Edit `.env.local` and configure your environment variables:
 
-```env
+\`\`\`env
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key-here
@@ -62,7 +62,7 @@ NEXT_PUBLIC_INFURA_API_KEY=your-infura-key
 # Authentication (if using NextAuth)
 NEXTAUTH_SECRET=your-nextauth-secret
 NEXTAUTH_URL=http://localhost:3000
-```
+\`\`\`
 
 ## Running the Application
 
@@ -70,9 +70,9 @@ NEXTAUTH_URL=http://localhost:3000
 
 Start the development server with hot reloading:
 
-```bash
+\`\`\`bash
 bun dev
-```
+\`\`\`
 
 The application will be available at `http://localhost:3000`
 
@@ -80,25 +80,25 @@ The application will be available at `http://localhost:3000`
 
 Build the application for production:
 
-```bash
+\`\`\`bash
 bun run build
-```
+\`\`\`
 
 Start the production server:
 
-```bash
+\`\`\`bash
 bun start
-```
+\`\`\`
 
 ### Running Tests
 
-```bash
+\`\`\`bash
 bun test
-```
+\`\`\`
 
 ## Project Structure
 
-```
+\`\`\`
 stratos-markets-ui/
 ├── app/                      # Next.js App Router pages
 │   ├── api/                  # API routes
@@ -128,7 +128,7 @@ stratos-markets-ui/
 ├── next.config.mjs         # Next.js configuration
 ├── tsconfig.json           # TypeScript configuration
 └── API_DOCUMENTATION.md    # API documentation
-```
+\`\`\`
 
 ## API Integration
 
@@ -156,7 +156,7 @@ The application includes a fully integrated API system with the following featur
 
 ### Using the API Client
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies
@@ -167,11 +167,11 @@ const portfolio = await apiClient.portfolio.get('0x...');
 
 // Execute an agent
 const execution = await apiClient.agents.execute('agent_001', '0x...');
-```
+\`\`\`
 
 ### Using React Hooks
 
-```typescript
+\`\`\`typescript
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
@@ -182,7 +182,7 @@ function MyComponent() {
 
   return <div>{strategies.map(strategy => <div key={strategy.id}>{strategy.name}</div>)}</div>;
 }
-```
+\`\`\`
 
 ## Key Features
 
@@ -225,16 +225,16 @@ Bun's dev server provides instant hot reloading for:
 
 The project uses TypeScript with strict mode. Bun natively supports TypeScript:
 
-```bash
+\`\`\`bash
 # No compilation needed - Bun runs .ts files directly
 bun run index.ts
-```
+\`\`\`
 
 ### API Testing
 
 Test API endpoints using curl or tools like Postman:
 
-```bash
+\`\`\`bash
 # Get all strategies
 curl http://localhost:3000/api/strategies
 
@@ -245,16 +245,16 @@ curl http://localhost:3000/api/strategies/strat_abc123
 curl -X POST http://localhost:3000/api/strategies \
   -H "Content-Type: application/json" \
   -d '{"name":"My Strategy","description":"...","creator":"0x..."}'
-```
+\`\`\`
 
 ### Debugging
 
 Enable debug logging in your `.env.local`:
 
-```env
+\`\`\`env
 NODE_ENV=development
 NEXT_PUBLIC_DEBUG=true
-```
+\`\`\`
 
 ## Performance Optimization
 
@@ -276,17 +276,17 @@ NEXT_PUBLIC_DEBUG=true
 
 ### Vercel (Recommended)
 
-```bash
+\`\`\`bash
 # Install Vercel CLI
 bun add -g vercel
 
 # Deploy
 vercel
-```
+\`\`\`
 
 ### Docker
 
-```dockerfile
+\`\`\`dockerfile
 FROM oven/bun:1 as base
 WORKDIR /app
 
@@ -302,7 +302,7 @@ RUN bun run build
 
 # Start
 CMD ["bun", "start"]
-```
+\`\`\`
 
 ### Environment Variables
 
@@ -314,19 +314,19 @@ Make sure to set all required environment variables in your deployment platform.
 
 If `bun install` fails:
 
-```bash
+\`\`\`bash
 # Clear cache
 rm -rf node_modules bun.lockb
 bun install
-```
+\`\`\`
 
 ### Port Already in Use
 
 Change the port in `package.json`:
 
-```json
+\`\`\`json
 { "scripts": { "dev": "bun --bun run next dev -p 3001" } }
-```
+\`\`\`
 
 ### API Connection Issues
 

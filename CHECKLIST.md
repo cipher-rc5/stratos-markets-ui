@@ -128,7 +128,7 @@ All API features have been successfully integrated using Bun runtime and package
 
 ## 🚀 Quick Start Commands
 
-```bash
+\`\`\`bash
 # Install dependencies
 bun install
 
@@ -143,7 +143,7 @@ bun start
 
 # Run tests
 bun test
-```
+\`\`\`
 
 ---
 
@@ -151,7 +151,7 @@ bun test
 
 ### Strategies (7 endpoints)
 
-```
+\`\`\`
 GET    /api/strategies
 GET    /api/strategies/:id
 POST   /api/strategies
@@ -159,11 +159,11 @@ PATCH  /api/strategies/:id
 DELETE /api/strategies/:id
 POST   /api/strategies/:id/subscribe
 DELETE /api/strategies/:id/subscribe
-```
+\`\`\`
 
 ### Agents (7 endpoints)
 
-```
+\`\`\`
 GET    /api/agents
 GET    /api/agents/:id
 POST   /api/agents
@@ -171,24 +171,24 @@ PATCH  /api/agents/:id
 DELETE /api/agents/:id
 POST   /api/agents/:id/execute
 GET    /api/agents/:id/execute
-```
+\`\`\`
 
 ### Portfolio (5 endpoints)
 
-```
+\`\`\`
 GET    /api/portfolio
 POST   /api/portfolio
 GET    /api/portfolio/history
 GET    /api/portfolio/transactions
-```
+\`\`\`
 
 ### Market (3 endpoints)
 
-```
+\`\`\`
 GET    /api/market
 GET    /api/market/:symbol
 GET    /api/market/:symbol/chart
-```
+\`\`\`
 
 **Total: 22 API endpoints**
 
