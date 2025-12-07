@@ -99,8 +99,8 @@ importers:
         specifier: ^4.0.39
         version: 4.0.39(typescript@5.0.2)
       '@web3icons/react':
-        specifier: ^4.0.31
-        version: 4.0.31(react@19.2.0)(typescript@5.0.2)
+        specifier: latest
+        version: 4.1.4(react@19.2.0)(typescript@5.0.2)
       '@xyflow/react':
         specifier: latest
         version: 12.10.0(@types/react@19.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1259,11 +1259,6 @@ packages:
       vue-router:
         optional: true
 
-  '@web3icons/common@0.11.23':
-    resolution: {integrity: sha512-UaKgqxKR08Y9TzHYl7s0mgT43mbfhAxXGfWI66g7aa6rPYniZNA5Z046dv6dL+PkQnigQqT/nPcvzdKGwUJqvw==}
-    peerDependencies:
-      typescript: ^5.0.0
-
   '@web3icons/common@0.11.34':
     resolution: {integrity: sha512-xZ91Wv7cT2eLNAgaKLqprONgAJNhewcSOXJPC9OBdfrrAdH+G6qJqGZ8vMR0tCR06zGcUT830UNBP6K+jFRuQg==}
     peerDependencies:
@@ -1274,8 +1269,8 @@ packages:
     peerDependencies:
       typescript: ^5.0.0
 
-  '@web3icons/react@4.0.31':
-    resolution: {integrity: sha512-Ad7fiRglYHpnc5tql0W5zL5mM1jRVeQ3q/qK4OFZRBiMveZEDumR7VF4tLrdcXYj/hPLwNAO+JCJTc7mhd5yGw==}
+  '@web3icons/react@4.1.4':
+    resolution: {integrity: sha512-ui2pdMbI9SA/yfkwA3lx1i4bGDFau/dYwvuYqkrEabGAGpPhRs7cUpUkkTCr34DUiKGHjNtthqlB0L82A2xHhg==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -2849,10 +2844,6 @@ snapshots:
       next: 16.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
 
-  '@web3icons/common@0.11.23(typescript@5.0.2)':
-    dependencies:
-      typescript: 5.0.2
-
   '@web3icons/common@0.11.34(typescript@5.0.2)':
     dependencies:
       typescript: 5.0.2
@@ -2862,9 +2853,9 @@ snapshots:
       '@web3icons/common': 0.11.34(typescript@5.0.2)
       typescript: 5.0.2
 
-  '@web3icons/react@4.0.31(react@19.2.0)(typescript@5.0.2)':
+  '@web3icons/react@4.1.4(react@19.2.0)(typescript@5.0.2)':
     dependencies:
-      '@web3icons/common': 0.11.23(typescript@5.0.2)
+      '@web3icons/common': 0.11.34(typescript@5.0.2)
       react: 19.2.0
     transitivePeerDependencies:
       - typescript
