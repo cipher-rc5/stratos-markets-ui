@@ -55,9 +55,10 @@ Edit `.env.local` and configure your environment variables:
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key-here
 
-# External APIs (optional)
-NEXT_PUBLIC_ALCHEMY_API_KEY=your-alchemy-key
-NEXT_PUBLIC_INFURA_API_KEY=your-infura-key
+# External APIs (server-side only - never exposed to client)
+ALCHEMY_API_KEY=your-alchemy-key
+INFURA_API_KEY=your-infura-key
+DUNE_API_KEY=your-dune-key
 
 # Authentication (if using NextAuth)
 NEXTAUTH_SECRET=your-nextauth-secret

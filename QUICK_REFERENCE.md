@@ -269,8 +269,9 @@ NEXT_PUBLIC_DEBUG=true
 # .env.local
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key
-NEXT_PUBLIC_ALCHEMY_API_KEY=
-NEXT_PUBLIC_INFURA_API_KEY=
+ALCHEMY_API_KEY=
+INFURA_API_KEY=
+DUNE_API_KEY=
 \`\`\`
 
 ## 🚨 Troubleshooting

@@ -239,9 +239,10 @@ Create a `.env.local` file:
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 
-# External Services (optional)
-NEXT_PUBLIC_ALCHEMY_API_KEY=
-NEXT_PUBLIC_INFURA_API_KEY=
+# External Services (server-side only)
+ALCHEMY_API_KEY=
+INFURA_API_KEY=
+DUNE_API_KEY=
 
 # Authentication
 NEXTAUTH_SECRET=
