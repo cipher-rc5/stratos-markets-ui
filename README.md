@@ -101,6 +101,7 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Next.js 16** - React framework with App Router
 - **React 19** - UI library
 - **TypeScript** - Type safety
@@ -109,10 +110,12 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 - **Lucide Icons** - Icon library
 
 ### Backend
+
 - **Next.js API Routes** - Serverless API endpoints
 - **Bun Runtime** - JavaScript runtime
 
 ### Tools
+
 - **Bun** - Package manager & runtime
 - **ESLint** - Code linting
 - **Prettier** - Code formatting (optional)
@@ -120,6 +123,7 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 ## 📦 API Endpoints
 
 ### Strategies
+
 ```
 GET    /api/strategies          - List all strategies
 GET    /api/strategies/:id      - Get strategy details
@@ -130,6 +134,7 @@ POST   /api/strategies/:id/subscribe   - Subscribe to strategy
 ```
 
 ### Agents
+
 ```
 GET    /api/agents              - List all agents
 GET    /api/agents/:id          - Get agent details
@@ -139,6 +144,7 @@ GET    /api/agents/:id/execute  - Get execution history
 ```
 
 ### Portfolio
+
 ```
 GET    /api/portfolio                    - Get portfolio
 GET    /api/portfolio/history            - Get historical data
@@ -146,6 +152,7 @@ GET    /api/portfolio/transactions       - Get transactions
 ```
 
 ### Market Data
+
 ```
 GET    /api/market                       - List market data
 GET    /api/market/:symbol               - Get asset details
@@ -157,7 +164,9 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete details.
 ## 🎨 Features Overview
 
 ### 1. Strategies Marketplace
+
 Browse and subscribe to verified trading strategies:
+
 - DCA (Dollar-Cost Averaging)
 - Grid Trading
 - Arbitrage
@@ -165,14 +174,18 @@ Browse and subscribe to verified trading strategies:
 - Momentum Trading
 
 ### 2. AI Agents
+
 Deploy autonomous trading agents:
+
 - **Alpha Sniper Bot** - MEV-protected arbitrage
 - **Portfolio Rebalancer** - Auto-rebalancing
 - **Sentiment Analyzer** - AI-powered market analysis
 - **Whale Watcher** - Large transaction monitoring
 
 ### 3. Portfolio Tracker
+
 Real-time portfolio management:
+
 - Multi-chain asset tracking
 - Performance analytics
 - Transaction history
@@ -180,7 +193,9 @@ Real-time portfolio management:
 - Risk metrics
 
 ### 4. Market Data
+
 Live market intelligence:
+
 - Real-time price feeds
 - OHLCV charts
 - Technical indicators (RSI, MACD, Moving Averages)
@@ -190,12 +205,14 @@ Live market intelligence:
 ## 🚀 Performance
 
 ### Bun Optimizations
+
 - **Fast Cold Starts** - ~10ms startup time
 - **Quick Installs** - Dependencies install in seconds
 - **Low Memory** - Efficient memory usage
 - **Native Speed** - Compiled with Zig for performance
 
 ### Next.js Optimizations
+
 - **Server Components** - Reduced client-side JavaScript
 - **Image Optimization** - Automatic image optimization
 - **Code Splitting** - Route-based code splitting

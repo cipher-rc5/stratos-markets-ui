@@ -84,78 +84,75 @@ curl "http://localhost:3000/api/market/BTC/chart?interval=1h&limit=100"
 ### Using API Client
 
 ```typescript
-import { apiClient } from '@/lib/api-client'
+import { apiClient } from '@/lib/api-client';
 
 // Strategies
-const strategies = await apiClient.strategies.list({ verified: true })
-const strategy = await apiClient.strategies.get('strat_abc123')
-await apiClient.strategies.subscribe('strat_abc123', '0x...')
+const strategies = await apiClient.strategies.list({ verified: true });
+const strategy = await apiClient.strategies.get('strat_abc123');
+await apiClient.strategies.subscribe('strat_abc123', '0x...');
 
 // Agents
-const agents = await apiClient.agents.list({ type: 'trading' })
-await apiClient.agents.execute('agent_001', '0x...', { amount: 1000 })
+const agents = await apiClient.agents.list({ type: 'trading' });
+await apiClient.agents.execute('agent_001', '0x...', { amount: 1000 });
 
 // Portfolio
-const portfolio = await apiClient.portfolio.get('0x...')
-const history = await apiClient.portfolio.getHistory('0x...', '30d')
+const portfolio = await apiClient.portfolio.get('0x...');
+const history = await apiClient.portfolio.getHistory('0x...', '30d');
 
 // Market
-const marketData = await apiClient.market.list({ symbols: ['BTC', 'ETH'] })
-const btc = await apiClient.market.get('BTC')
-const chart = await apiClient.market.getChart('BTC', '1h', 100)
+const marketData = await apiClient.market.list({ symbols: ['BTC', 'ETH'] });
+const btc = await apiClient.market.get('BTC');
+const chart = await apiClient.market.getChart('BTC', '1h', 100);
 ```
 
 ### Using React Hooks
 
 ```typescript
-import { useStrategies, useStrategy } from '@/lib/hooks/use-strategies'
-import { usePortfolio } from '@/lib/hooks/use-portfolio'
-import { useMarketData } from '@/lib/hooks/use-market'
+import { useMarketData } from '@/lib/hooks/use-market';
+import { usePortfolio } from '@/lib/hooks/use-portfolio';
+import { useStrategies, useStrategy } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
   // List strategies
-  const { strategies, loading, error } = useStrategies({
-    category: 'arbitrage',
-    verified: true
-  })
-  
+  const { strategies, loading, error } = useStrategies({ category: 'arbitrage', verified: true });
+
   // Single strategy
-  const { strategy, subscribe, unsubscribe } = useStrategy('strat_abc123')
-  
+  const { strategy, subscribe, unsubscribe } = useStrategy('strat_abc123');
+
   // Portfolio
-  const { portfolio } = usePortfolio('0xWalletAddress')
-  
+  const { portfolio } = usePortfolio('0xWalletAddress');
+
   // Market data
-  const { marketData } = useMarketData(['BTC', 'ETH'])
-  
-  return <div>{/* Your UI */}</div>
+  const { marketData } = useMarketData(['BTC', 'ETH']);
+
+  return <div>{/* Your UI */}</div>;
 }
 ```
 
 ### Creating a New Component
 
 ```typescript
-'use client'
+'use client';
 
-import { useStrategies } from '@/lib/hooks/use-strategies'
+import { useStrategies } from '@/lib/hooks/use-strategies';
 
 export default function StrategiesList() {
-  const { strategies, loading, error } = useStrategies({ verified: true })
-  
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
-  
+  const { strategies, loading, error } = useStrategies({ verified: true });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
       {strategies.map(strategy => (
-        <div key={strategy.id} className="border p-4">
+        <div key={strategy.id} className='border p-4'>
           <h3>{strategy.name}</h3>
           <p>{strategy.description}</p>
           <div>ROI: {strategy.performance.roi}%</div>
         </div>
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -215,18 +212,21 @@ NEXT_PUBLIC_DEBUG=true
 ## 📊 Mock Data Available
 
 ### Strategies (4)
+
 - `strat_abc123` - DCA Bitcoin Strategy
 - `strat_def456` - Grid Trading Master
 - `strat_ghi789` - Alpha Momentum
 - `strat_jkl012` - Mean Reversion Pro
 
 ### Agents (4)
+
 - `agent_001` - Alpha Sniper Bot
 - `agent_002` - Portfolio Rebalancer
 - `agent_003` - Market Sentiment Analyzer
 - `agent_004` - Whale Watcher
 
 ### Assets (5+)
+
 - BTC, ETH, USDC, LINK, UNI
 
 ## 🌐 URLs
@@ -275,13 +275,13 @@ NEXT_PUBLIC_INFURA_API_KEY=
 
 ## 🚨 Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Port in use | Change port: `bun --bun run next dev -p 3001` |
+| Issue              | Solution                                              |
+| ------------------ | ----------------------------------------------------- |
+| Port in use        | Change port: `bun --bun run next dev -p 3001`         |
 | Deps won't install | Clear: `rm -rf node_modules bun.lockb && bun install` |
-| Types missing | Run: `bun install` again |
-| API 404 | Check route file location in `app/api/` |
-| Hook errors | Ensure `'use client'` at top of component |
+| Types missing      | Run: `bun install` again                              |
+| API 404            | Check route file location in `app/api/`               |
+| Hook errors        | Ensure `'use client'` at top of component             |
 
 ## 📞 Quick Help
 
@@ -302,4 +302,3 @@ bun upgrade
 ---
 
 **Ready to build? Run `bun dev` and start coding! 🚀**
-

@@ -12,6 +12,7 @@ Production: https://your-domain.com/api
 ## Authentication
 
 Currently, the API uses wallet address verification. In production, implement proper authentication using:
+
 - JWT tokens
 - Wallet signature verification
 - API keys for external integrations
@@ -21,9 +22,11 @@ Currently, the API uses wallet address verification. In production, implement pr
 ### Strategies
 
 #### GET `/api/strategies`
+
 List all trading strategies with optional filtering and pagination.
 
 **Query Parameters:**
+
 - `category` (string): Filter by category (yield-farming, arbitrage, mev, other)
 - `verified` (boolean): Show only verified strategies
 - `riskLevel` (string): Filter by risk level (low, medium, high)
@@ -36,6 +39,7 @@ List all trading strategies with optional filtering and pagination.
 - `offset` (number): Pagination offset (default: 0)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -46,18 +50,8 @@ List all trading strategies with optional filtering and pagination.
       "description": "...",
       "creator": "0x...",
       "version": "1.2.0",
-      "performance": {
-        "roi": 24.5,
-        "sharpeRatio": 1.8,
-        "maxDrawdown": -12.3,
-        "winRate": 68.5,
-        "totalTrades": 342
-      },
-      "pricing": {
-        "type": "flat",
-        "amount": 100,
-        "currency": "USDC"
-      },
+      "performance": { "roi": 24.5, "sharpeRatio": 1.8, "maxDrawdown": -12.3, "winRate": 68.5, "totalTrades": 342 },
+      "pricing": { "type": "flat", "amount": 100, "currency": "USDC" },
       "tags": ["DCA", "Bitcoin"],
       "subscribers": 342,
       "verified": true,
@@ -66,19 +60,16 @@ List all trading strategies with optional filtering and pagination.
       "updatedAt": "2025-12-03T19:46:25.828Z"
     }
   ],
-  "meta": {
-    "total": 100,
-    "limit": 20,
-    "offset": 0,
-    "hasMore": true
-  }
+  "meta": { "total": 100, "limit": 20, "offset": 0, "hasMore": true }
 }
 ```
 
 #### GET `/api/strategies/[id]`
+
 Get detailed information about a specific strategy.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -91,9 +82,11 @@ Get detailed information about a specific strategy.
 ```
 
 #### POST `/api/strategies`
+
 Create a new trading strategy.
 
 **Request Body:**
+
 ```json
 {
   "name": "My Strategy",
@@ -109,25 +102,29 @@ Create a new trading strategy.
 ```
 
 #### PATCH `/api/strategies/[id]`
+
 Update an existing strategy.
 
 #### DELETE `/api/strategies/[id]`
+
 Delete a strategy.
 
 #### POST `/api/strategies/[id]/subscribe`
+
 Subscribe to a strategy.
 
 **Request Body:**
+
 ```json
-{
-  "walletAddress": "0x..."
-}
+{ "walletAddress": "0x..." }
 ```
 
 #### DELETE `/api/strategies/[id]/subscribe`
+
 Unsubscribe from a strategy.
 
 **Query Parameters:**
+
 - `walletAddress` (string, required)
 
 ---
@@ -135,9 +132,11 @@ Unsubscribe from a strategy.
 ### Agents
 
 #### GET `/api/agents`
+
 List all AI agents with optional filtering.
 
 **Query Parameters:**
+
 - `type` (string): trading, analytics, automation, monitoring
 - `status` (string): active, inactive, maintenance
 - `verified` (boolean): Show only verified agents
@@ -149,6 +148,7 @@ List all AI agents with optional filtering.
 - `offset` (number): Pagination offset
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -160,18 +160,8 @@ List all AI agents with optional filtering.
       "type": "trading",
       "status": "active",
       "capabilities": ["MEV Protection", "Flash Loans"],
-      "pricing": {
-        "type": "usage-based",
-        "amount": 0.1,
-        "currency": "ETH",
-        "billingPeriod": "per-transaction"
-      },
-      "metrics": {
-        "totalExecutions": 15420,
-        "successRate": 94.5,
-        "avgExecutionTime": 2.3,
-        "uptime": 99.8
-      },
+      "pricing": { "type": "usage-based", "amount": 0.1, "currency": "ETH", "billingPeriod": "per-transaction" },
+      "metrics": { "totalExecutions": 15420, "successRate": 94.5, "avgExecutionTime": 2.3, "uptime": 99.8 },
       "verified": true
     }
   ]
@@ -179,34 +169,37 @@ List all AI agents with optional filtering.
 ```
 
 #### GET `/api/agents/[id]`
+
 Get agent details.
 
 #### POST `/api/agents`
+
 Deploy a new agent.
 
 #### PATCH `/api/agents/[id]`
+
 Update agent configuration.
 
 #### DELETE `/api/agents/[id]`
+
 Remove an agent.
 
 #### POST `/api/agents/[id]/execute`
+
 Execute an agent.
 
 **Request Body:**
+
 ```json
-{
-  "walletAddress": "0x...",
-  "parameters": {
-    "custom": "params"
-  }
-}
+{ "walletAddress": "0x...", "parameters": { "custom": "params" } }
 ```
 
 #### GET `/api/agents/[id]/execute`
+
 Get execution history for an agent.
 
 **Query Parameters:**
+
 - `walletAddress` (string, optional)
 - `limit` (number)
 - `offset` (number)
@@ -216,12 +209,15 @@ Get execution history for an agent.
 ### Portfolio
 
 #### GET `/api/portfolio`
+
 Get portfolio data for a wallet.
 
 **Query Parameters:**
+
 - `walletAddress` (string, required)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -256,16 +252,20 @@ Get portfolio data for a wallet.
 ```
 
 #### POST `/api/portfolio`
+
 Create or update portfolio.
 
 #### GET `/api/portfolio/history`
+
 Get historical portfolio data.
 
 **Query Parameters:**
+
 - `walletAddress` (string, required)
 - `timeframe` (string): 7d, 30d, 90d, 1y, all
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -286,9 +286,11 @@ Get historical portfolio data.
 ```
 
 #### GET `/api/portfolio/transactions`
+
 Get transaction history.
 
 **Query Parameters:**
+
 - `walletAddress` (string, required)
 - `type` (string): buy, sell, swap, transfer, strategy, agent
 - `status` (string): pending, confirmed, failed
@@ -300,15 +302,18 @@ Get transaction history.
 ### Market Data
 
 #### GET `/api/market`
+
 Get market data for multiple assets.
 
 **Query Parameters:**
+
 - `symbols` (string): Comma-separated symbols
 - `limit` (number)
 - `sortBy` (string)
 - `order` (string)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -329,9 +334,11 @@ Get market data for multiple assets.
 ```
 
 #### GET `/api/market/[symbol]`
+
 Get detailed market data for a specific asset.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -342,27 +349,23 @@ Get detailed market data for a specific asset.
     "allTimeLow": 3200.0,
     "volatility": 3.2,
     "beta": 1.0,
-    "correlations": {
-      "ETH": 0.82
-    },
-    "technicalIndicators": {
-      "rsi": 62.5,
-      "macd": 125.3,
-      "movingAverage50": 41200.0,
-      "movingAverage200": 38500.0
-    }
+    "correlations": { "ETH": 0.82 },
+    "technicalIndicators": { "rsi": 62.5, "macd": 125.3, "movingAverage50": 41200.0, "movingAverage200": 38500.0 }
   }
 }
 ```
 
 #### GET `/api/market/[symbol]/chart`
+
 Get chart/OHLCV data for an asset.
 
 **Query Parameters:**
+
 - `interval` (string): 1m, 5m, 15m, 1h, 4h, 1d, 1w
 - `limit` (number): Number of data points
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -376,11 +379,7 @@ Get chart/OHLCV data for an asset.
       "volume": 1000000000
     }
   ],
-  "meta": {
-    "symbol": "BTC",
-    "interval": "1h",
-    "dataPoints": 100
-  }
+  "meta": { "symbol": "BTC", "interval": "1h", "dataPoints": 100 }
 }
 ```
 
@@ -391,22 +390,16 @@ Get chart/OHLCV data for an asset.
 The application includes a TypeScript API client for easy integration:
 
 ```typescript
-import { apiClient } from '@/lib/api-client'
+import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies
-const response = await apiClient.strategies.list({
-  category: 'arbitrage',
-  verified: true,
-  limit: 10
-})
+const response = await apiClient.strategies.list({ category: 'arbitrage', verified: true, limit: 10 });
 
 // Get portfolio
-const portfolio = await apiClient.portfolio.get('0x...')
+const portfolio = await apiClient.portfolio.get('0x...');
 
 // Execute agent
-const execution = await apiClient.agents.execute('agent_001', '0x...', {
-  amount: 1000
-})
+const execution = await apiClient.agents.execute('agent_001', '0x...', { amount: 1000 });
 ```
 
 ## React Hooks
@@ -414,15 +407,15 @@ const execution = await apiClient.agents.execute('agent_001', '0x...', {
 Use the provided hooks for automatic data fetching and state management:
 
 ```typescript
-import { useStrategies } from '@/lib/hooks/use-strategies'
-import { usePortfolio } from '@/lib/hooks/use-portfolio'
-import { useMarketData } from '@/lib/hooks/use-market'
+import { useMarketData } from '@/lib/hooks/use-market';
+import { usePortfolio } from '@/lib/hooks/use-portfolio';
+import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  const { strategies, loading, error } = useStrategies({ verified: true })
-  const { portfolio } = usePortfolio('0x...')
-  const { marketData } = useMarketData(['BTC', 'ETH'])
-  
+  const { strategies, loading, error } = useStrategies({ verified: true });
+  const { portfolio } = usePortfolio('0x...');
+  const { marketData } = useMarketData(['BTC', 'ETH']);
+
   // Use the data...
 }
 ```
@@ -432,6 +425,7 @@ function MyComponent() {
 All API responses follow this structure:
 
 **Success:**
+
 ```json
 {
   "success": true,
@@ -441,16 +435,15 @@ All API responses follow this structure:
 ```
 
 **Error:**
+
 ```json
-{
-  "success": false,
-  "error": "Error message"
-}
+{ "success": false, "error": "Error message" }
 ```
 
 ## Rate Limiting
 
 In production, implement rate limiting:
+
 - 100 requests per minute per IP
 - 1000 requests per hour per API key
 
@@ -476,4 +469,3 @@ bun test
 ## Environment Variables
 
 See `env.example` for required environment variables.
-

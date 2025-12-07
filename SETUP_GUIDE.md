@@ -139,16 +139,16 @@ The application includes a fully integrated API system with the following featur
 1. **Strategies API** - Trading strategy management
    - List, create, update, delete strategies
    - Subscribe/unsubscribe to strategies
-   
+
 2. **Agents API** - AI agent management
    - List, deploy, execute agents
    - View execution history
-   
+
 3. **Portfolio API** - Portfolio tracking
    - View portfolio assets and performance
    - Historical data
    - Transaction history
-   
+
 4. **Market Data API** - Real-time market data
    - Price feeds
    - Chart data (OHLCV)
@@ -157,41 +157,30 @@ The application includes a fully integrated API system with the following featur
 ### Using the API Client
 
 ```typescript
-import { apiClient } from '@/lib/api-client'
+import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies
-const { data, success } = await apiClient.strategies.list({
-  category: 'arbitrage',
-  verified: true
-})
+const { data, success } = await apiClient.strategies.list({ category: 'arbitrage', verified: true });
 
 // Get portfolio
-const portfolio = await apiClient.portfolio.get('0x...')
+const portfolio = await apiClient.portfolio.get('0x...');
 
 // Execute an agent
-const execution = await apiClient.agents.execute('agent_001', '0x...')
+const execution = await apiClient.agents.execute('agent_001', '0x...');
 ```
 
 ### Using React Hooks
 
 ```typescript
-import { useStrategies } from '@/lib/hooks/use-strategies'
+import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  const { strategies, loading, error } = useStrategies({
-    verified: true
-  })
-  
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error}</div>
-  
-  return (
-    <div>
-      {strategies.map(strategy => (
-        <div key={strategy.id}>{strategy.name}</div>
-      ))}
-    </div>
-  )
+  const { strategies, loading, error } = useStrategies({ verified: true });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return <div>{strategies.map(strategy => <div key={strategy.id}>{strategy.name}</div>)}</div>;
 }
 ```
 
@@ -207,6 +196,7 @@ function MyComponent() {
 ### 2. API Endpoints
 
 All API endpoints are built using Next.js App Router with:
+
 - Type-safe request/response handling
 - Built-in error handling
 - Pagination support
@@ -225,6 +215,7 @@ All API endpoints are built using Next.js App Router with:
 ### Hot Reloading
 
 Bun's dev server provides instant hot reloading for:
+
 - React components
 - API routes
 - TypeScript files
@@ -334,16 +325,13 @@ bun install
 Change the port in `package.json`:
 
 ```json
-{
-  "scripts": {
-    "dev": "bun --bun run next dev -p 3001"
-  }
-}
+{ "scripts": { "dev": "bun --bun run next dev -p 3001" } }
 ```
 
 ### API Connection Issues
 
 Check that:
+
 1. Development server is running
 2. API routes are in `app/api/` directory
 3. CORS is properly configured (if calling from external domain)
@@ -366,6 +354,7 @@ Check that:
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: [Report a bug](https://github.com/your-repo/issues)
 - Documentation: [API Docs](./API_DOCUMENTATION.md)
 - Discord: [Join our community](#)
@@ -373,4 +362,3 @@ For issues and questions:
 ## License
 
 MIT License - see LICENSE file for details
-

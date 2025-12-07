@@ -1,134 +1,130 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { apiClient } from "../api-client"
+import { useEffect, useState } from 'react';
+import { apiClient } from '../api-client';
 
 export interface PortfolioAsset {
-  symbol: string
-  name: string
-  amount: number
-  value: number
-  valueUSD: number
-  price: number
-  priceChange24h: number
-  allocation: number
+  symbol: string;
+  name: string;
+  amount: number;
+  value: number;
+  valueUSD: number;
+  price: number;
+  priceChange24h: number;
+  allocation: number;
 }
 
 export interface Portfolio {
-  id: string
-  walletAddress: string
-  assets: PortfolioAsset[]
+  id: string;
+  walletAddress: string;
+  assets: PortfolioAsset[];
   performance: {
-    totalValue: number
-    totalValueUSD: number
-    dailyChange: number
-    dailyChangePercent: number
-    weeklyChange: number
-    weeklyChangePercent: number
-    monthlyChange: number
+    totalValue: number,
+    totalValueUSD: number,
+    dailyChange: number,
+    dailyChangePercent: number,
+    weeklyChange: number,
+    weeklyChangePercent: number,
+    monthlyChange: number,
     monthlyChangePercent: number
-  }
-  activeStrategies: string[]
-  activeAgents: string[]
-  lastUpdated: string
+  };
+  activeStrategies: string[];
+  activeAgents: string[];
+  lastUpdated: string;
 }
 
 export function usePortfolio(walletAddress: string | null) {
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchPortfolio() {
       if (!walletAddress) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.portfolio.get(walletAddress)
+      const response = await apiClient.portfolio.get(walletAddress);
 
       if (response.success && response.data) {
-        setPortfolio(response.data)
+        setPortfolio(response.data);
       } else {
-        setError(response.error || "Failed to fetch portfolio")
+        setError(response.error || 'Failed to fetch portfolio');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchPortfolio()
-  }, [walletAddress])
+    fetchPortfolio();
+  }, [walletAddress]);
 
-  return { portfolio, loading, error }
+  return { portfolio, loading, error };
 }
 
-export function usePortfolioHistory(
-  walletAddress: string | null,
-  timeframe: string = "30d"
-) {
-  const [history, setHistory] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export function usePortfolioHistory(walletAddress: string | null, timeframe: string = '30d') {
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchHistory() {
       if (!walletAddress) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.portfolio.getHistory(walletAddress, timeframe)
+      const response = await apiClient.portfolio.getHistory(walletAddress, timeframe);
 
       if (response.success && response.data) {
-        setHistory(response.data)
+        setHistory(response.data);
       } else {
-        setError(response.error || "Failed to fetch portfolio history")
+        setError(response.error || 'Failed to fetch portfolio history');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchHistory()
-  }, [walletAddress, timeframe])
+    fetchHistory();
+  }, [walletAddress, timeframe]);
 
-  return { history, loading, error }
+  return { history, loading, error };
 }
 
 export function useTransactions(walletAddress: string | null, type?: string) {
-  const [transactions, setTransactions] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchTransactions() {
       if (!walletAddress) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.portfolio.getTransactions(walletAddress, { type })
+      const response = await apiClient.portfolio.getTransactions(walletAddress, { type });
 
       if (response.success && response.data) {
-        setTransactions(response.data)
+        setTransactions(response.data);
       } else {
-        setError(response.error || "Failed to fetch transactions")
+        setError(response.error || 'Failed to fetch transactions');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchTransactions()
-  }, [walletAddress, type])
+    fetchTransactions();
+  }, [walletAddress, type]);
 
-  return { transactions, loading, error }
+  return { transactions, loading, error };
 }
-

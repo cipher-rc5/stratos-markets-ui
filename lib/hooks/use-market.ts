@@ -1,103 +1,102 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { apiClient } from "../api-client"
+import { useEffect, useState } from 'react';
+import { apiClient } from '../api-client';
 
 export interface MarketData {
-  symbol: string
-  name: string
-  price: number
-  priceChange24h: number
-  priceChangePercent24h: number
-  volume24h: number
-  marketCap: number
-  high24h: number
-  low24h: number
-  lastUpdated: string
+  symbol: string;
+  name: string;
+  price: number;
+  priceChange24h: number;
+  priceChangePercent24h: number;
+  volume24h: number;
+  marketCap: number;
+  high24h: number;
+  low24h: number;
+  lastUpdated: string;
 }
 
 export function useMarketData(symbols?: string[]) {
-  const [marketData, setMarketData] = useState<MarketData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [marketData, setMarketData] = useState<MarketData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchMarketData() {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.market.list({ symbols })
+      const response = await apiClient.market.list({ symbols });
 
       if (response.success && response.data) {
-        setMarketData(response.data)
+        setMarketData(response.data);
       } else {
-        setError(response.error || "Failed to fetch market data")
+        setError(response.error || 'Failed to fetch market data');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchMarketData()
-  }, [symbols?.join(",")])
+    fetchMarketData();
+  }, [symbols?.join(',')]);
 
-  return { marketData, loading, error }
+  return { marketData, loading, error };
 }
 
 export function useAssetPrice(symbol: string) {
-  const [assetData, setAssetData] = useState<any | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [assetData, setAssetData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAssetData() {
-      if (!symbol) return
+      if (!symbol) return;
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.market.get(symbol)
+      const response = await apiClient.market.get(symbol);
 
       if (response.success && response.data) {
-        setAssetData(response.data)
+        setAssetData(response.data);
       } else {
-        setError(response.error || "Failed to fetch asset data")
+        setError(response.error || 'Failed to fetch asset data');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchAssetData()
-  }, [symbol])
+    fetchAssetData();
+  }, [symbol]);
 
-  return { assetData, loading, error }
+  return { assetData, loading, error };
 }
 
-export function useChartData(symbol: string, interval = "1h", limit = 100) {
-  const [chartData, setChartData] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+export function useChartData(symbol: string, interval = '1h', limit = 100) {
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchChartData() {
-      if (!symbol) return
+      if (!symbol) return;
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
-      const response = await apiClient.market.getChart(symbol, interval, limit)
+      const response = await apiClient.market.getChart(symbol, interval, limit);
 
       if (response.success && response.data) {
-        setChartData(response.data)
+        setChartData(response.data);
       } else {
-        setError(response.error || "Failed to fetch chart data")
+        setError(response.error || 'Failed to fetch chart data');
       }
 
-      setLoading(false)
+      setLoading(false);
     }
 
-    fetchChartData()
-  }, [symbol, interval, limit])
+    fetchChartData();
+  }, [symbol, interval, limit]);
 
-  return { chartData, loading, error }
+  return { chartData, loading, error };
 }
-
