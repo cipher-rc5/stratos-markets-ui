@@ -15,13 +15,17 @@ This guide will help you set up and run the Stratos Markets UI application using
 If you haven't installed Bun yet:
 
 \`\`\`bash
+
 # macOS/Linux
+
 curl -fsSL https://bun.sh/install | bash
 
 # Windows (WSL)
+
 curl -fsSL https://bun.sh/install | bash
 
 # Or using npm
+
 npm install -g bun
 \`\`\`
 
@@ -51,16 +55,20 @@ cp env.example .env.local
 Edit `.env.local` and configure your environment variables:
 
 \`\`\`env
+
 # API Configuration
+
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key-here
 
 # External APIs (server-side only - never exposed to client)
+
 ALCHEMY_API_KEY=your-alchemy-key
 INFURA_API_KEY=your-infura-key
 DUNE_API_KEY=your-dune-key
 
 # Authentication (if using NextAuth)
+
 NEXTAUTH_SECRET=your-nextauth-secret
 NEXTAUTH_URL=http://localhost:3000
 \`\`\`
@@ -101,34 +109,34 @@ bun test
 
 \`\`\`
 stratos-markets-ui/
-├── app/                      # Next.js App Router pages
-│   ├── api/                  # API routes
-│   │   ├── agents/          # Agent endpoints
-│   │   ├── market/          # Market data endpoints
-│   │   ├── portfolio/       # Portfolio endpoints
-│   │   └── strategies/      # Strategy endpoints
-│   ├── agents/              # Agents marketplace page
-│   ├── create/              # Strategy creation page
-│   ├── portfolio/           # Portfolio page
-│   └── page.tsx             # Home page
-├── components/              # React components
-│   ├── navbar.tsx
-│   └── theme-provider.tsx
-├── lib/                     # Utility libraries
-│   ├── api-client.ts       # API client
-│   ├── hooks/              # Custom React hooks
-│   │   ├── use-strategies.ts
-│   │   ├── use-portfolio.ts
-│   │   └── use-market.ts
-│   └── utils.ts
-├── public/                  # Static assets
-├── styles/                  # Global styles
-├── .env.local              # Environment variables (create this)
-├── env.example             # Environment variables template
-├── package.json            # Dependencies and scripts
-├── next.config.mjs         # Next.js configuration
-├── tsconfig.json           # TypeScript configuration
-└── API_DOCUMENTATION.md    # API documentation
+├── app/ # Next.js App Router pages
+│ ├── api/ # API routes
+│ │ ├── agents/ # Agent endpoints
+│ │ ├── market/ # Market data endpoints
+│ │ ├── portfolio/ # Portfolio endpoints
+│ │ └── strategies/ # Strategy endpoints
+│ ├── agents/ # Agents marketplace page
+│ ├── create/ # Strategy creation page
+│ ├── portfolio/ # Portfolio page
+│ └── page.tsx # Home page
+├── components/ # React components
+│ ├── navbar.tsx
+│ └── theme-provider.tsx
+├── lib/ # Utility libraries
+│ ├── api-client.ts # API client
+│ ├── hooks/ # Custom React hooks
+│ │ ├── use-strategies.ts
+│ │ ├── use-portfolio.ts
+│ │ └── use-market.ts
+│ └── utils.ts
+├── public/ # Static assets
+├── styles/ # Global styles
+├── .env.local # Environment variables (create this)
+├── env.example # Environment variables template
+├── package.json # Dependencies and scripts
+├── next.config.mjs # Next.js configuration
+├── tsconfig.json # TypeScript configuration
+└── API_DOCUMENTATION.md # API documentation
 \`\`\`
 
 ## API Integration
@@ -176,12 +184,12 @@ const execution = await apiClient.agents.execute('agent_001', '0x...');
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  const { strategies, loading, error } = useStrategies({ verified: true });
+const { strategies, loading, error } = useStrategies({ verified: true });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+if (loading) return <div>Loading...</div>;
+if (error) return <div>Error: {error}</div>;
 
-  return <div>{strategies.map(strategy => <div key={strategy.id}>{strategy.name}</div>)}</div>;
+return <div>{strategies.map(strategy => <div key={strategy.id}>{strategy.name}</div>)}</div>;
 }
 \`\`\`
 
@@ -227,7 +235,9 @@ Bun's dev server provides instant hot reloading for:
 The project uses TypeScript with strict mode. Bun natively supports TypeScript:
 
 \`\`\`bash
+
 # No compilation needed - Bun runs .ts files directly
+
 bun run index.ts
 \`\`\`
 
@@ -236,16 +246,20 @@ bun run index.ts
 Test API endpoints using curl or tools like Postman:
 
 \`\`\`bash
+
 # Get all strategies
+
 curl http://localhost:3000/api/strategies
 
 # Get specific strategy
+
 curl http://localhost:3000/api/strategies/strat_abc123
 
 # Create new strategy (requires POST data)
-curl -X POST http://localhost:3000/api/strategies \
-  -H "Content-Type: application/json" \
-  -d '{"name":"My Strategy","description":"...","creator":"0x..."}'
+
+curl -X POST http://localhost:3000/api/strategies\
+-H "Content-Type: application/json"\
+-d '{"name":"My Strategy","description":"...","creator":"0x..."}'
 \`\`\`
 
 ### Debugging
@@ -278,10 +292,13 @@ NEXT_PUBLIC_DEBUG=true
 ### Vercel (Recommended)
 
 \`\`\`bash
+
 # Install Vercel CLI
+
 bun add -g vercel
 
 # Deploy
+
 vercel
 \`\`\`
 
@@ -292,16 +309,20 @@ FROM oven/bun:1 as base
 WORKDIR /app
 
 # Install dependencies
+
 COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile
 
 # Copy source
+
 COPY . .
 
 # Build
+
 RUN bun run build
 
 # Start
+
 CMD ["bun", "start"]
 \`\`\`
 
@@ -316,7 +337,9 @@ Make sure to set all required environment variables in your deployment platform.
 If `bun install` fails:
 
 \`\`\`bash
+
 # Clear cache
+
 rm -rf node_modules bun.lockb
 bun install
 \`\`\`

@@ -6,7 +6,7 @@ const spec = {
     title: 'Stratos Markets API',
     version: '0.0.1',
     description:
-      'Internal API surface for the Stratos Markets UI. Portfolio data is served from Dune when configured, with mock fallbacks in development.'
+      'Decentralized marketplace infrastructure for the creation, discovery, and monetization of DeFi intelligence.'
   },
   servers: [{ url: '/' }],
   tags: [
@@ -19,7 +19,7 @@ const spec = {
     '/api/portfolio/{address}': {
       get: {
         tags: ['Portfolio'],
-        summary: 'Get live portfolio (Dune-backed with mock fallback)',
+        summary: 'Get live portfolio (Dune-backed, requires DUNE_API_KEY)',
         parameters: [{
           name: 'address',
           in: 'path',
@@ -56,7 +56,7 @@ const spec = {
     '/api/portfolio': {
       get: {
         tags: ['Portfolio'],
-        summary: 'Get mock portfolio snapshot',
+        summary: 'Get live portfolio snapshot (Dune-backed)',
         parameters: [{ name: 'walletAddress', in: 'query', required: true, schema: { type: 'string' } }],
         responses: {
           200: {
@@ -72,7 +72,7 @@ const spec = {
       },
       post: {
         tags: ['Portfolio'],
-        summary: 'Create or update a portfolio (mock persistence)',
+        summary: 'Create or update a portfolio (requires upstream persistence)',
         requestBody: {
           required: true,
           content: {
@@ -110,7 +110,7 @@ const spec = {
     '/api/portfolio/transactions': {
       get: {
         tags: ['Portfolio'],
-        summary: 'Get transaction history (mock)',
+        summary: 'Get transaction history (live from Dune)',
         parameters: [
           { name: 'walletAddress', in: 'query', required: true, schema: { type: 'string' } },
           { name: 'type', in: 'query', required: false, schema: { type: 'string' } },
@@ -151,7 +151,7 @@ const spec = {
       },
       post: {
         tags: ['Agents'],
-        summary: 'Deploy a new agent (mock)',
+        summary: 'Deploy a new agent via upstream catalog',
         requestBody: {
           required: true,
           content: {
@@ -189,7 +189,7 @@ const spec = {
       },
       delete: {
         tags: ['Agents'],
-        summary: 'Delete agent (mock)',
+        summary: 'Delete agent via upstream catalog',
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: { 200: { description: 'Deleted' }, 404: { description: 'Not found' } }
       }
@@ -243,7 +243,7 @@ const spec = {
       },
       post: {
         tags: ['Strategies'],
-        summary: 'Create a new strategy (mock)',
+        summary: 'Create a new strategy via upstream catalog',
         requestBody: {
           required: true,
           content: {
@@ -280,7 +280,7 @@ const spec = {
       },
       delete: {
         tags: ['Strategies'],
-        summary: 'Delete a strategy (mock)',
+        summary: 'Delete a strategy via upstream catalog',
         parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
         responses: { 200: { description: 'Deleted' }, 404: { description: 'Not found' } }
       }

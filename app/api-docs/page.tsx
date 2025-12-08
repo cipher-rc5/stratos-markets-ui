@@ -29,7 +29,7 @@ export default function APIPage() {
         <div className='max-w-[1400px] mx-auto'>
           <div className='max-w-3xl'>
             <div className='inline-block border border-[#ccff00]/30 bg-[#ccff00]/10 px-4 py-1 text-[10px] font-mono text-[#ccff00] uppercase tracking-widest mb-8'>
-              ● API: v0 (mock + Dune-backed)
+              ● API: v0 (live data proxied)
             </div>
             <h1 className="text-5xl md:text-7xl font-bold font-['Orbitron'] mb-6">
               API <span className='text-[#ccff00]'>Documentation</span>
@@ -42,32 +42,9 @@ export default function APIPage() {
         </div>
       </section>
 
-      {/* Quick Start */}
-      <section className='py-16 px-6 md:px-12 bg-gradient-to-b from-black to-gray-950'>
-        <div className='max-w-[1400px] mx-auto'>
-          <h2 className="text-3xl font-bold font-['Orbitron'] mb-12">Quick Start</h2>
-          <div className='bg-gray-950 border border-gray-900 p-8 font-mono text-sm'>
-            <div className='text-gray-500 mb-2'>// Fetch a live wallet portfolio</div>
-            <div className='text-[#ccff00]'>const</div> res = <div className='text-[#ccff00] inline'>await</div> fetch(
-            <div className='text-green-400 inline'>'/api/portfolio/0xYourWallet?chain_ids=1,137'</div>)
-            <br />
-            <div className='text-[#ccff00]'>if</div> (!res.ok) <div className='text-[#ccff00] inline'>throw</div>{' '}
-            <div className='text-[#ccff00] inline'>new</div> Error(<div className='text-green-400 inline'>"fetch failed"</div>)
-            <br />
-            <div className='text-[#ccff00]'>const</div> data = <div className='text-[#ccff00] inline'>await</div> res.json()
-            <br />
-            <div className='text-gray-500 mt-4'>// data = {'{ balances, transactions, defiPositions }'}</div>
-          </div>
-        </div>
-      </section>
-
       {/* API Reference */}
       <section className='py-20 px-6 md:px-12'>
         <div className='max-w-[1400px] mx-auto'>
-          <h2 className="text-3xl font-bold font-['Orbitron'] mb-6">API Reference</h2>
-          <p className='text-gray-500 text-sm mb-8'>
-            Interactive OpenAPI reference powered by Scalar. Spec is served from <code className='text-[#ccff00]'>/api/openapi</code>.
-          </p>
           <div className='bg-gray-950 border border-gray-900 rounded-lg'>
             <ApiReferenceReact configuration={config} />
           </div>

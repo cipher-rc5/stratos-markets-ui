@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     console.error('[v0] Error in portfolio API route:', error);
     return NextResponse.json(
       { error: 'Failed to fetch portfolio data', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { status: 502 }
     );
   }
 }

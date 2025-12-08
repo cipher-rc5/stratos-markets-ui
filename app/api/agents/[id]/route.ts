@@ -1,79 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { Agent } from '../route';
 
-// Mock data
-const mockAgents: Agent[] = [{
-  id: 'agent_001',
-  name: 'Alpha Sniper Bot',
-  description: 'Fast execution bot for capturing alpha opportunities in real-time',
-  creator: '0x1234567890abcdef',
-  version: '2.3.1',
-  type: 'trading',
-  status: 'active',
-  capabilities: ['MEV Protection', 'Flash Loan Integration'],
-  pricing: { type: 'usage-based', amount: 0.1, currency: 'ETH', billingPeriod: 'per-transaction' },
-  metrics: { totalExecutions: 15420, successRate: 94.5, avgExecutionTime: 2.3, uptime: 99.8 },
-  tags: ['MEV', 'Arbitrage', 'Fast'],
-  subscribers: 1234,
-  verified: true,
-  createdAt: '2025-10-01T10:00:00.000Z',
-  updatedAt: '2025-12-01T15:30:00.000Z'
-}];
+const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
+
+const ensureCatalogConfigured = () => {
+  if (!CATALOG_API_BASE_URL) {
+    throw new Error('STRATOS_DATA_API_BASE_URL is not configured. Live agent data cannot be fetched.');
+  }
+};
 
 // GET /api/agents/[id] - Get agent by ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
+    const response = await fetch(`${CATALOG_API_BASE_URL}/agents/${id}`);
+    const data = await response.json().catch(() => ({}));
 
-    const agent = mockAgents.find((a) => a.id === id);
-
-    if (!agent) {
-      return NextResponse.json({ success: false, error: 'Agent not found' }, { status: 404 });
+    if (!response.ok) {
+      const errorMessage = data?.error || 'Agent not found';
+      const status = response.status === 404 ? 404 : 502;
+      return NextResponse.json({ success: false, error: errorMessage }, { status });
     }
 
-    return NextResponse.json({ success: true, data: agent });
+    return NextResponse.json({ success: true, data: data?.data || data });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch agent' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch agent' }, { status: 502 });
   }
 }
 
 // PATCH /api/agents/[id] - Update agent
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
     const body = await request.json();
 
-    const agentIndex = mockAgents.findIndex((a) => a.id === id);
+    const response = await fetch(`${CATALOG_API_BASE_URL}/agents/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
 
-    if (agentIndex === -1) {
-      return NextResponse.json({ success: false, error: 'Agent not found' }, { status: 404 });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to update agent upstream');
     }
 
-    // Update agent
-    mockAgents[agentIndex] = { ...mockAgents[agentIndex], ...body, updatedAt: new Date().toISOString() };
-
-    return NextResponse.json({ success: true, data: mockAgents[agentIndex] });
+    return NextResponse.json({ success: true, data: data?.data || data });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to update agent' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to update agent' }, { status: 502 });
   }
 }
 
 // DELETE /api/agents/[id] - Delete agent
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
 
-    const agentIndex = mockAgents.findIndex((a) => a.id === id);
-
-    if (agentIndex === -1) {
-      return NextResponse.json({ success: false, error: 'Agent not found' }, { status: 404 });
+    const response = await fetch(`${CATALOG_API_BASE_URL}/agents/${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data?.error || 'Failed to delete agent upstream');
     }
-
-    // Remove agent
-    mockAgents.splice(agentIndex, 1);
 
     return NextResponse.json({ success: true, message: 'Agent deleted successfully' });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to delete agent' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to delete agent' }, { status: 502 });
   }
 }

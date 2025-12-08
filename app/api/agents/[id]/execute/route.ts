@@ -1,71 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// POST /api/agents/[id]/execute - Execute an agent
+const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
+
+const ensureCatalogConfigured = () => {
+  if (!CATALOG_API_BASE_URL) {
+    throw new Error('STRATOS_DATA_API_BASE_URL is not configured. Live agent execution is unavailable.');
+  }
+};
+
+// POST /api/agents/[id]/execute - Execute an agent via upstream
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
     const body = await request.json();
 
-    // Validate required fields
     if (!body.walletAddress) {
       return NextResponse.json({ success: false, error: 'Wallet address is required' }, { status: 400 });
     }
 
-    // In production, this would:
-    // 1. Verify wallet ownership
-    // 2. Check subscription status
-    // 3. Execute the agent with provided parameters
-    // 4. Update metrics
-    // 5. Process billing if usage-based
+    const response = await fetch(`${CATALOG_API_BASE_URL}/agents/${id}/execute`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
 
-    const execution = {
-      id: `exec_${Math.random().toString(36).substr(2, 9)}`,
-      agentId: id,
-      walletAddress: body.walletAddress,
-      parameters: body.parameters || {},
-      status: 'pending',
-      startedAt: new Date().toISOString(),
-      estimatedCompletionTime: new Date(Date.now() + 30000).toISOString()
-    };
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to initiate agent execution');
+    }
 
-    // Simulate async execution
-    setTimeout(() => {
-      // Update status to completed
-      execution.status = 'completed';
-    }, 5000);
-
-    return NextResponse.json({ success: true, data: execution, message: 'Agent execution initiated' }, { status: 202 });
+    return NextResponse.json({ success: true, data: data?.data || data }, { status: 202 });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to execute agent' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to execute agent' }, { status: 502 });
   }
 }
 
-// GET /api/agents/[id]/execute - Get execution history
+// GET /api/agents/[id]/execute - Get execution history from upstream
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
     const { searchParams } = new URL(request.url);
-    const walletAddress = searchParams.get('walletAddress');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const upstreamParams = new URLSearchParams();
+    searchParams.forEach((value, key) => upstreamParams.append(key, value));
 
-    // In production, fetch from database
-    const mockExecutions = [{
-      id: 'exec_001',
-      agentId: id,
-      walletAddress: walletAddress || '0x...',
-      status: 'completed',
-      startedAt: new Date(Date.now() - 3600000).toISOString(),
-      completedAt: new Date(Date.now() - 3550000).toISOString(),
-      result: { success: true, output: 'Executed successfully' }
-    }];
+    const response = await fetch(
+      `${CATALOG_API_BASE_URL}/agents/${id}/execute${upstreamParams.toString() ? `?${upstreamParams.toString()}` : ''}`
+    );
+    const data = await response.json().catch(() => ({}));
 
-    return NextResponse.json({
-      success: true,
-      data: mockExecutions,
-      meta: { total: mockExecutions.length, limit, offset, hasMore: false }
-    });
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to fetch execution history');
+    }
+
+    return NextResponse.json({ success: true, data: data?.data || data, meta: data?.meta });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch execution history' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch execution history' }, { status: 502 });
   }
 }

@@ -1,4 +1,4 @@
-// Dune Analytics Sim API integration for real-time DeFi portfolio data
+// Dune Analytics Sim API integration for live DeFi portfolio data
 // This file should only be used in Server Components, Server Actions, or Route Handlers
 
 const DUNE_API_BASE_URL = 'https://api.sim.dune.com';
@@ -74,68 +74,13 @@ export interface DuneDefiPosition {
   debt_quote?: { calculated_balance: number, price_in_usd: number, usd_value: number };
 }
 
-const isDuneApiConfigured = () => {
-  return DUNE_API_KEY && DUNE_API_KEY.length > 0;
-};
-
-const getMockBalances =
-  (): DuneBalance[] => [{
-    chain: 'ethereum',
-    chain_id: 1,
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    amount: '2500000000000000000',
-    symbol: 'ETH',
-    name: 'Ethereum',
-    decimals: 18,
-    price_usd: 3500,
-    value_usd: 8750
-  }, {
-    chain: 'ethereum',
-    chain_id: 1,
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    amount: '5000000000',
-    symbol: 'USDC',
-    name: 'USD Coin',
-    decimals: 6,
-    price_usd: 1,
-    value_usd: 5000
-  }];
-
-const getMockTransactions =
-  (): DuneTransaction[] => [{
-    chain: 'ethereum',
-    chain_id: 1,
-    hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    block_number: 18000000,
-    block_timestamp: new Date(Date.now() - 3600000).toISOString(),
-    from_address: '0x0000000000000000000000000000000000000000',
-    to_address: '0x0000000000000000000000000000000000000001',
-    value: '1000000000000000000',
-    gas_price: '50000000000',
-    gas_used: 21000,
-    transaction_fee: '1050000000000000',
-    status: 1,
-    method_id: '0xa9059cbb',
-    decoded: { function_name: 'transfer', parameters: { recipient: '0x...', amount: '1000000000000000000' } }
-  }];
-
-const getMockDefiPositions =
-  (): DuneDefiPosition[] => [{
-    type: 'CompoundV2',
-    chain_id: 1,
-    protocol: 'Aave V3',
-    token: '0x...',
-    token_name: 'USD Coin',
-    token_symbol: 'USDC',
-    usd_value: 12500,
-    supply_quote: { calculated_balance: 12500, price_in_usd: 1, usd_value: 12500 }
-  }];
+const isDuneApiConfigured = () => Boolean(DUNE_API_KEY && DUNE_API_KEY.length > 0);
 
 // Fetch token balances for a wallet across multiple chains
 export async function fetchBalances(walletAddress: string, chainIds?: number[]): Promise<DuneBalance[]> {
   if (!isDuneApiConfigured()) {
-    console.log('[v0] Dune API key not configured, returning mock balances');
-    return getMockBalances();
+    console.error('[v0] Dune API key not configured. Returning empty balances.');
+    return [];
   }
 
   try {
@@ -154,15 +99,15 @@ export async function fetchBalances(walletAddress: string, chainIds?: number[]):
     return data.balances || [];
   } catch (error) {
     console.error('[v0] Error fetching balances:', error);
-    return getMockBalances();
+    return [];
   }
 }
 
 // Fetch transaction history for a wallet
 export async function fetchTransactions(walletAddress: string, chainIds?: number[], decode = true): Promise<DuneTransaction[]> {
   if (!isDuneApiConfigured()) {
-    console.log('[v0] Dune API key not configured, returning mock transactions');
-    return getMockTransactions();
+    console.error('[v0] Dune API key not configured. Returning empty transactions.');
+    return [];
   }
 
   try {
@@ -185,15 +130,15 @@ export async function fetchTransactions(walletAddress: string, chainIds?: number
     return data.transactions || [];
   } catch (error) {
     console.error('[v0] Error fetching transactions:', error);
-    return getMockTransactions();
+    return [];
   }
 }
 
 // Fetch DeFi positions for a wallet
 export async function fetchDefiPositions(walletAddress: string, chainIds?: number[]): Promise<DuneDefiPosition[]> {
   if (!isDuneApiConfigured()) {
-    console.log('[v0] Dune API key not configured, returning mock positions');
-    return getMockDefiPositions();
+    console.error('[v0] Dune API key not configured. Returning empty DeFi positions.');
+    return [];
   }
 
   try {
@@ -212,7 +157,7 @@ export async function fetchDefiPositions(walletAddress: string, chainIds?: numbe
     return data.positions || [];
   } catch (error) {
     console.error('[v0] Error fetching DeFi positions:', error);
-    return getMockDefiPositions();
+    return [];
   }
 }
 

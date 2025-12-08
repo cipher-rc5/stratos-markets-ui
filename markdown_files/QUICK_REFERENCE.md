@@ -3,19 +3,23 @@
 ## 📋 Essential Commands
 
 \`\`\`bash
+
 # Development
-bun install          # Install dependencies
-bun dev              # Start dev server (http://localhost:3000)
-bun run build        # Build for production
-bun start            # Start production server
+
+bun install # Install dependencies
+bun dev # Start dev server (http://localhost:3000)
+bun run build # Build for production
+bun start # Start production server
 
 # Testing
-bun test             # Run tests
-bun test --watch     # Watch mode
+
+bun test # Run tests
+bun test --watch # Watch mode
 
 # Utilities
-bun --version        # Check Bun version
-bun upgrade          # Upgrade Bun
+
+bun --version # Check Bun version
+bun upgrade # Upgrade Bun
 \`\`\`
 
 ## 🔗 Quick API Examples
@@ -23,59 +27,76 @@ bun upgrade          # Upgrade Bun
 ### Strategies
 
 \`\`\`bash
+
 # List all strategies
+
 curl http://localhost:3000/api/strategies
 
 # Filter by category
+
 curl "http://localhost:3000/api/strategies?category=arbitrage&verified=true"
 
 # Get specific strategy
+
 curl http://localhost:3000/api/strategies/strat_abc123
 
 # Subscribe to strategy
-curl -X POST http://localhost:3000/api/strategies/strat_abc123/subscribe \
-  -H "Content-Type: application/json" \
-  -d '{"walletAddress":"0x..."}'
+
+curl -X POST http://localhost:3000/api/strategies/strat_abc123/subscribe\
+-H "Content-Type: application/json"\
+-d '{"walletAddress":"0x..."}'
 \`\`\`
 
 ### Agents
 
 \`\`\`bash
+
 # List agents
+
 curl http://localhost:3000/api/agents
 
 # Filter by type
+
 curl "http://localhost:3000/api/agents?type=trading&verified=true"
 
 # Execute agent
-curl -X POST http://localhost:3000/api/agents/agent_001/execute \
-  -H "Content-Type: application/json" \
-  -d '{"walletAddress":"0x...","parameters":{}}'
+
+curl -X POST http://localhost:3000/api/agents/agent_001/execute\
+-H "Content-Type: application/json"\
+-d '{"walletAddress":"0x...","parameters":{}}'
 \`\`\`
 
 ### Portfolio
 
 \`\`\`bash
+
 # Get portfolio
+
 curl "http://localhost:3000/api/portfolio?walletAddress=0x..."
 
 # Get historical data
+
 curl "http://localhost:3000/api/portfolio/history?walletAddress=0x...&timeframe=30d"
 
 # Get transactions
+
 curl "http://localhost:3000/api/portfolio/transactions?walletAddress=0x..."
 \`\`\`
 
 ### Market Data
 
 \`\`\`bash
+
 # Get market data
+
 curl "http://localhost:3000/api/market?symbols=BTC,ETH"
 
 # Get asset details
+
 curl http://localhost:3000/api/market/BTC
 
 # Get chart data
+
 curl "http://localhost:3000/api/market/BTC/chart?interval=1h&limit=100"
 \`\`\`
 
@@ -113,19 +134,19 @@ import { usePortfolio } from '@/lib/hooks/use-portfolio';
 import { useStrategies, useStrategy } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  // List strategies
-  const { strategies, loading, error } = useStrategies({ category: 'arbitrage', verified: true });
+// List strategies
+const { strategies, loading, error } = useStrategies({ category: 'arbitrage', verified: true });
 
-  // Single strategy
-  const { strategy, subscribe, unsubscribe } = useStrategy('strat_abc123');
+// Single strategy
+const { strategy, subscribe, unsubscribe } = useStrategy('strat_abc123');
 
-  // Portfolio
-  const { portfolio } = usePortfolio('0xWalletAddress');
+// Portfolio
+const { portfolio } = usePortfolio('0xWalletAddress');
 
-  // Market data
-  const { marketData } = useMarketData(['BTC', 'ETH']);
+// Market data
+const { marketData } = useMarketData(['BTC', 'ETH']);
 
-  return <div>{/* Your UI */}</div>;
+return <div>{/* Your UI */}</div>;
 }
 \`\`\`
 
@@ -137,22 +158,23 @@ function MyComponent() {
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 export default function StrategiesList() {
-  const { strategies, loading, error } = useStrategies({ verified: true });
+const { strategies, loading, error } = useStrategies({ verified: true });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+if (loading) return <div>Loading...</div>;
+if (error) return <div>Error: {error}</div>;
 
-  return (
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-      {strategies.map(strategy => (
-        <div key={strategy.id} className='border p-4'>
-          <h3>{strategy.name}</h3>
-          <p>{strategy.description}</p>
-          <div>ROI: {strategy.performance.roi}%</div>
-        </div>
-      ))}
-    </div>
-  );
+return (
+
+<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+{strategies.map(strategy => (
+<div key={strategy.id} className='border p-4'>
+<h3>{strategy.name}</h3>
+<p>{strategy.description}</p>
+<div>ROI: {strategy.performance.roi}%</div>
+</div>
+))}
+</div>
+);
 }
 \`\`\`
 
@@ -161,16 +183,16 @@ export default function StrategiesList() {
 \`\`\`
 stratos-markets-ui/
 ├── app/
-│   ├── api/              # API routes (22 endpoints)
-│   ├── agents/           # Agents page
-│   ├── portfolio/        # Portfolio page
-│   └── page.tsx          # Home page
+│ ├── api/ # API routes (22 endpoints)
+│ ├── agents/ # Agents page
+│ ├── portfolio/ # Portfolio page
+│ └── page.tsx # Home page
 ├── lib/
-│   ├── api-client.ts     # API client
-│   └── hooks/            # React hooks (8 hooks)
-├── components/           # React components
-├── public/               # Static assets
-└── [docs].md            # Documentation
+│ ├── api-client.ts # API client
+│ └── hooks/ # React hooks (8 hooks)
+├── components/ # React components
+├── public/ # Static assets
+└── [docs].md # Documentation
 \`\`\`
 
 ## 🎯 Common Tasks
@@ -197,14 +219,19 @@ stratos-markets-ui/
 ## 🔍 Debugging
 
 \`\`\`bash
+
 # Check server logs
+
 # Look at terminal where `bun dev` is running
 
 # Check API response in browser
+
 # Open DevTools → Network → Click API call → Preview
 
 # Enable debug mode
+
 # Add to .env.local:
+
 NODE_ENV=development
 NEXT_PUBLIC_DEBUG=true
 \`\`\`
@@ -266,7 +293,9 @@ NEXT_PUBLIC_DEBUG=true
 ## 🔑 Environment Variables
 
 \`\`\`env
+
 # .env.local
+
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 API_SECRET_KEY=your-secret-key
 ALCHEMY_API_KEY=
@@ -287,16 +316,21 @@ DUNE_API_KEY=
 ## 📞 Quick Help
 
 \`\`\`bash
+
 # Bun help
+
 bun --help
 
 # Next.js help
+
 bun --bun run next --help
 
 # Check Bun version
+
 bun --version
 
 # Upgrade Bun
+
 bun upgrade
 \`\`\`
 

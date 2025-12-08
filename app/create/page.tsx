@@ -4,7 +4,8 @@ import { addEdge, Background, BackgroundVariant, type Connection, Controls, type
 import { useCallback, useMemo, useState } from 'react';
 import '@xyflow/react/dist/style.css';
 import Navbar from '@/components/navbar';
-import { Download, Play, Plus, Save } from 'lucide-react';
+import { Download, Play, Plus, Save, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { apiClient } from '@/lib/api-client';
 
 const StratosLogo = () => (
   <div className='flex items-center gap-4 hover:opacity-80 transition-opacity'>
@@ -24,34 +25,28 @@ const NavLink = ({ text, active = false, href = '#' }: { text: string, active?: 
 );
 
 // Initial nodes for strategy building
+const baseNodeStyle = {
+  background: '#1a1a1a',
+  color: '#fff',
+  border: '1px solid #444',
+  borderRadius: '0px',
+  padding: '12px 24px',
+  fontSize: '14px',
+  fontWeight: '600'
+};
+
 const initialNodes: Node[] = [{
   id: '1',
   type: 'default',
   position: { x: 250, y: 100 },
   data: { label: 'Market Data Feed' },
-  style: {
-    background: '#1a1a1a',
-    color: '#ccff00',
-    border: '1px solid #ccff00',
-    borderRadius: '8px',
-    padding: '12px 24px',
-    fontSize: '14px',
-    fontWeight: '600'
-  }
+  style: { ...baseNodeStyle, color: '#ccff00', border: '1px solid #ccff00' }
 }, {
   id: '2',
   type: 'default',
   position: { x: 250, y: 250 },
   data: { label: 'Strategy Logic' },
-  style: {
-    background: '#1a1a1a',
-    color: '#fff',
-    border: '1px solid #444',
-    borderRadius: '8px',
-    padding: '12px 24px',
-    fontSize: '14px',
-    fontWeight: '600'
-  }
+  style: baseNodeStyle
 }];
 
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#ccff00' } }];
@@ -79,6 +74,7 @@ export default function CreatePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(true);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)), [setEdges]);
 
@@ -88,15 +84,7 @@ export default function CreatePage() {
       type: 'default',
       position: { x: Math.random() * 500 + 100, y: Math.random() * 400 + 100 },
       data: { label },
-      style: {
-        background: '#1a1a1a',
-        color: '#fff',
-        border: '1px solid #444',
-        borderRadius: '8px',
-        padding: '12px 24px',
-        fontSize: '14px',
-        fontWeight: '600'
-      }
+      style: baseNodeStyle
     };
     setNodes((nds) => [...nds, newNode]);
   };
@@ -109,6 +97,18 @@ export default function CreatePage() {
     setSaveSuccess(null);
 
     try {
+      const sanitizedGraph = {
+        nodes: nodes.map(({ id, type, position, data }) => ({ id, type, position, data })),
+        edges: edges.map(({ id, source, target, type, animated, label }) => ({
+          id,
+          source,
+          target,
+          type,
+          animated: Boolean(animated),
+          label
+        }))
+      };
+
       const payload = {
         name,
         description,
@@ -117,23 +117,17 @@ export default function CreatePage() {
         category,
         riskLevel,
         tags: parsedTags,
-        // Include the current graph so the API can persist user design
-        graph: { nodes, edges }
+        // current graph design for persistence
+        graph: sanitizedGraph
       };
 
-      const res = await fetch('/api/strategies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const res = await apiClient.strategies.create(payload);
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `Failed to save strategy (${res.status})`);
+      if (!res.success) {
+        throw new Error(res.error || 'Failed to save strategy');
       }
 
-      const data = await res.json();
-      setSaveSuccess(`Strategy created: ${data?.data?.id || 'success'}`);
+      setSaveSuccess(`Strategy created: ${res.data?.id || 'success'}`);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Failed to save strategy');
     } finally {
@@ -171,7 +165,7 @@ export default function CreatePage() {
                     <button
                       key={item}
                       onClick={() => addNode(item)}
-                      className='w-full text-left px-4 py-2.5 hover:bg-gray-800 rounded text-sm text-gray-300 hover:text-[#ccff00] transition-colors flex items-center gap-2'>
+                      className='w-full text-left px-4 py-2.5 hover:bg-gray-800 rounded-none text-sm text-gray-300 hover:text-[#ccff00] transition-colors flex items-center gap-2'>
                       <Plus size={14} className='text-[#ccff00]' />
                       {item}
                     </button>
@@ -194,17 +188,23 @@ export default function CreatePage() {
               </div>
               <div className='flex items-center gap-3'>
                 <button
+                  onClick={() => setIsDetailsOpen((open) => !open)}
+                  className='flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-none text-sm transition-colors'>
+                  {isDetailsOpen ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
+                  {isDetailsOpen ? 'Hide Details' : 'Show Details'}
+                </button>
+                <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className='flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm transition-colors disabled:opacity-50'>
+                  className='flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-none text-sm transition-colors disabled:opacity-50'>
                   <Save size={16} />
                   {isSaving ? 'Saving...' : 'Save to API'}
                 </button>
-                <button className='flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm transition-colors'>
+                <button className='flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-none text-sm transition-colors'>
                   <Download size={16} />
                   Export
                 </button>
-                <button className='flex items-center gap-2 px-4 py-2 bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold rounded text-sm transition-colors'>
+                <button className='flex items-center gap-2 px-4 py-2 bg-[#ccff00] hover:bg-[#b3e600] text-black font-bold rounded-none text-sm transition-colors'>
                   <Play size={16} />
                   Test Strategy
                 </button>
@@ -233,79 +233,83 @@ export default function CreatePage() {
             </div>
           </div>
 
-          {/* Strategy metadata panel */}
-          <div className='w-96 border-l border-gray-800 bg-[#0a0a0a] overflow-y-auto p-4 space-y-4'>
-            <div>
-              <h3 className='text-sm font-bold text-gray-300 uppercase tracking-wider mb-3'>Strategy Details</h3>
-              <label className='block text-xs text-gray-500 mb-1'>Name</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
-                placeholder='Strategy name' />
-            </div>
-            <div>
-              <label className='block text-xs text-gray-500 mb-1'>Description</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none h-20 resize-none'
-                placeholder='What does this strategy do?' />
-            </div>
-            <div className='grid grid-cols-2 gap-3'>
-              <div>
-                <label className='block text-xs text-gray-500 mb-1'>Creator (wallet)</label>
-                <input
-                  value={creator}
-                  onChange={(e) => setCreator(e.target.value)}
-                  className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
-                  placeholder='0x...' />
+          {/* Strategy metadata panel (collapsible) */}
+          <div className={`${isDetailsOpen ? 'w-96' : 'w-0'} border-l border-gray-800 bg-[#0a0a0a] overflow-y-auto transition-all duration-200`}>
+            {isDetailsOpen && (
+              <div className='p-4 space-y-4'>
+                <div>
+                  <h3 className='text-sm font-bold text-gray-300 uppercase tracking-wider mb-3'>Strategy Details</h3>
+                  <label className='block text-xs text-gray-500 mb-1'>Name</label>
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
+                    placeholder='Strategy name' />
+                </div>
+                <div>
+                  <label className='block text-xs text-gray-500 mb-1'>Description</label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none h-20 resize-none'
+                    placeholder='What does this strategy do?' />
+                </div>
+                <div className='grid grid-cols-2 gap-3'>
+                  <div>
+                    <label className='block text-xs text-gray-500 mb-1'>Creator (wallet)</label>
+                    <input
+                      value={creator}
+                      onChange={(e) => setCreator(e.target.value)}
+                      className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
+                      placeholder='0x...' />
+                  </div>
+                  <div>
+                    <label className='block text-xs text-gray-500 mb-1'>Version</label>
+                    <input
+                      value={version}
+                      onChange={(e) => setVersion(e.target.value)}
+                      className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
+                      placeholder='1.0.0' />
+                  </div>
+                </div>
+                <div className='grid grid-cols-2 gap-3'>
+                  <div>
+                    <label className='block text-xs text-gray-500 mb-1'>Category</label>
+                    <input
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
+                      placeholder='arbitrage' />
+                  </div>
+                  <div>
+                    <label className='block text-xs text-gray-500 mb-1'>Risk Level</label>
+                    <select
+                      value={riskLevel}
+                      onChange={(e) => setRiskLevel(e.target.value as 'low' | 'medium' | 'high')}
+                      className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'>
+                      <option value='low'>Low</option>
+                      <option value='medium'>Medium</option>
+                      <option value='high'>High</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className='block text-xs text-gray-500 mb-1'>Tags (comma separated)</label>
+                  <input
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
+                    className='w-full bg-black border border-gray-800 rounded-none px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
+                    placeholder='yield, momentum' />
+                  <p className='text-xs text-gray-500 mt-1'>Parsed: {parsedTags.join(', ') || 'none'}</p>
+                </div>
+                <div className='space-y-2'>
+                  {saveError && <div className='text-xs text-red-400 bg-red-950/40 border border-red-900 rounded-none px-3 py-2'>{saveError}</div>}
+                  {saveSuccess && (
+                    <div className='text-xs text-green-400 bg-green-950/40 border border-green-900 rounded-none px-3 py-2'>{saveSuccess}</div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className='block text-xs text-gray-500 mb-1'>Version</label>
-                <input
-                  value={version}
-                  onChange={(e) => setVersion(e.target.value)}
-                  className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
-                  placeholder='1.0.0' />
-              </div>
-            </div>
-            <div className='grid grid-cols-2 gap-3'>
-              <div>
-                <label className='block text-xs text-gray-500 mb-1'>Category</label>
-                <input
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
-                  placeholder='arbitrage' />
-              </div>
-              <div>
-                <label className='block text-xs text-gray-500 mb-1'>Risk Level</label>
-                <select
-                  value={riskLevel}
-                  onChange={(e) => setRiskLevel(e.target.value as 'low' | 'medium' | 'high')}
-                  className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'>
-                  <option value='low'>Low</option>
-                  <option value='medium'>Medium</option>
-                  <option value='high'>High</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className='block text-xs text-gray-500 mb-1'>Tags (comma separated)</label>
-              <input
-                value={tagsInput}
-                onChange={(e) => setTagsInput(e.target.value)}
-                className='w-full bg-black border border-gray-800 rounded px-3 py-2 text-sm focus:border-[#ccff00] outline-none'
-                placeholder='yield, momentum' />
-              <p className='text-xs text-gray-500 mt-1'>Parsed: {parsedTags.join(', ') || 'none'}</p>
-            </div>
-            <div className='space-y-2'>
-              {saveError && <div className='text-xs text-red-400 bg-red-950/40 border border-red-900 rounded px-3 py-2'>{saveError}</div>}
-              {saveSuccess && (
-                <div className='text-xs text-green-400 bg-green-950/40 border border-green-900 rounded px-3 py-2'>{saveSuccess}</div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>

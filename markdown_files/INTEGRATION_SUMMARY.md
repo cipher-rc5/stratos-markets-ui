@@ -138,12 +138,12 @@ Created custom React hooks for easy data fetching:
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  const { strategies, loading, error } = useStrategies({ category: 'arbitrage', verified: true });
+const { strategies, loading, error } = useStrategies({ category: 'arbitrage', verified: true });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+if (loading) return <div>Loading...</div>;
+if (error) return <div>Error: {error}</div>;
 
-  return <div>{/* Render strategies */}</div>;
+return <div>{/* Render strategies */}</div>;
 }
 \`\`\`
 
@@ -173,60 +173,60 @@ Created comprehensive documentation:
 \`\`\`
 app/api/
 ├── strategies/
-│   ├── route.ts                          # Strategy list/create
-│   └── [id]/
-│       ├── route.ts                      # Strategy CRUD
-│       └── subscribe/route.ts            # Subscribe endpoints
+│ ├── route.ts # Strategy list/create
+│ └── [id]/
+│ ├── route.ts # Strategy CRUD
+│ └── subscribe/route.ts # Subscribe endpoints
 ├── agents/
-│   ├── route.ts                          # Agent list/deploy
-│   └── [id]/
-│       ├── route.ts                      # Agent CRUD
-│       └── execute/route.ts              # Execute agent
+│ ├── route.ts # Agent list/deploy
+│ └── [id]/
+│ ├── route.ts # Agent CRUD
+│ └── execute/route.ts # Execute agent
 ├── portfolio/
-│   ├── route.ts                          # Portfolio data
-│   ├── history/route.ts                  # Historical data
-│   └── transactions/route.ts             # Transaction history
+│ ├── route.ts # Portfolio data
+│ ├── history/route.ts # Historical data
+│ └── transactions/route.ts # Transaction history
 └── market/
-    ├── route.ts                          # Market data list
-    └── [symbol]/
-        ├── route.ts                      # Asset details
-        └── chart/route.ts                # Chart data
+├── route.ts # Market data list
+└── [symbol]/
+├── route.ts # Asset details
+└── chart/route.ts # Chart data
 \`\`\`
 
 ### New Library Files (4 files)
 
 \`\`\`
 lib/
-├── api-client.ts                         # API client
+├── api-client.ts # API client
 └── hooks/
-    ├── use-strategies.ts                 # Strategy hooks
-    ├── use-portfolio.ts                  # Portfolio hooks
-    └── use-market.ts                     # Market hooks
+├── use-strategies.ts # Strategy hooks
+├── use-portfolio.ts # Portfolio hooks
+└── use-market.ts # Market hooks
 \`\`\`
 
 ### Configuration Files (4 files)
 
 \`\`\`
-.gitignore                                # Updated for Bun
-package.json                              # Updated scripts
-env.example                               # Environment template
+.gitignore # Updated for Bun
+package.json # Updated scripts
+env.example # Environment template
 \`\`\`
 
 ### Documentation Files (4 files)
 
 \`\`\`
-README.md                                 # Project README
-SETUP_GUIDE.md                           # Setup guide
-API_DOCUMENTATION.md                     # API docs
-INTEGRATION_SUMMARY.md                   # This file
+README.md # Project README
+SETUP_GUIDE.md # Setup guide
+API_DOCUMENTATION.md # API docs
+INTEGRATION_SUMMARY.md # This file
 \`\`\`
 
 ### Updated Files (3 files)
 
 \`\`\`
-app/page.tsx                             # Uses useStrategies hook
-app/agents/page.tsx                      # Imports API client
-app/portfolio/page.tsx                   # Uses portfolio hooks
+app/page.tsx # Uses useStrategies hook
+app/agents/page.tsx # Imports API client
+app/portfolio/page.tsx # Uses portfolio hooks
 \`\`\`
 
 **Total: 26 files created/modified**
@@ -272,13 +272,13 @@ import { usePortfolio } from '@/lib/hooks/use-portfolio';
 import { useStrategies } from '@/lib/hooks/use-strategies';
 
 function MyComponent() {
-  // Fetch data with hooks
-  const { strategies, loading } = useStrategies({ verified: true });
-  const { portfolio } = usePortfolio('0xYourWallet');
-  const { marketData } = useMarketData(['BTC', 'ETH']);
+// Fetch data with hooks
+const { strategies, loading } = useStrategies({ verified: true });
+const { portfolio } = usePortfolio('0xYourWallet');
+const { marketData } = useMarketData(['BTC', 'ETH']);
 
-  // Use the data in your component
-  return <div>{/* Your UI */}</div>;
+// Use the data in your component
+return <div>{/* Your UI */}</div>;
 }
 \`\`\`
 
@@ -338,11 +338,11 @@ function MyComponent() {
 ### Commands
 
 \`\`\`bash
-bun install          # Install dependencies
-bun dev              # Start dev server
-bun run build        # Build for production
-bun start            # Start production server
-bun test             # Run tests
+bun install # Install dependencies
+bun dev # Start dev server
+bun run build # Build for production
+bun start # Start production server
+bun test # Run tests
 \`\`\`
 
 ---

@@ -1,69 +1,41 @@
+import { fetchBalances } from '@/lib/dune-api';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Types
-export interface PortfolioHistoryPoint {
-  timestamp: string;
-  totalValue: number;
-  totalValueUSD: number;
-  assets: { [symbol: string]: { amount: number, value: number, price: number } };
-}
-
-// Mock data - generate historical data
-function generateHistoricalData(days: number): PortfolioHistoryPoint[] {
-  const data: PortfolioHistoryPoint[] = [];
-  const now = Date.now();
-  let baseValue = 20000;
-
-  for (let i = days;i >= 0;i--) {
-    const timestamp = new Date(now - i * 24 * 60 * 60 * 1000).toISOString();
-
-    // Add some random variation
-    const variation = (Math.random() - 0.5) * 1000;
-    const totalValueUSD = baseValue + variation;
-    baseValue += variation * 0.1; // Trend component
-
-    data.push({
-      timestamp,
-      totalValue: totalValueUSD / 4.5, // Rough conversion
-      totalValueUSD,
-      assets: {
-        ETH: { amount: 5.2345, value: totalValueUSD * 0.45, price: (totalValueUSD * 0.45) / 5.2345 },
-        BTC: { amount: 0.1234, value: totalValueUSD * 0.21, price: (totalValueUSD * 0.21) / 0.1234 },
-        USDC: { amount: 5000, value: 5000, price: 1 },
-        LINK: { amount: 150, value: totalValueUSD * 0.12, price: (totalValueUSD * 0.12) / 150 }
-      }
-    });
-  }
-
-  return data;
-}
-
-// GET /api/portfolio/history - Get portfolio historical data
+// GET /api/portfolio/history - Return latest live snapshot (no mock data)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const walletAddress = searchParams.get('walletAddress');
-    const timeframe = searchParams.get('timeframe') || '30d'; // 7d, 30d, 90d, 1y, all
+    const chainIdsParam = searchParams.get('chain_ids');
+    const timeframe = searchParams.get('timeframe') || '30d'; // preserved for compatibility
 
     if (!walletAddress) {
       return NextResponse.json({ success: false, error: 'Wallet address is required' }, { status: 400 });
     }
 
-    // Map timeframe to days
-    const timeframeMap: { [key: string]: number } = {
-      '7d': 7,
-      '30d': 30,
-      '90d': 90,
-      '1y': 365,
-      all: 730 // 2 years
-    };
+    const chainIds = chainIdsParam ? chainIdsParam.split(',').map((id) => Number.parseInt(id.trim(), 10)) : undefined;
+    const balances = await fetchBalances(walletAddress, chainIds);
 
-    const days = timeframeMap[timeframe] || 30;
+    const totalValueUSD = balances.reduce((sum, balance) => sum + balance.value_usd, 0);
+    const assets = balances.reduce<Record<string, { amount: number, value: number, price: number }>>((acc, balance) => {
+      const amount = Number(balance.amount) / Math.pow(10, balance.decimals || 0);
+      const price = balance.price_usd;
+      acc[balance.symbol] = { amount, value: balance.value_usd, price };
+      return acc;
+    }, {});
 
-    // In production, fetch from database
-    const history = generateHistoricalData(days);
+    const historyPoint = { timestamp: new Date().toISOString(), totalValue: totalValueUSD, totalValueUSD, assets };
 
-    return NextResponse.json({ success: true, data: history, meta: { walletAddress, timeframe, dataPoints: history.length } });
+    return NextResponse.json({
+      success: true,
+      data: [historyPoint],
+      meta: {
+        walletAddress,
+        timeframe,
+        dataPoints: 1,
+        note: 'Historical curves require a time-series provider; returning the latest live snapshot.'
+      }
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message || 'Failed to fetch portfolio history' }, { status: 500 });
   }

@@ -1,78 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { Strategy } from '../route';
 
-// Mock data - would come from database in production
-const mockStrategies: Strategy[] = [{
-  id: 'strat_abc123',
-  name: 'DCA Bitcoin Strategy',
-  description: 'Automated dollar-cost averaging for BTC with dynamic entry points',
-  creator: '0x1234...',
-  version: '1.2.0',
-  performance: { roi: 24.5, sharpeRatio: 1.8, maxDrawdown: -12.3, winRate: 68.5, totalTrades: 342 },
-  pricing: { type: 'flat', amount: 100, currency: 'USDC' },
-  tags: ['DCA', 'Bitcoin', 'Long-term'],
-  subscribers: 342,
-  createdAt: '2025-12-03T19:46:25.828Z',
-  updatedAt: '2025-12-03T19:46:25.828Z',
-  category: 'yield-farming',
-  verified: true,
-  riskLevel: 'low'
-}];
+const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
+
+const ensureCatalogConfigured = () => {
+  if (!CATALOG_API_BASE_URL) {
+    throw new Error('STRATOS_DATA_API_BASE_URL is not configured. Live strategy data cannot be fetched.');
+  }
+};
 
 // GET /api/strategies/[id] - Get strategy by ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
+    const response = await fetch(`${CATALOG_API_BASE_URL}/strategies/${id}`);
+    const data = await response.json().catch(() => ({}));
 
-    const strategy = mockStrategies.find((s) => s.id === id);
-
-    if (!strategy) {
-      return NextResponse.json({ success: false, error: 'Strategy not found' }, { status: 404 });
+    if (!response.ok) {
+      const errorMessage = data?.error || 'Strategy not found';
+      const status = response.status === 404 ? 404 : 502;
+      return NextResponse.json({ success: false, error: errorMessage }, { status });
     }
 
-    return NextResponse.json({ success: true, data: strategy });
+    return NextResponse.json({ success: true, data: data?.data || data });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch strategy' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch strategy' }, { status: 502 });
   }
 }
 
 // PATCH /api/strategies/[id] - Update strategy
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
     const body = await request.json();
 
-    const strategyIndex = mockStrategies.findIndex((s) => s.id === id);
+    const response = await fetch(`${CATALOG_API_BASE_URL}/strategies/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
 
-    if (strategyIndex === -1) {
-      return NextResponse.json({ success: false, error: 'Strategy not found' }, { status: 404 });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to update strategy upstream');
     }
 
-    // Update strategy
-    mockStrategies[strategyIndex] = { ...mockStrategies[strategyIndex], ...body, updatedAt: new Date().toISOString() };
-
-    return NextResponse.json({ success: true, data: mockStrategies[strategyIndex] });
+    return NextResponse.json({ success: true, data: data?.data || data });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to update strategy' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to update strategy' }, { status: 502 });
   }
 }
 
 // DELETE /api/strategies/[id] - Delete strategy
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    ensureCatalogConfigured();
     const { id } = params;
 
-    const strategyIndex = mockStrategies.findIndex((s) => s.id === id);
-
-    if (strategyIndex === -1) {
-      return NextResponse.json({ success: false, error: 'Strategy not found' }, { status: 404 });
+    const response = await fetch(`${CATALOG_API_BASE_URL}/strategies/${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data?.error || 'Failed to delete strategy upstream');
     }
-
-    // Remove strategy
-    mockStrategies.splice(strategyIndex, 1);
 
     return NextResponse.json({ success: true, message: 'Strategy deleted successfully' });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to delete strategy' }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || 'Failed to delete strategy' }, { status: 502 });
   }
 }

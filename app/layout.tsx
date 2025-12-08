@@ -16,11 +16,11 @@ const rajdhani = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: 'STRATOS - Gen 01 Marketplace',
-  description: 'The first generation of strategic assets. Secured on chain. Built for the future.',
-  generator: 'v0.app',
+  title: 'Stratos API Documentation',
+  description: 'Decentralized marketplace infrastructure for the creation, discovery, and monetization of DeFi intelligence.',
+  generator: 'cipher',
   icons: {
-    icon: [{ url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' }, {
+    icon: [{ url: '/stratos-rook.png', media: '(prefers-color-scheme: light)' }, {
       url: '/icon-dark-32x32.png',
       media: '(prefers-color-scheme: dark)'
     }, { url: '/icon.svg', type: 'image/svg+xml' }],
