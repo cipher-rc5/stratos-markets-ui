@@ -4,6 +4,23 @@
 const DUNE_API_BASE_URL = 'https://api.sim.dune.com';
 const DUNE_API_KEY = process.env.DUNE_API_KEY || '';
 
+const CHAIN_CODE_TO_ID: Record<string, number> = {
+  eth: 1,
+  mainnet: 1,
+  op: 10,
+  optimism: 10,
+  bsc: 56,
+  bnb: 56,
+  arb: 42161,
+  arbitrum: 42161,
+  matic: 137,
+  polygon: 137,
+  avax: 43114,
+  avalanche: 43114,
+  base: 8453,
+  celo: 42220
+};
+
 // API response types based on Dune documentation
 export interface DuneBalance {
   chain: string;
@@ -76,15 +93,34 @@ export interface DuneDefiPosition {
 
 const isDuneApiConfigured = () => Boolean(DUNE_API_KEY && DUNE_API_KEY.length > 0);
 
+const resolveChainIds = (chainCodes?: Array<string | number>): number[] => {
+  if (!chainCodes || chainCodes.length === 0) {
+    return [1]; // default to Ethereum mainnet to ensure at least one chain
+  }
+
+  const resolved = chainCodes.map((code) => {
+    if (typeof code === 'number') return code;
+    const normalized = code.toLowerCase();
+    return CHAIN_CODE_TO_ID[normalized];
+  }).filter((id): id is number => Boolean(id));
+
+  if (resolved.length === 0) {
+    throw new Error('At least one valid chain code is required (e.g., eth, arb, op, base, matic).');
+  }
+
+  return resolved;
+};
+
 // Fetch token balances for a wallet across multiple chains
-export async function fetchBalances(walletAddress: string, chainIds?: number[]): Promise<DuneBalance[]> {
+export async function fetchBalances(walletAddress: string, chainCodes?: Array<string | number>): Promise<DuneBalance[]> {
   if (!isDuneApiConfigured()) {
     console.error('[v0] Dune API key not configured. Returning empty balances.');
     return [];
   }
 
   try {
-    const chainParam = chainIds ? `?chain_ids=${chainIds.join(',')}` : '';
+    const chainIds = resolveChainIds(chainCodes);
+    const chainParam = chainIds.length ? `?chain_ids=${chainIds.join(',')}` : '';
     const response = await fetch(`${DUNE_API_BASE_URL}/v1/evm/balances/${walletAddress}${chainParam}`, {
       headers: { 'X-Sim-Api-Key': DUNE_API_KEY }
     });
@@ -104,15 +140,16 @@ export async function fetchBalances(walletAddress: string, chainIds?: number[]):
 }
 
 // Fetch transaction history for a wallet
-export async function fetchTransactions(walletAddress: string, chainIds?: number[], decode = true): Promise<DuneTransaction[]> {
+export async function fetchTransactions(walletAddress: string, chainCodes?: Array<string | number>, decode = true): Promise<DuneTransaction[]> {
   if (!isDuneApiConfigured()) {
     console.error('[v0] Dune API key not configured. Returning empty transactions.');
     return [];
   }
 
   try {
+    const chainIds = resolveChainIds(chainCodes);
     const params = new URLSearchParams();
-    if (chainIds) params.append('chain_ids', chainIds.join(','));
+    if (chainIds?.length) params.append('chain_ids', chainIds.join(','));
     if (decode) params.append('decode', 'true');
     params.append('limit', '50');
 
@@ -135,14 +172,15 @@ export async function fetchTransactions(walletAddress: string, chainIds?: number
 }
 
 // Fetch DeFi positions for a wallet
-export async function fetchDefiPositions(walletAddress: string, chainIds?: number[]): Promise<DuneDefiPosition[]> {
+export async function fetchDefiPositions(walletAddress: string, chainCodes?: Array<string | number>): Promise<DuneDefiPosition[]> {
   if (!isDuneApiConfigured()) {
     console.error('[v0] Dune API key not configured. Returning empty DeFi positions.');
     return [];
   }
 
   try {
-    const chainParam = chainIds ? `?chain_ids=${chainIds.join(',')}` : '';
+    const chainIds = resolveChainIds(chainCodes);
+    const chainParam = chainIds.length ? `?chain_ids=${chainIds.join(',')}` : '';
     const response = await fetch(`${DUNE_API_BASE_URL}/beta/evm/defi/positions/${walletAddress}${chainParam}`, {
       headers: { 'X-Sim-Api-Key': DUNE_API_KEY }
     });
@@ -162,7 +200,8 @@ export async function fetchDefiPositions(walletAddress: string, chainIds?: numbe
 }
 
 // Fetch all portfolio data in parallel
-export async function fetchPortfolioData(walletAddress: string, chainIds?: number[]) {
+export async function fetchPortfolioData(walletAddress: string, chainCodes?: Array<string | number>) {
+  const chainIds = resolveChainIds(chainCodes);
   const [balances, transactions, defiPositions] = await Promise.all([
     fetchBalances(walletAddress, chainIds),
     fetchTransactions(walletAddress, chainIds),

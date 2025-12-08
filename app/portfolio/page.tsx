@@ -3,7 +3,8 @@
 import type { DuneBalance, DuneDefiPosition, DuneTransaction } from '@/lib/dune-api';
 import { TokenAAVE, TokenARB, TokenAVAX, TokenBNB, TokenBTC, TokenCOMP, TokenCRV, TokenDAI, TokenETH, TokenGMX, TokenLINK, TokenMATIC, TokenOP, TokenUNI, TokenUSDC, TokenUSDT, TokenWBTC } from '@web3icons/react';
 import { AlertCircle, ExternalLink, Search, TrendingUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import Navbar from '../../components/navbar';
 
 async function fetchPortfolioData(walletAddress: string, chainIds?: number[]) {
@@ -37,67 +38,77 @@ async function fetchPortfolioData(walletAddress: string, chainIds?: number[]) {
 export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'tokens' | 'nfts' | 'protocols' | 'transactions' | 'analytics'>('overview');
   const [searchAddress, setSearchAddress] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  // Default to a valid, checksummed address to avoid immediate 400s
-  const [currentAddress, setCurrentAddress] = useState('0xE8a090Cf0a138c971ffDbdf52c2B7AD2f7bCeBb6');
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [balances, setBalances] = useState<DuneBalance[]>([]);
   const [transactions, setTransactions] = useState<DuneTransaction[]>([]);
   const [defiPositions, setDefiPositions] = useState<DuneDefiPosition[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isEmptyData, setIsEmptyData] = useState(false); // Flag when no live data is returned
 
-  useEffect(() => {
-    const loadPortfolioData = async () => {
-      if (!currentAddress) return;
+  const performSearch = async (address: string) => {
+    setIsLoading(true);
+    setError(null);
+    setIsEmptyData(false);
+    setCurrentAddress(address);
 
-      setIsLoading(true);
-      setError(null);
-      setIsEmptyData(false);
-
-      try {
-        console.log('[v0] Loading portfolio data for:', currentAddress);
-        const data = await fetchPortfolioData(currentAddress);
-        console.log('[v0] Portfolio data received:', {
-          balances: data.balances?.length || 0,
-          transactions: data.transactions?.length || 0,
-          positions: data.defiPositions?.length || 0
-        });
-
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        const hasRealData = data.balances?.length > 0 || data.transactions?.length > 0 || data.defiPositions?.length > 0;
-
-        if (!hasRealData) {
-          setIsEmptyData(true);
-          console.log('[v0] No real data found for this wallet');
-        }
-
-        setBalances(data.balances || []);
-        setTransactions(data.transactions || []);
-        setDefiPositions(data.defiPositions || []);
-      } catch (err) {
-        console.error('[v0] Portfolio data error:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        setError(`Failed to load portfolio data: ${errorMessage}`);
-      } finally {
+    try {
+      const cached = await readCachedPortfolio(address);
+      if (cached) {
+        setBalances(cached.balances || []);
+        setTransactions(cached.transactions || []);
+        setDefiPositions(cached.defiPositions || []);
+        const hasRealData = (cached.balances?.length || 0) > 0 ||
+          (cached.transactions?.length || 0) > 0 ||
+          (cached.defiPositions?.length || 0) > 0;
+        setIsEmptyData(!hasRealData);
         setIsLoading(false);
+        return;
       }
-    };
 
-    loadPortfolioData();
-  }, [currentAddress]);
+      console.log('[v0] Loading portfolio data for:', address);
+      const data = await fetchPortfolioData(address);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      console.log('[v0] Portfolio data received:', {
+        balances: data.balances?.length || 0,
+        transactions: data.transactions?.length || 0,
+        positions: data.defiPositions?.length || 0
+      });
+
+      const hasRealData = data.balances?.length > 0 || data.transactions?.length > 0 || data.defiPositions?.length > 0;
+
+      if (!hasRealData) {
+        setIsEmptyData(true);
+        console.log('[v0] No real data found for this wallet');
+      }
+
+      setBalances(data.balances || []);
+      setTransactions(data.transactions || []);
+      setDefiPositions(data.defiPositions || []);
+      await cachePortfolioResult(address, { balances: data.balances, transactions: data.transactions, defiPositions: data.defiPositions });
+    } catch (err) {
+      console.error('[v0] Portfolio data error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(`Failed to load portfolio data: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = () => {
-    if (!searchAddress.trim()) return;
-    setIsSearching(true);
-    // Simulate search delay
-    setTimeout(() => {
-      setCurrentAddress(searchAddress.trim());
-      setIsSearching(false);
-    }, 500);
+    const trimmed = searchAddress.trim();
+    if (!trimmed) return;
+    performSearch(trimmed);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
   };
 
   const totalValue = balances.reduce((sum, balance) => sum + balance.value_usd, 0);
@@ -265,19 +276,19 @@ export default function PortfolioPage() {
                 type='text'
                 value={searchAddress}
                 onChange={(e) => setSearchAddress(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={handleKeyDown}
                 placeholder='Search wallet address (0x...)'
-                className='w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors' />
+                className='w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-none pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors' />
             </div>
             <button
               onClick={handleSearch}
-              disabled={isSearching || !searchAddress.trim()}
-              className='px-6 py-3 bg-[#ccff00] text-black font-bold rounded-lg hover:bg-[#b8e600] transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
-              {isSearching ? 'Searching...' : 'Search'}
+              disabled={isLoading || !searchAddress.trim()}
+              className='px-6 py-3 bg-[#ccff00] text-black font-bold rounded-none hover:bg-[#b8e600] transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+              {isLoading ? 'Searching...' : 'Search'}
             </button>
           </div>
           <p className='text-sm text-gray-400 mt-2'>
-            Currently viewing: <span className='text-[#ccff00] font-mono'>{currentAddress}</span>
+            Currently viewing: <span className='text-[#ccff00] font-mono'>{currentAddress ?? 'None'}</span>
           </p>
         </div>
 

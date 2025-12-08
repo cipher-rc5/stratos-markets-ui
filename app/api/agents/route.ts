@@ -4,14 +4,17 @@ const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
 
 const ensureCatalogConfigured = () => {
   if (!CATALOG_API_BASE_URL) {
-    throw new Error('STRATOS_DATA_API_BASE_URL is not configured. Live agent data cannot be fetched.');
+    return false;
   }
+  return true;
 };
 
 // GET /api/agents - List all agents with optional filtering (live)
 export async function GET(request: NextRequest) {
   try {
-    ensureCatalogConfigured();
+    if (!ensureCatalogConfigured()) {
+      return NextResponse.json({ success: false, error: 'STRATOS_DATA_API_BASE_URL is not configured.' }, { status: 200 });
+    }
     const { searchParams } = new URL(request.url);
 
     const upstreamParams = new URLSearchParams();
@@ -20,7 +23,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${CATALOG_API_BASE_URL}/agents${upstreamParams.toString() ? `?${upstreamParams.toString()}` : ''}`);
     if (!response.ok) {
       const fallback = `Upstream agents request failed (${response.status} ${response.statusText})`;
-      return NextResponse.json({ success: false, error: fallback }, { status: response.status || 502 });
+      return NextResponse.json({ success: false, error: fallback }, { status: 200 });
     }
 
     const data = await response.json();
@@ -33,7 +36,9 @@ export async function GET(request: NextRequest) {
 // POST /api/agents - Deploy a new agent via upstream service
 export async function POST(request: NextRequest) {
   try {
-    ensureCatalogConfigured();
+    if (!ensureCatalogConfigured()) {
+      return NextResponse.json({ success: false, error: 'STRATOS_DATA_API_BASE_URL is not configured.' }, { status: 200 });
+    }
     const body = await request.json();
 
     const response = await fetch(`${CATALOG_API_BASE_URL}/agents`, {
@@ -45,7 +50,7 @@ export async function POST(request: NextRequest) {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       const fallback = data?.error || `Failed to deploy agent upstream (${response.status} ${response.statusText})`;
-      return NextResponse.json({ success: false, error: fallback }, { status: response.status || 502 });
+      return NextResponse.json({ success: false, error: fallback }, { status: 200 });
     }
 
     return NextResponse.json({ success: true, data: data?.data || data }, { status: 201 });

@@ -1,0 +1,214 @@
+[
+  {
+    "id": "eth-usdc-weekly-dca",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "ETH/USDC Weekly DCA",
+      "description": "Buys ETH with USDC every week using Uniswap v3.",
+      "category": "dca",
+      "chain_ids": [1],
+      "tags": ["eth", "usdc", "dca", "uniswap"]
+    },
+    "components": {
+      "vault": { "id": "hot-wallet", "type": "eoa" },
+      "assets": {
+        "target": { "symbol": "ETH", "chain_id": 1 },
+        "base": { "symbol": "USDC", "decimals": 6, "chain_id": 1 }
+      },
+      "data_feeds": [
+        { "id": "eth-price", "type": "price", "source": { "provider": "chainlink" } }
+      ],
+      "signals": [
+        { "id": "weekly", "type": "time", "condition": { "operator": "eq" } }
+      ],
+      "actions": [
+        {
+          "id": "buy-eth",
+          "type": "swap",
+          "trigger": "weekly",
+          "protocol": { "name": "uniswap-v3", "chain_id": 1 },
+          "sizing": { "mode": "fixed", "base_value": 500, "unit": "usd" },
+          "slippage": { "max_slippage_bps": 50 }
+        }
+      ]
+    },
+    "execution": {
+      "mode": "automation",
+      "automation": { "cron": "0 0 * * 1" }
+    }
+  },
+  {
+    "id": "aave-usdc-supply-loop",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "Aave USDC Supply + Reinvest",
+      "description": "Supplies USDC to Aave v3 and periodically compounds rewards.",
+      "category": "yield",
+      "chain_ids": [1],
+      "tags": ["aave", "usdc", "lending"]
+    },
+    "components": {
+      "vault": { "id": "aave-vault", "type": "erc4626" },
+      "assets": {
+        "target": { "symbol": "USDC", "decimals": 6, "chain_id": 1 },
+        "base": { "symbol": "USDC", "decimals": 6, "chain_id": 1 }
+      },
+      "signals": [
+        { "id": "monthly", "type": "time", "condition": { "operator": "eq" } }
+      ],
+      "actions": [
+        {
+          "id": "supply",
+          "type": "deposit",
+          "trigger": "monthly",
+          "protocol": { "name": "aave-v3", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 50, "unit": "percent_equity" }
+        },
+        {
+          "id": "claim",
+          "type": "withdraw",
+          "trigger": "monthly",
+          "protocol": { "name": "aave-v3", "chain_id": 1 },
+          "sizing": { "mode": "fixed", "base_value": 0, "unit": "usd" }
+        }
+      ]
+    },
+    "execution": { "mode": "keeper", "keeper": { "network": "gelato", "check_interval_seconds": 3600 } }
+  },
+  {
+    "id": "eth-btc-60-40-rebal",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "60/40 ETH/BTC Rebalancer",
+      "description": "Maintains a 60/40 split between ETH and WBTC using Uniswap v3 swaps.",
+      "category": "rebalancing",
+      "chain_ids": [1],
+      "tags": ["rebalance", "eth", "btc"]
+    },
+    "components": {
+      "vault": { "id": "multisig", "type": "gnosis-safe" },
+      "assets": {
+        "target": { "symbol": "ETH", "chain_id": 1 },
+        "base": { "symbol": "WBTC", "decimals": 8, "chain_id": 1 }
+      },
+      "signals": [
+        {
+          "id": "drift",
+          "type": "band",
+          "condition": {
+            "operator": "outside",
+            "left": { "ref": "allocation-drift" },
+            "right": [-0.05, 0.05]
+          }
+        }
+      ],
+      "actions": [
+        {
+          "id": "rebalance-buy-eth",
+          "type": "swap",
+          "trigger": "drift",
+          "protocol": { "name": "uniswap-v3", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 10, "unit": "percent_equity" },
+          "constraints": { "cooldown_seconds": 3600 }
+        }
+      ]
+    },
+    "execution": { "mode": "automation", "automation": { "block_interval": 300 } }
+  },
+  {
+    "id": "steth-leverage-loop",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "stETH Leverage Loop",
+      "description": "Loop stETH collateral on Aave v3 up to target LTV with circuit breaker on drawdown.",
+      "category": "yield",
+      "chain_ids": [1],
+      "tags": ["leverage", "aave", "steth"]
+    },
+    "components": {
+      "vault": { "id": "loop-vault", "type": "erc4626" },
+      "assets": {
+        "target": { "symbol": "stETH", "chain_id": 1 },
+        "base": { "symbol": "WETH", "chain_id": 1 }
+      },
+      "actions": [
+        {
+          "id": "supply-steth",
+          "type": "deposit",
+          "protocol": { "name": "aave-v3", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 90, "unit": "percent_available" }
+        },
+        {
+          "id": "borrow-weth",
+          "type": "borrow",
+          "protocol": { "name": "aave-v3", "chain_id": 1 },
+          "sizing": { "mode": "percent_equity", "base_value": 40, "unit": "percent_equity" }
+        },
+        {
+          "id": "swap-weth-to-steth",
+          "type": "swap",
+          "protocol": { "name": "curve", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 100, "unit": "percent_available" }
+        }
+      ],
+      "leverage": {
+        "enabled": true,
+        "provider": { "name": "aave-v3", "chain_id": 1 },
+        "target_leverage": 2.5,
+        "max_leverage": 3.0,
+        "health_factor": { "target_ltv_pct": 65, "max_ltv_pct": 70, "panic_ltv_pct": 75 }
+      },
+      "risk": {
+        "circuit_breakers": [
+          {
+            "id": "drawdown-stop",
+            "condition": { "operator": "gt", "left": { "ref": "max_drawdown_pct" }, "right": 15 },
+            "action": "exit_all"
+          }
+        ]
+      }
+    },
+    "execution": { "mode": "keeper", "keeper": { "network": "chainlink-automation", "check_interval_seconds": 900 } }
+  },
+  {
+    "id": "stable-mm-basis",
+    "version": "1.0.0",
+    "metadata": {
+      "name": "Stable Pair Market-Making",
+      "description": "Provide USDC/DAI liquidity on Balancer and exit on volatility spikes.",
+      "category": "market-making",
+      "chain_ids": [1],
+      "tags": ["balancer", "lp", "stablecoins"]
+    },
+    "components": {
+      "vault": { "id": "lp-vault", "type": "erc4626" },
+      "assets": {
+        "target": { "symbol": "USDC", "decimals": 6, "chain_id": 1 },
+        "base": { "symbol": "DAI", "decimals": 18, "chain_id": 1 }
+      },
+      "data_feeds": [
+        { "id": "vol", "type": "volatility", "source": { "provider": "custom-oracle" } }
+      ],
+      "signals": [
+        { "id": "vol-spike", "type": "threshold", "condition": { "operator": "gt", "left": { "ref": "vol" }, "right": 0.02 } }
+      ],
+      "actions": [
+        {
+          "id": "provide-liquidity",
+          "type": "deposit",
+          "protocol": { "name": "balancer", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 80, "unit": "percent_available" }
+        },
+        {
+          "id": "withdraw-liquidity",
+          "type": "withdraw",
+          "trigger": "vol-spike",
+          "protocol": { "name": "balancer", "chain_id": 1 },
+          "sizing": { "mode": "percent_available", "base_value": 100, "unit": "percent_available" },
+          "constraints": { "cooldown_seconds": 600 }
+        }
+      ]
+    },
+    "execution": { "mode": "automation", "automation": { "block_interval": 120 } }
+  }
+]
