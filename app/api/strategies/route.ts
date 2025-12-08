@@ -1,19 +1,22 @@
+// file: app/api/strategies/route.ts
+// description: Strategies API proxy with local sample fallback
+// reference: lib/sample_strategies.json
+
 import { NextRequest, NextResponse } from 'next/server';
+import sampleStrategies from '@/lib/sample_strategies.json' assert { type: 'json' };
 
 const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
 
-const ensureCatalogConfigured = () => {
-  if (!CATALOG_API_BASE_URL) {
-    return false;
-  }
-  return true;
-};
+const respondWithSamples = () =>
+  NextResponse.json({ success: true, data: sampleStrategies, source: 'local-fallback' }, { status: 200 });
+
+const isCatalogConfigured = () => Boolean(CATALOG_API_BASE_URL);
 
 // GET /api/strategies - List all strategies with optional filtering (live)
 export async function GET(request: NextRequest) {
   try {
-    if (!ensureCatalogConfigured()) {
-      return NextResponse.json({ success: false, error: 'STRATOS_DATA_API_BASE_URL is not configured.' }, { status: 200 });
+    if (!isCatalogConfigured()) {
+      return respondWithSamples();
     }
     const { searchParams } = new URL(request.url);
 
@@ -22,6 +25,9 @@ export async function GET(request: NextRequest) {
 
     const response = await fetch(`${CATALOG_API_BASE_URL}/strategies${upstreamParams.toString() ? `?${upstreamParams.toString()}` : ''}`);
     if (!response.ok) {
+      if (response.status === 404) {
+        return respondWithSamples();
+      }
       const fallback = `Upstream strategies request failed (${response.status} ${response.statusText})`;
       return NextResponse.json({ success: false, error: fallback }, { status: 200 });
     }
