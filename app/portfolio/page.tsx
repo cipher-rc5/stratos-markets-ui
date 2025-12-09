@@ -1,4 +1,7 @@
 'use client';
+// file: app/portfolio/page.tsx
+// description: Portfolio dashboard with wallet search, cached results, and token/protocol views
+// reference: lib/dune-api.ts, app/api/portfolio/[address]/route.ts
 
 import type { DuneBalance, DuneDefiPosition, DuneTransaction } from '@/lib/dune-api';
 import { TokenAAVE, TokenARB, TokenAVAX, TokenBNB, TokenBTC, TokenCOMP, TokenCRV, TokenDAI, TokenETH, TokenGMX, TokenLINK, TokenMATIC, TokenOP, TokenUNI, TokenUSDC, TokenUSDT, TokenWBTC } from '@web3icons/react';
@@ -6,6 +9,29 @@ import { AlertCircle, ExternalLink, Search, TrendingUp } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
 import Navbar from '../../components/navbar';
+
+const PORTFOLIO_CACHE_KEY_PREFIX = 'portfolio:';
+const isBrowser = typeof window !== 'undefined';
+
+const readCachedPortfolio = async (address: string) => {
+  if (!isBrowser) return null;
+  try {
+    const raw = localStorage.getItem(`${PORTFOLIO_CACHE_KEY_PREFIX}${address.toLowerCase()}`);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+};
+
+const cachePortfolioResult = async (address: string, data: any) => {
+  if (!isBrowser) return;
+  try {
+    localStorage.setItem(`${PORTFOLIO_CACHE_KEY_PREFIX}${address.toLowerCase()}`, JSON.stringify(data));
+  } catch {
+    // ignore storage errors
+  }
+};
 
 async function fetchPortfolioData(walletAddress: string, chainIds?: number[]) {
   const chainParam = chainIds ? `?chain_ids=${chainIds.join(',')}` : '';
@@ -229,21 +255,9 @@ export default function PortfolioPage() {
   }));
 
   const performanceData = {
-    totalValue: 53369.87,
     totalPnL: 4821.34,
     totalPnLPercent: 9.93,
-    dayChange: 542.18,
-    dayChangePercent: 1.02,
-    weekChange: 1240.55,
-    weekChangePercent: 2.38,
-    monthChange: 2847.92,
-    monthChangePercent: 5.63,
-    yearChange: 8234.56,
-    yearChangePercent: 18.24,
-    allTimeHigh: 67842.34,
-    allTimeLow: 12456.78,
     nftValue: 164793.32,
-    protocolValue: 30747.87,
     totalGasSpent: 124.56,
     totalTransactions: 2713,
     activeProtocols: 6,
@@ -259,39 +273,21 @@ export default function PortfolioPage() {
     concentrationRisk: 23.0 // % in top holding
   };
 
-  // Dummy variable to resolve undeclared variable error
-  const protocolPositions = protocolsFromExisting;
+  const totalDefiValue = defiPositions.reduce((sum, pos) => sum + (pos.usd_value || 0), 0);
+  const totalNftValue = performanceData.nftValue || 0;
+  const totalPnL = performanceData.totalPnL || 0;
+  const totalPnLPercent = performanceData.totalPnLPercent || 0;
+  const chainCards = chainEntries.slice(0, 6);
+  const topHoldings = [...balances].sort((a, b) => b.value_usd - a.value_usd).slice(0, 5);
+  const topProtocolEntries = [...protocolEntries].sort(([, a], [, b]) => b.totalValue - a.totalValue).slice(0, 5);
+
+  const formatUsd = (value: number) => `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className='min-h-screen bg-black text-white'>
+    <div className='min-h-screen bg-[#040404] text-white'>
       <Navbar />
 
-      <main className='container mx-auto px-4 py-8 max-w-[1400px]'>
-        {/* Search Section */}
-        <div className='mb-8'>
-          <div className='flex gap-4 items-center'>
-            <div className='flex-1 relative'>
-              <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-400' size={20} />
-              <input
-                type='text'
-                value={searchAddress}
-                onChange={(e) => setSearchAddress(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder='Search wallet address (0x...)'
-                className='w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-none pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors' />
-            </div>
-            <button
-              onClick={handleSearch}
-              disabled={isLoading || !searchAddress.trim()}
-              className='px-6 py-3 bg-[#ccff00] text-black font-bold rounded-none hover:bg-[#b8e600] transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
-              {isLoading ? 'Searching...' : 'Search'}
-            </button>
-          </div>
-          <p className='text-sm text-gray-400 mt-2'>
-            Currently viewing: <span className='text-[#ccff00] font-mono'>{currentAddress ?? 'None'}</span>
-          </p>
-        </div>
-
+      <main className='mx-auto w-full max-w-[1440px] px-4 pb-16 pt-10 lg:px-8'>
         {/* Loading State */}
         {isLoading && (
           <div className='flex items-center justify-center py-20'>
@@ -324,136 +320,278 @@ export default function PortfolioPage() {
           </div>
         )}
 
-        {/* Main Content */}
         {!isLoading && !error && (
-          <>
-            {/* Portfolio Value Cards */}
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-              <div className='bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6'>
-                <p className='text-gray-400 text-sm mb-2'>Total Portfolio Value</p>
-                <p className='text-3xl font-bold mb-2'>
-                  ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          <div className='flex flex-col gap-10'>
+            {/* Hero / Search */}
+            <div className='flex flex-col gap-6'>
+              <div className='flex flex-col gap-2'>
+                <p className='text-[11px] uppercase tracking-[0.3em] text-[#ccff00]'>Portfolio Status · Live</p>
+                <h1 className='text-3xl font-bold md:text-4xl'>
+                  DeFi <span className='text-[#ccff00]'>Portfolio</span>
+                </h1>
+                <p className='max-w-2xl text-sm text-gray-400'>
+                  Advanced multi-chain portfolio tracking and analytics powered by Dune data.
                 </p>
-                <div className='flex items-center gap-2 text-sm'>
-                  <TrendingUp className='text-[#ccff00]' size={16} />
-                  <span className='text-[#ccff00]'>Real-time data via Dune Analytics</span>
+              </div>
+
+              <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+                <div className='flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:w-auto'>
+                  <div className='relative w-full sm:min-w-[320px]'>
+                    <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-500' size={20} />
+                    <input
+                      type='text'
+                      value={searchAddress}
+                      onChange={(e) => setSearchAddress(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder='Search any wallet address (0x...)'
+                      className='w-full rounded-lg border border-gray-900 bg-[#0b0b0b] pl-12 pr-4 py-3 text-sm text-white placeholder:text-gray-500 focus:border-[#ccff00] focus:outline-none' />
+                  </div>
+                  <button
+                    onClick={handleSearch}
+                    disabled={isLoading || !searchAddress.trim()}
+                    className='inline-flex items-center justify-center rounded-lg bg-[#ccff00] px-6 py-3 text-sm font-bold uppercase tracking-widest text-black transition hover:bg-white disabled:opacity-50'>
+                    {isLoading ? 'Searching...' : 'Search'}
+                  </button>
+                </div>
+
+                <div className='flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.25em] text-gray-500'>
+                  <span className='rounded-full border border-gray-900 bg-[#0b0b0b] px-3 py-1'>Viewing wallet</span>
+                  <span className='font-mono text-xs text-white'>{currentAddress ?? '—'}</span>
                 </div>
               </div>
 
-              <div className='bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6'>
-                <p className='text-gray-400 text-sm mb-2'>Total Tokens</p>
-                <p className='text-3xl font-bold mb-2'>{balances.length}</p>
-                <p className='text-sm text-gray-400'>Across {Object.keys(balancesByChain).length} chains</p>
+              <div className='flex flex-wrap gap-3 text-xs'>
+                <button className='rounded-md border border-gray-900 bg-[#0b0b0b] px-3 py-2 text-gray-300 hover:border-[#ccff00] hover:text-white transition'>
+                  Refresh Data
+                </button>
+                <button className='rounded-md border border-gray-900 bg-[#0b0b0b] px-3 py-2 text-gray-300 hover:border-[#ccff00] hover:text-white transition'>
+                  Export CSV
+                </button>
+                <button className='rounded-md border border-gray-900 bg-[#0b0b0b] px-3 py-2 text-gray-300 hover:border-[#ccff00] hover:text-white transition'>
+                  Set Alerts
+                </button>
+              </div>
+            </div>
+
+            {/* KPI Row */}
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4'>
+              <div className='rounded-xl border border-gray-900 bg-gradient-to-br from-[#0b0b0b] to-[#101010] p-5 shadow-lg shadow-black/40'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>Total Net Worth</p>
+                <p className='mt-2 text-3xl font-bold'>{formatUsd(totalValue)}</p>
+                <p className='mt-1 text-xs text-gray-500'>Live · All chains</p>
+              </div>
+              <div className='rounded-xl border border-gray-900 bg-gradient-to-br from-[#0b0b0b] to-[#101010] p-5 shadow-lg shadow-black/40'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>Total PnL</p>
+                <div className='mt-2 flex items-baseline gap-2'>
+                  <p className='text-3xl font-bold text-[#ccff00]'>{formatUsd(totalPnL)}</p>
+                  <span className='text-sm font-semibold text-[#ccff00]'>+{totalPnLPercent}%</span>
+                </div>
+                <p className='mt-1 text-xs text-gray-500'>Since inception</p>
+              </div>
+              <div className='rounded-xl border border-gray-900 bg-gradient-to-br from-[#0b0b0b] to-[#101010] p-5 shadow-lg shadow-black/40'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>DeFi Value</p>
+                <p className='mt-2 text-3xl font-bold'>{formatUsd(totalDefiValue)}</p>
+                <p className='mt-1 text-xs text-gray-500'>{protocolEntries.length} protocols</p>
+              </div>
+              <div className='rounded-xl border border-gray-900 bg-gradient-to-br from-[#0b0b0b] to-[#101010] p-5 shadow-lg shadow-black/40'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>NFT Value</p>
+                <p className='mt-2 text-3xl font-bold'>{formatUsd(totalNftValue)}</p>
+                <p className='mt-1 text-xs text-gray-500'>Collections & assets</p>
+              </div>
+            </div>
+
+            {/* Risk & Chain Distribution */}
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
+              <div className='rounded-xl border border-gray-900 bg-[#0b0b0b] p-6 shadow-lg shadow-black/40 lg:col-span-1'>
+                <div className='mb-4 flex items-center justify-between'>
+                  <div>
+                    <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>Risk & Health Metrics</p>
+                    <p className='text-sm text-gray-400'>Modeled · 30d</p>
+                  </div>
+                  <span className='text-xs font-semibold text-[#ccff00]'>In Sync</span>
+                </div>
+                <div className='space-y-4'>
+                  <div>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-gray-400'>Portfolio Health</span>
+                      <span className='font-semibold text-white'>{riskMetrics.portfolioHealth}/10</span>
+                    </div>
+                    <div className='mt-2 h-2 w-full rounded-full bg-gray-900'>
+                      <div
+                        className='h-2 rounded-full bg-[#ccff00]'
+                        style={{ width: `${(riskMetrics.portfolioHealth / 10) * 100}%` }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-gray-400'>Diversification</span>
+                      <span className='font-semibold text-white'>{riskMetrics.diversificationScore}/10</span>
+                    </div>
+                    <div className='mt-2 h-2 w-full rounded-full bg-gray-900'>
+                      <div
+                        className='h-2 rounded-full bg-blue-500'
+                        style={{ width: `${(riskMetrics.diversificationScore / 10) * 100}%` }} />
+                    </div>
+                  </div>
+                  <div className='grid grid-cols-2 gap-3 text-sm'>
+                    <div className='rounded-lg border border-gray-900 bg-[#0f0f0f] p-3'>
+                      <p className='text-gray-500'>Exposure Risk</p>
+                      <p className='mt-1 font-semibold text-white'>{riskMetrics.exposureRisk}</p>
+                    </div>
+                    <div className='rounded-lg border border-gray-900 bg-[#0f0f0f] p-3'>
+                      <p className='text-gray-500'>Liquidation Risk</p>
+                      <p className='mt-1 font-semibold text-green-400'>{riskMetrics.liquidationRisk}</p>
+                    </div>
+                    <div className='rounded-lg border border-gray-900 bg-[#0f0f0f] p-3'>
+                      <p className='text-gray-500'>IL Exposure</p>
+                      <p className='mt-1 font-semibold text-red-400'>{formatUsd(riskMetrics.impermanentLoss)}</p>
+                    </div>
+                    <div className='rounded-lg border border-gray-900 bg-[#0f0f0f] p-3'>
+                      <p className='text-gray-500'>Concentration</p>
+                      <p className='mt-1 font-semibold text-[#ccff00]'>{riskMetrics.concentrationRisk}%</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className='bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-6'>
-                <p className='text-gray-400 text-sm mb-2'>DeFi Positions</p>
-                <p className='text-3xl font-bold mb-2'>{defiPositions.length}</p>
-                <p className='text-sm text-gray-400'>Active protocol positions</p>
+              <div className='rounded-xl border border-gray-900 bg-[#0b0b0b] p-6 shadow-lg shadow-black/40 lg:col-span-2'>
+                <div className='mb-6 flex items-center justify-between'>
+                  <div>
+                    <p className='text-[11px] uppercase tracking-[0.25em] text-gray-500'>Chain Distribution</p>
+                    <p className='text-sm text-gray-400'>Value by network</p>
+                  </div>
+                  <span className='text-xs text-gray-500'>Live</span>
+                </div>
+                <div className='grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'>
+                  {chainCards.map(([chainId, data]) => (
+                    <div
+                      key={chainId}
+                      className='rounded-xl border border-gray-900 bg-[#0f0f0f] p-4'>
+                      <div className='flex items-center justify-between'>
+                        <div>
+                          <p className='text-sm font-semibold text-white'>{data.name}</p>
+                          <p className='text-xs text-gray-500'>Chain ID: {chainId}</p>
+                        </div>
+                        <span className='text-xs font-semibold text-[#ccff00]'>↑</span>
+                      </div>
+                      <div className='mt-3 flex items-end justify-between'>
+                        <p className='text-2xl font-bold'>{formatUsd(data.totalValue)}</p>
+                        <div className='flex items-center gap-1 text-xs text-[#ccff00]'>
+                          <TrendingUp size={14} />
+                          <span>0.00%</span>
+                        </div>
+                      </div>
+                      <p className='mt-1 text-xs text-gray-500'>
+                        {balances.filter((b) => b.chain_id === Number(chainId)).length} assets
+                      </p>
+                    </div>
+                  ))}
+                  {chainCards.length === 0 && <p className='text-gray-500'>No chain data available</p>}
+                </div>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className='flex gap-2 mb-6 overflow-x-auto'>
+            <div className='flex flex-wrap gap-2 rounded-xl border border-gray-900 bg-[#0b0b0b] p-2'>
               {(['overview', 'tokens', 'protocols', 'transactions', 'analytics'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors ${
-                    activeTab === tab ? 'bg-[#ccff00] text-black' : 'bg-[#1a1a1a] text-gray-400 hover:text-white border border-[#2a2a2a]'
+                  className={`px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] transition-colors ${
+                    activeTab === tab ? 'bg-[#ccff00] text-black' : 'text-gray-400 hover:text-white'
                   }`}>
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {tab}
                 </button>
               ))}
             </div>
 
             {/* Tab Content */}
             {activeTab === 'overview' && (
-              <div className='space-y-6'>
-                {/* Top Holdings */}
-                <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                  <h3 className='text-xl font-bold mb-4'>Top Holdings</h3>
+              <div className='grid grid-cols-1 gap-4 xl:grid-cols-2'>
+                <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                  <div className='mb-4 flex items-center justify-between'>
+                    <h3 className='text-lg font-bold uppercase tracking-[0.15em]'>Top Holdings</h3>
+                    <span className='text-xs text-[#ccff00]'>View All</span>
+                  </div>
                   <div className='space-y-3'>
-                    {balances.sort((a, b) => b.value_usd - a.value_usd).slice(0, 5).map((balance, index) => (
+                    {topHoldings.map((balance, index) => (
                       <div
                         key={`${balance.chain_id}-${balance.address}-${index}`}
-                        className='flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] hover:border-[#ccff00]/30 transition-colors'>
-                        <div className='flex items-center gap-4'>
-                          <div className='w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center'>
+                        className='flex items-center justify-between rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                        <div className='flex items-center gap-3'>
+                          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1a1a1a]'>
                             {getTokenIcon(balance.symbol)}
                           </div>
                           <div>
-                            <p className='font-semibold'>{balance.symbol}</p>
-                            <p className='text-sm text-gray-400'>{balance.name}</p>
+                            <p className='font-semibold text-white'>{balance.symbol}</p>
+                            <p className='text-xs uppercase tracking-[0.15em] text-gray-500'>{balance.chain}</p>
                           </div>
                         </div>
                         <div className='text-right'>
-                          <p className='font-semibold'>
-                            $
-                            {balance.value_usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
-                          <p className='text-sm text-gray-400'>
-                            {(Number.parseFloat(balance.amount) / Math.pow(10, balance.decimals)).toFixed(4)} {balance.symbol}
+                          <p className='text-sm text-gray-500'>Total value</p>
+                          <p className='text-lg font-bold text-white'>
+                            {formatUsd(balance.value_usd)}
                           </p>
                         </div>
                       </div>
                     ))}
+                    {topHoldings.length === 0 && <p className='text-gray-500'>No holdings yet</p>}
                   </div>
                 </div>
 
-                {/* Top Protocols */}
-                {protocolEntries.length > 0 && (
-                  <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                    <h3 className='text-xl font-bold mb-4'>Top Protocols</h3>
-                    <div className='space-y-3'>
-                      {protocolEntries.sort(([, a], [, b]) => b.totalValue - a.totalValue).slice(0, 5).map(([protocol, data]) => (
-                        <div
-                          key={protocol}
-                          className='flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                          <div>
-                            <p className='font-semibold'>{protocol}</p>
-                            <p className='text-sm text-gray-400'>{data.positions.length} positions</p>
-                          </div>
-                          <p className='font-semibold text-[#ccff00]'>
-                            $
-                            {data.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                  <div className='mb-4 flex items-center justify-between'>
+                    <h3 className='text-lg font-bold uppercase tracking-[0.15em]'>Protocol Positions</h3>
+                    <span className='text-xs text-[#ccff00]'>View All</span>
                   </div>
-                )}
+                  <div className='space-y-3'>
+                    {topProtocolEntries.map(([protocol, data]) => (
+                      <div
+                        key={protocol}
+                        className='flex items-center justify-between rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                        <div className='flex items-center gap-3'>
+                          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-[#1a1a1a]'>
+                            {getTokenIcon(protocol)}
+                          </div>
+                          <div>
+                            <p className='font-semibold text-white'>{protocol}</p>
+                            <p className='text-xs text-gray-500'>{data.positions.length} positions</p>
+                          </div>
+                        </div>
+                        <div className='text-right'>
+                          <p className='text-sm text-gray-500'>Total value</p>
+                          <p className='text-lg font-bold text-[#ccff00]'>{formatUsd(data.totalValue)}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {topProtocolEntries.length === 0 && <p className='text-gray-500'>No protocol data yet</p>}
+                  </div>
+                </div>
               </div>
             )}
 
             {activeTab === 'tokens' && (
-              <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                <h3 className='text-xl font-bold mb-4'>Token Holdings</h3>
+              <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                <h3 className='text-lg font-bold uppercase tracking-[0.15em] mb-4'>Token Holdings</h3>
                 <div className='space-y-3'>
                   {balances.map((balance, index) => (
                     <div
                       key={`${balance.chain_id}-${balance.address}-${index}`}
-                      className='flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] hover:border-[#ccff00]/30 transition-colors'>
+                      className='flex flex-col gap-3 rounded-xl border border-gray-900 bg-[#101010] p-4 sm:flex-row sm:items-center sm:justify-between'>
                       <div className='flex items-center gap-4 flex-1'>
-                        <div className='w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center'>
+                        <div className='h-10 w-10 rounded-full bg-[#1a1a1a] flex items-center justify-center'>
                           {getTokenIcon(balance.symbol)}
                         </div>
                         <div className='flex-1'>
                           <div className='flex items-center gap-2'>
                             <p className='font-semibold'>{balance.symbol}</p>
-                            <span className='text-xs px-2 py-0.5 bg-[#2a2a2a] rounded-full text-gray-400'>{balance.chain}</span>
-                            {balance.low_liquidity && (
-                              <span className='text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-500 rounded-full'>Low Liquidity</span>
-                            )}
+                            <span className='text-xs px-2 py-0.5 bg-[#1a1a1a] rounded-full text-gray-400'>{balance.chain}</span>
                           </div>
                           <p className='text-sm text-gray-400'>{balance.name}</p>
                         </div>
                       </div>
                       <div className='text-right'>
-                        <p className='font-semibold'>
-                          $
-                          {balance.value_usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </p>
+                        <p className='font-semibold'>{formatUsd(balance.value_usd)}</p>
                         <p className='text-sm text-gray-400'>
                           {(Number.parseFloat(balance.amount) / Math.pow(10, balance.decimals)).toFixed(6)} {balance.symbol}
                         </p>
@@ -461,22 +599,22 @@ export default function PortfolioPage() {
                       </div>
                     </div>
                   ))}
-                  {balances.length === 0 && <p className='text-center text-gray-400 py-8'>No token holdings found</p>}
+                  {balances.length === 0 && <p className='text-center text-gray-500 py-8'>No token holdings found</p>}
                 </div>
               </div>
             )}
 
             {activeTab === 'protocols' && (
-              <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                <h3 className='text-xl font-bold mb-4'>DeFi Protocol Positions</h3>
+              <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                <h3 className='text-lg font-bold uppercase tracking-[0.15em] mb-4'>DeFi Protocol Positions</h3>
                 <div className='space-y-4'>
                   {defiPositions.map((position, index) => (
                     <div
                       key={`${position.protocol}-${position.chain_id}-${index}`}
-                      className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] hover:border-[#ccff00]/30 transition-colors'>
-                      <div className='flex items-center justify-between mb-3'>
+                      className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                         <div className='flex items-center gap-3'>
-                          <div className='w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center'>
+                          <div className='h-10 w-10 rounded-full bg-[#1a1a1a] flex items-center justify-center'>
                             {getTokenIcon(position.protocol)}
                           </div>
                           <div>
@@ -484,146 +622,126 @@ export default function PortfolioPage() {
                             <p className='text-sm text-gray-400'>{position.type}</p>
                           </div>
                         </div>
-                        <p className='text-lg font-bold text-[#ccff00]'>
-                          $
-                          {position.usd_value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </p>
+                        <p className='text-lg font-bold text-[#ccff00]'>{formatUsd(position.usd_value)}</p>
                       </div>
 
                       {position.token0_symbol && position.token1_symbol && (
-                        <div className='mt-3 pt-3 border-t border-[#2a2a2a]'>
-                          <p className='text-sm text-gray-400 mb-2'>Pool Tokens:</p>
-                          <div className='flex gap-4'>
-                            <div className='flex-1'>
-                              <p className='text-sm font-semibold'>{position.token0_symbol}</p>
-                              <p className='text-xs text-gray-400'>{position.token0_name}</p>
-                            </div>
-                            <div className='flex-1'>
-                              <p className='text-sm font-semibold'>{position.token1_symbol}</p>
-                              <p className='text-xs text-gray-400'>{position.token1_name}</p>
-                            </div>
+                        <div className='mt-3 grid grid-cols-1 gap-3 border-t border-gray-900 pt-3 sm:grid-cols-2'>
+                          <div>
+                            <p className='text-sm font-semibold'>{position.token0_symbol}</p>
+                            <p className='text-xs text-gray-500'>{position.token0_name}</p>
+                          </div>
+                          <div>
+                            <p className='text-sm font-semibold'>{position.token1_symbol}</p>
+                            <p className='text-xs text-gray-500'>{position.token1_name}</p>
                           </div>
                         </div>
                       )}
 
                       {position.supply_quote && (
-                        <div className='mt-3 pt-3 border-t border-[#2a2a2a]'>
-                          <div className='flex justify-between items-center'>
-                            <p className='text-sm text-gray-400'>Supplied:</p>
-                            <p className='text-sm font-semibold text-green-500'>
-                              $
-                              {position.supply_quote.usd_value.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                              })}
-                            </p>
-                          </div>
+                        <div className='mt-3 flex items-center justify-between border-t border-gray-900 pt-3 text-sm'>
+                          <span className='text-gray-400'>Supplied</span>
+                          <span className='font-semibold text-green-500'>
+                            {formatUsd(position.supply_quote.usd_value)}
+                          </span>
                         </div>
                       )}
 
                       {position.debt_quote && (
-                        <div className='mt-2'>
-                          <div className='flex justify-between items-center'>
-                            <p className='text-sm text-gray-400'>Borrowed:</p>
-                            <p className='text-sm font-semibold text-red-500'>
-                              $
-                              {position.debt_quote.usd_value.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                              })}
-                            </p>
-                          </div>
+                        <div className='mt-2 flex items-center justify-between text-sm'>
+                          <span className='text-gray-400'>Borrowed</span>
+                          <span className='font-semibold text-red-500'>
+                            {formatUsd(position.debt_quote.usd_value)}
+                          </span>
                         </div>
                       )}
                     </div>
                   ))}
-                  {defiPositions.length === 0 && <p className='text-center text-gray-400 py-8'>No DeFi positions found</p>}
+                  {defiPositions.length === 0 && <p className='text-center text-gray-500 py-8'>No DeFi positions found</p>}
                 </div>
               </div>
             )}
 
             {activeTab === 'transactions' && (
-              <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                <h3 className='text-xl font-bold mb-4'>Recent Transactions</h3>
+              <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                <h3 className='text-lg font-bold uppercase tracking-[0.15em] mb-4'>Recent Transactions</h3>
                 <div className='space-y-3'>
                   {transactions.map((tx, index) => (
                     <div
                       key={`${tx.hash}-${index}`}
-                      className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a] hover:border-[#ccff00]/30 transition-colors'>
-                      <div className='flex items-center justify-between mb-2'>
+                      className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                         <div className='flex items-center gap-3'>
-                          <div className={`w-2 h-2 rounded-full ${tx.status === 1 ? 'bg-green-500' : 'bg-red-500'}`} />
+                          <div className={`h-2 w-2 rounded-full ${tx.status === 1 ? 'bg-green-500' : 'bg-red-500'}`} />
                           <div>
                             <p className='font-mono text-sm'>{tx.hash.slice(0, 10)}...{tx.hash.slice(-8)}</p>
-                            <p className='text-xs text-gray-400'>{new Date(tx.block_timestamp).toLocaleString()}</p>
+                            <p className='text-xs text-gray-500'>{new Date(tx.block_timestamp).toLocaleString()}</p>
                           </div>
                         </div>
                         <a
                           href={`https://etherscan.io/tx/${tx.hash}`}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-[#ccff00] hover:underline flex items-center gap-1'>
-                          <span className='text-sm'>View</span>
+                          className='inline-flex items-center gap-1 text-xs font-semibold text-[#ccff00] hover:underline'>
+                          <span>View</span>
                           <ExternalLink size={14} />
                         </a>
                       </div>
-                      <div className='flex items-center justify-between text-sm'>
-                        <span className='text-gray-400'>Chain: {tx.chain}</span>
-                        <span className='text-gray-400'>Gas: {(Number.parseFloat(tx.transaction_fee) / 1e18).toFixed(6)} ETH</span>
+                      <div className='mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-400'>
+                        <span>Chain: {tx.chain}</span>
+                        <span>Gas: {(Number.parseFloat(tx.transaction_fee) / 1e18).toFixed(6)} ETH</span>
+                        {tx.decoded?.function_name && (
+                          <span className='font-mono text-[#ccff00]'>{tx.decoded.function_name}</span>
+                        )}
                       </div>
-                      {tx.decoded && (
-                        <div className='mt-2 pt-2 border-t border-[#2a2a2a]'>
-                          <p className='text-xs text-gray-400'>Function:</p>
-                          <p className='text-sm font-mono text-[#ccff00]'>{tx.decoded.function_name}</p>
-                        </div>
-                      )}
                     </div>
                   ))}
-                  {transactions.length === 0 && <p className='text-center text-gray-400 py-8'>No transactions found</p>}
+                  {transactions.length === 0 && <p className='text-center text-gray-500 py-8'>No transactions found</p>}
                 </div>
               </div>
             )}
 
             {activeTab === 'analytics' && (
-              <div className='bg-[#0a0a0a] border border-[#2a2a2a] rounded-xl p-6'>
-                <h3 className='text-xl font-bold mb-4'>Portfolio Analytics</h3>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                  <div className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                    <p className='text-sm text-gray-400 mb-2'>Total Chains</p>
+              <div className='rounded-2xl border border-gray-900 bg-[#0b0b0b] p-6'>
+                <h3 className='text-lg font-bold uppercase tracking-[0.15em] mb-4'>Portfolio Analytics</h3>
+                <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4'>
+                  <div className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                    <p className='text-xs text-gray-500'>Total Chains</p>
                     <p className='text-2xl font-bold'>{chainEntries.length}</p>
                   </div>
-                  <div className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                    <p className='text-sm text-gray-400 mb-2'>Total Protocols</p>
+                  <div className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                    <p className='text-xs text-gray-500'>Total Protocols</p>
                     <p className='text-2xl font-bold'>{protocolEntries.length}</p>
                   </div>
-                  <div className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                    <p className='text-sm text-gray-400 mb-2'>Recent Transactions</p>
+                  <div className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                    <p className='text-xs text-gray-500'>Recent Transactions</p>
                     <p className='text-2xl font-bold'>{transactions.length}</p>
                   </div>
-                  <div className='p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                    <p className='text-sm text-gray-400 mb-2'>Data Source</p>
+                  <div className='rounded-xl border border-gray-900 bg-[#101010] p-4'>
+                    <p className='text-xs text-gray-500'>Data Source</p>
                     <p className='text-sm font-semibold text-[#ccff00]'>Dune Analytics</p>
                   </div>
                 </div>
 
                 {/* Chain Breakdown */}
                 <div className='mt-6'>
-                  <h4 className='text-lg font-semibold mb-3'>Value by Chain</h4>
-                  <div className='space-y-3'>
+                  <h4 className='text-sm uppercase tracking-[0.15em] text-gray-500'>Value by Chain</h4>
+                  <div className='mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'>
                     {chainEntries.map(([chainId, data]) => (
-                      <div key={chainId} className='flex items-center justify-between p-3 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]'>
-                        <span className='font-medium'>{data.name}</span>
-                        <span className='text-[#ccff00] font-semibold'>
-                          $
-                          {data.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
+                      <div key={chainId} className='rounded-xl border border-gray-900 bg-[#101010] p-3'>
+                        <div className='flex items-center justify-between text-sm'>
+                          <span className='font-medium text-white'>{data.name}</span>
+                          <span className='text-xs text-gray-500'>ID {chainId}</span>
+                        </div>
+                        <p className='mt-2 text-lg font-bold text-[#ccff00]'>{formatUsd(data.totalValue)}</p>
                       </div>
                     ))}
+                    {chainEntries.length === 0 && <p className='text-gray-500'>No chain data available</p>}
                   </div>
                 </div>
               </div>
             )}
-          </>
+          </div>
         )}
       </main>
     </div>
