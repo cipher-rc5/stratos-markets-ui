@@ -37,7 +37,7 @@
         "@scalar/nextjs-api-reference": "^0.9.3",
         "@vercel/analytics": "latest",
         "@web3icons/core": "^4.0.39",
-        "@web3icons/react": "latest",
+        "@web3icons/react": "^4.1.4",
         "@xyflow/react": "latest",
         "autoprefixer": "^10.4.22",
         "class-variance-authority": "^0.7.1",

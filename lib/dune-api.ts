@@ -38,6 +38,7 @@ export interface DuneBalance {
 }
 
 export interface DuneTransaction {
+  timestamp: string | number | Date;
   chain: string;
   chain_id: number;
   hash: string;
