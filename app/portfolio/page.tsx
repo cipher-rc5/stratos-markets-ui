@@ -5,14 +5,15 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { DuneBalance, DuneDefiPosition, DuneTransaction } from '@/lib/dune-api';
 import {
   TokenAAVE,
+  TokenARB,
   TokenAVAX,
   TokenBNB,
   TokenBTC,
   TokenCOMP,
   TokenCRV,
+  TokenDAI,
   TokenETH,
   TokenGMX,
   TokenLINK,
@@ -20,8 +21,8 @@ import {
   TokenOP,
   TokenUNI,
   TokenUSDC,
-  TokenWBTC,
-  NetworkArbitrumOne
+  TokenUSDT,
+  TokenWBTC
 } from '@web3icons/react';
 import {
   Activity,
@@ -42,7 +43,9 @@ import {
   Wallet,
   X
 } from 'lucide-react';
+import Navbar from '@/components/navbar';
 import type { JSX, MouseEvent } from 'react';
+import type { DuneBalance, DuneDefiPosition, DuneTransaction } from '@/lib/dune-api';
 
 // Fallback icon for symbols without a dedicated Web3Icon
 const TokenLogo = ({
@@ -75,7 +78,7 @@ const TokenLogo = ({
 
   return (
     <div
-      className={`rounded-full flex items-center justify-center text-white font-bold font-mono ${bgColor} ${className ?? ''}`}
+      className={`rounded-none flex items-center justify-center text-white font-bold font-mono ${bgColor} ${className ?? ''}`}
       style={{ width: size, height: size, fontSize: size * 0.4 }}>
       {symbol ? symbol.slice(0, 1).toUpperCase() : '?'}
     </div>
@@ -143,9 +146,10 @@ const web3IconMap: Record<string, typeof TokenETH> = {
   BTC: TokenBTC,
   WBTC: TokenWBTC,
   USDC: TokenUSDC,
-  USDT: TokenUSDC,
+  USDT: TokenUSDT,
+  DAI: TokenDAI,
   OP: TokenOP,
-  ARB: NetworkArbitrumOne,
+  ARB: TokenARB,
   MATIC: TokenMATIC,
   AVAX: TokenAVAX,
   BNB: TokenBNB,
@@ -363,11 +367,12 @@ const PortfolioPage = () => {
   };
 
   const headingFontClass = 'font-[var(--font-orbitron)]';
-  const bodyFontClass = 'font-[var(--font-sans)]';
-  const numericFontClass = 'font-[var(--font-sans)]';
+  const bodyFontClass = 'font-[var(--font-rajdhani)]';
+  const numericFontClass = 'font-[var(--font-orbitron)]';
 
   return (
     <div className={`min-h-screen bg-black text-white selection:bg-[#ccff00] selection:text-black p-6 md:p-12 ${bodyFontClass}`}>
+      <Navbar />
       <div className='max-w-[1920px] mx-auto'>
         {/* Header & Search Section */}
         <div className='mb-12'>
@@ -376,7 +381,9 @@ const PortfolioPage = () => {
               <div className='inline-block border border-[#ccff00]/30 bg-[#ccff00]/10 px-4 py-1 text-[10px] font-mono text-[#ccff00] uppercase tracking-widest mb-4 animate-pulse'>
                 ● DUNE ECHO API: LIVE
               </div>
-              <h1 className={`text-4xl md:text-5xl font-bold mb-2 tracking-tight ${headingFontClass}`}>
+              <h1
+                className={`text-4xl md:text-5xl font-bold mb-2 tracking-tight ${headingFontClass}`}
+                style={{ fontFamily: 'var(--font-orbitron)' }}>
                 DeFi <span className='text-[#ccff00]'>Portfolio</span>
               </h1>
               <p className='text-gray-400 text-lg'>Real-time multi-chain portfolio tracking</p>
@@ -398,12 +405,12 @@ const PortfolioPage = () => {
                 value={searchAddress}
                 onChange={(event) => setSearchAddress(event.target.value)}
                 placeholder='Search EVM wallet address (0x...)'
-                className='w-full bg-gray-900 border border-gray-800 focus:border-[#ccff00] pl-12 pr-32 py-4 text-sm focus:outline-none transition-all rounded-sm placeholder:text-gray-600 font-mono text-white'
+              className='w-full bg-gray-900 border border-gray-800 focus:border-[#ccff00] pl-12 pr-32 py-4 text-sm focus:outline-none transition-all rounded-none placeholder:text-gray-600 font-mono text-white'
               />
               <button
                 type='submit'
                 disabled={isSearching}
-                className='absolute inset-y-2 right-2 px-6 bg-[#ccff00] text-black font-bold text-sm hover:bg-[#b3e600] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-sm'>
+              className='absolute inset-y-2 right-2 px-6 bg-[#ccff00] text-black font-bold text-sm hover:bg-[#b3e600] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 rounded-none'>
                 {isSearching ? (
                   <>
                     <Loader2 className='w-4 h-4 animate-spin' />
@@ -431,7 +438,7 @@ const PortfolioPage = () => {
                       setSearchAddress(addr);
                       setCurrentAddress(addr);
                     }}
-                    className='group flex items-center gap-1 px-3 py-1 bg-[#ccff00]/5 border border-[#ccff00]/20 hover:bg-[#ccff00]/20 text-[#ccff00] text-xs font-mono rounded-sm transition-all'>
+                  className='group flex items-center gap-1 px-3 py-1 bg-[#ccff00]/5 border border-[#ccff00]/20 hover:bg-[#ccff00]/20 text-[#ccff00] text-xs font-mono rounded-none transition-all'>
                     {addr.substring(0, 6)}...{addr.substring(addr.length - 4)}
                   </button>
                 ))}
@@ -445,16 +452,16 @@ const PortfolioPage = () => {
             )}
 
             {error && (
-              <div className='mt-4 text-sm text-red-400 flex items-center gap-2 bg-red-900/10 p-3 border border-red-900/50 rounded-sm'>
+              <div className='mt-4 text-sm text-red-400 flex items-center gap-2 bg-red-900/10 p-3 border border-red-900/50 rounded-none'>
                 <AlertCircle className='w-4 h-4' />
                 {error}
               </div>
             )}
 
             {currentAddress && !error && (
-              <div className={`mt-4 text-sm text-gray-500 flex items-center gap-2 ${numericFontClass}`}>
+              <div className={`mt-4 text-sm text-gray-500 flex items-center gap-2 ${headingFontClass}`}>
                 <CheckCircle className='w-4 h-4 text-[#ccff00]' />
-                Viewing wallet: <span className='text-white font-mono'>{currentAddress}</span>
+                Viewing wallet: <span className='text-white'>{currentAddress}</span>
               </div>
             )}
           </div>
@@ -463,7 +470,7 @@ const PortfolioPage = () => {
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
           <div className='bg-gradient-to-br from-gray-900/50 to-black border border-gray-800 p-6 hover:border-[#ccff00]/30 transition-all group'>
             <div className='flex items-start justify-between mb-4'>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold'>Net Worth</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold ${headingFontClass}`}>Net Worth</div>
               <DollarSign className='w-5 h-5 text-gray-700 group-hover:text-[#ccff00] transition-colors' />
             </div>
             <div className='text-3xl font-bold text-white mb-3 tracking-tight'>
@@ -477,7 +484,7 @@ const PortfolioPage = () => {
 
           <div className='bg-gradient-to-br from-gray-900/50 to-black border border-gray-800 p-6 hover:border-[#ccff00]/30 transition-all group'>
             <div className='flex items-start justify-between mb-4'>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold'>Est. P&L</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold ${headingFontClass}`}>Est. P&L</div>
               <Activity className='w-5 h-5 text-gray-700 group-hover:text-[#ccff00] transition-colors' />
             </div>
             <div className='text-3xl font-bold text-[#ccff00] mb-3 tracking-tight'>
@@ -491,7 +498,7 @@ const PortfolioPage = () => {
 
           <div className='bg-gradient-to-br from-gray-900/50 to-black border border-gray-800 p-6 hover:border-[#ccff00]/30 transition-all group'>
             <div className='flex items-start justify-between mb-4'>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold'>DeFi Positions</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold ${headingFontClass}`}>DeFi Positions</div>
               <Layers className='w-5 h-5 text-gray-700 group-hover:text-[#ccff00] transition-colors' />
             </div>
             <div className='text-3xl font-bold text-white mb-3 tracking-tight'>
@@ -506,7 +513,7 @@ const PortfolioPage = () => {
 
           <div className='bg-gradient-to-br from-gray-900/50 to-black border border-gray-800 p-6 hover:border-[#ccff00]/30 transition-all group'>
             <div className='flex items-start justify-between mb-4'>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold'>NFT Value</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold ${headingFontClass}`}>NFT Value</div>
               <ImageIcon className='w-5 h-5 text-gray-700 group-hover:text-[#ccff00] transition-colors' />
             </div>
             <div className='text-3xl font-bold text-white mb-3 tracking-tight'>${performanceData.nftValue.toLocaleString()}</div>
@@ -523,18 +530,18 @@ const PortfolioPage = () => {
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6'>
             <div>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold mb-2'>Portfolio Health</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold mb-2 ${headingFontClass}`}>Portfolio Health</div>
               <div className='text-2xl font-bold text-[#ccff00]'>{riskMetrics.portfolioHealth}/10</div>
               <div className='w-full h-1 bg-gray-900 mt-2 overflow-hidden'>
                 <div className='h-full bg-[#ccff00]' style={{ width: `${riskMetrics.portfolioHealth * 10}%` }} />
               </div>
             </div>
             <div>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold mb-2'>Diversification</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold mb-2 ${headingFontClass}`}>Diversification</div>
               <div className='text-2xl font-bold text-blue-400'>{riskMetrics.diversificationScore}/10</div>
             </div>
             <div>
-              <div className='text-xs text-gray-500 uppercase tracking-wider font-bold mb-2'>Exposure Risk</div>
+              <div className={`text-xs text-gray-500 uppercase tracking-wider font-bold mb-2 ${headingFontClass}`}>Exposure Risk</div>
               <div className='text-2xl font-bold text-yellow-400'>{riskMetrics.exposureRisk}</div>
             </div>
           </div>
@@ -592,7 +599,7 @@ const PortfolioPage = () => {
                     <tr key={idx} className='border-b border-gray-900 hover:bg-gray-950/50 transition-colors group'>
                       <td className='p-4'>
                         <div className='flex items-center gap-3'>
-                          <div className='w-8 h-8 rounded-full flex items-center justify-center bg-gray-900 group-hover:bg-[#ccff00]/20 transition-colors'>
+                          <div className='w-8 h-8 rounded-none flex items-center justify-center bg-gray-900 group-hover:bg-[#ccff00]/20 transition-colors'>
                             <token.IconComponent size={20} className='text-gray-400 group-hover:text-[#ccff00]' />
                           </div>
                           <div>
@@ -728,14 +735,14 @@ const PortfolioPage = () => {
                 <div key={idx} className='p-6 hover:bg-gray-950/50 transition-colors'>
                   <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-4 flex-1'>
-                      <div className='w-8 h-8 flex items-center justify-center bg-gray-900 rounded-full'>
+                      <div className='w-8 h-8 flex items-center justify-center bg-gray-900 rounded-none'>
                         <ArrowRightLeft className='w-4 h-4 text-gray-500' />
                       </div>
                       <div className='flex-1'>
                         <div className='flex items-center gap-3 mb-1'>
                           <span className='text-sm font-bold capitalize'>{tx.type.replace(/_/g, ' ')}</span>
                           <span
-                            className={`text-xs px-2 py-0.5 rounded ${
+                            className={`text-xs px-2 py-0.5 rounded-none ${
                               tx.status === 'confirmed' ? 'bg-[#ccff00]/10 text-[#ccff00]' : 'bg-red-500/10 text-red-500'
                             }`}>
                             {tx.status}
@@ -784,9 +791,9 @@ const PortfolioPage = () => {
                 {tokenData.slice(0, 5).map((token, idx) => (
                   <div
                     key={idx}
-                    className='flex items-center justify-between p-3 hover:bg-gray-900/30 rounded-lg transition-colors border border-transparent hover:border-gray-800'>
+                    className='flex items-center justify-between p-3 hover:bg-gray-900/30 rounded-none transition-colors border border-transparent hover:border-gray-800'>
                     <div className='flex items-center gap-3'>
-                      <div className='w-8 h-8 rounded-full flex items-center justify-center bg-gray-900'>
+                      <div className='w-8 h-8 rounded-none flex items-center justify-center bg-gray-900'>
                         <token.IconComponent size={20} />
                       </div>
                       <div>

@@ -1,4 +1,9 @@
+// file: app/api/portfolio/[address]/route.ts
+// description: Portfolio API route fetching balances, transactions, and DeFi positions for a wallet address
+// reference: lib/dune-api.ts
+
 import { type NextRequest, NextResponse } from 'next/server';
+
 import { fetchPortfolioData } from '../../../../lib/dune-api';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ address: string | string[] }> }) {
@@ -29,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     });
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[v0] Error in portfolio API route:', error);
     return NextResponse.json(
       { error: 'Failed to fetch portfolio data', details: error instanceof Error ? error.message : 'Unknown error' },

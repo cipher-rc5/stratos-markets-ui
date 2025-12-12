@@ -1,9 +1,18 @@
+// file: app/api/strategies/[id]/subscribe/route.ts
+// description: Strategy subscription API route for creating and removing subscriptions
+// reference: app/api/strategies/[id]/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 
+const SUBSCRIBE_ERROR_MESSAGE = 'Failed to subscribe to strategy';
+const UNSUBSCRIBE_ERROR_MESSAGE = 'Failed to unsubscribe from strategy';
+
+const getErrorMessage = (error: unknown, fallback: string) => (error instanceof Error ? error.message : fallback);
+
 // POST /api/strategies/[id]/subscribe - Subscribe to a strategy
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Validate required fields
@@ -28,15 +37,16 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     };
 
     return NextResponse.json({ success: true, data: subscription, message: 'Successfully subscribed to strategy' }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to subscribe to strategy' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = getErrorMessage(error, SUBSCRIBE_ERROR_MESSAGE);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
 // DELETE /api/strategies/[id]/subscribe - Unsubscribe from a strategy
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const { searchParams } = new URL(request.url);
     const walletAddress = searchParams.get('walletAddress');
 
@@ -50,7 +60,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     // 3. Update strategy subscriber count
 
     return NextResponse.json({ success: true, message: 'Successfully unsubscribed from strategy' });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message || 'Failed to unsubscribe from strategy' }, { status: 500 });
+  } catch (error: unknown) {
+    const message = getErrorMessage(error, UNSUBSCRIBE_ERROR_MESSAGE);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
