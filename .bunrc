@@ -1,0 +1,24 @@
+# file: .bunrc
+# description: Bun runtime configuration and environment variables
+# reference: bunfig.toml, package.json
+
+# This file can be used to set environment variables for Bun runtime
+# Uncomment and modify as needed
+
+# Set Node.js compatibility mode (if needed)
+# BUN_NODE_COMPAT=1
+
+# Enable debug logging
+# BUN_DEBUG=1
+
+# Set custom install cache directory
+# BUN_INSTALL_CACHE_DIR=~/.bun/cache
+
+# Disable telemetry
+# DO_NOT_TRACK=1
+
+# Set custom registry
+# BUN_REGISTRY=https://registry.npmjs.org/
+
+# Enable experimental features
+# BUN_EXPERIMENTAL=1

@@ -4,8 +4,8 @@ import { addEdge, Background, BackgroundVariant, type Connection, Controls, type
 import { useCallback, useMemo, useState } from 'react';
 import '@xyflow/react/dist/style.css';
 import Navbar from '@/components/navbar';
-import { Download, Play, Plus, Save, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
+import { Download, PanelRightClose, PanelRightOpen, Play, Plus, Save } from 'lucide-react';
 
 const StratosLogo = () => (
   <div className='flex items-center gap-4 hover:opacity-80 transition-opacity'>
@@ -41,13 +41,7 @@ const initialNodes: Node[] = [{
   position: { x: 250, y: 100 },
   data: { label: 'Market Data Feed' },
   style: { ...baseNodeStyle, color: '#ccff00', border: '1px solid #ccff00' }
-}, {
-  id: '2',
-  type: 'default',
-  position: { x: 250, y: 250 },
-  data: { label: 'Strategy Logic' },
-  style: baseNodeStyle
-}];
+}, { id: '2', type: 'default', position: { x: 250, y: 250 }, data: { label: 'Strategy Logic' }, style: baseNodeStyle }];
 
 const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#ccff00' } }];
 
@@ -234,7 +228,10 @@ export default function CreatePage() {
           </div>
 
           {/* Strategy metadata panel (collapsible) */}
-          <div className={`${isDetailsOpen ? 'w-96' : 'w-0'} border-l border-gray-800 bg-[#0a0a0a] overflow-y-auto transition-all duration-200`}>
+          <div
+            className={`${
+              isDetailsOpen ? 'w-96' : 'w-0'
+            } border-l border-gray-800 bg-[#0a0a0a] overflow-y-auto transition-all duration-200`}>
             {isDetailsOpen && (
               <div className='p-4 space-y-4'>
                 <div>
@@ -303,9 +300,13 @@ export default function CreatePage() {
                   <p className='text-xs text-gray-500 mt-1'>Parsed: {parsedTags.join(', ') || 'none'}</p>
                 </div>
                 <div className='space-y-2'>
-                  {saveError && <div className='text-xs text-red-400 bg-red-950/40 border border-red-900 rounded-none px-3 py-2'>{saveError}</div>}
+                  {saveError && (
+                    <div className='text-xs text-red-400 bg-red-950/40 border border-red-900 rounded-none px-3 py-2'>{saveError}</div>
+                  )}
                   {saveSuccess && (
-                    <div className='text-xs text-green-400 bg-green-950/40 border border-green-900 rounded-none px-3 py-2'>{saveSuccess}</div>
+                    <div className='text-xs text-green-400 bg-green-950/40 border border-green-900 rounded-none px-3 py-2'>
+                      {saveSuccess}
+                    </div>
                   )}
                 </div>
               </div>

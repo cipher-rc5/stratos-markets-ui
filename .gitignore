@@ -36,6 +36,11 @@ yarn-error.log*
 next-env.d.ts
 
 # bun
-bun.lock
 .bun
 markdown_files/
+
+# Other package manager lockfiles (use bun.lock only)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.env*.local

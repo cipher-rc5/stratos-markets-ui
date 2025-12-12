@@ -5,10 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
-const FALLBACK_MESSAGES = {
-  execute: 'Failed to execute agent',
-  history: 'Failed to fetch execution history'
-};
+const FALLBACK_MESSAGES = { execute: 'Failed to execute agent', history: 'Failed to fetch execution history' };
 
 const ensureCatalogConfigured = () => {
   if (!CATALOG_API_BASE_URL) {

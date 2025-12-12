@@ -141,7 +141,11 @@ export async function fetchBalances(walletAddress: string, chainCodes?: Array<st
 }
 
 // Fetch transaction history for a wallet
-export async function fetchTransactions(walletAddress: string, chainCodes?: Array<string | number>, decode = true): Promise<DuneTransaction[]> {
+export async function fetchTransactions(
+  walletAddress: string,
+  chainCodes?: Array<string | number>,
+  decode = true
+): Promise<DuneTransaction[]> {
   if (!isDuneApiConfigured()) {
     console.error('[v0] Dune API key not configured. Returning empty transactions.');
     return [];

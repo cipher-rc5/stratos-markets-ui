@@ -2,8 +2,8 @@
 // description: Strategies API proxy with local sample fallback
 // reference: lib/sample_strategies.json
 
-import { NextRequest, NextResponse } from 'next/server';
 import sampleStrategies from '@/lib/sample_strategies.json' assert { type: 'json' };
+import { NextRequest, NextResponse } from 'next/server';
 
 const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
 

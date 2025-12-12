@@ -1,10 +1,8 @@
-// API Client for Stratos Markets UI
-// Uses native fetch with Bun runtime optimizations
+// file: lib/api-client.ts
+// description: Type-safe API client for Stratos Markets API with Bun runtime optimizations
+// reference: lib/hooks/use-strategies.ts, lib/hooks/use-portfolio.ts, lib/api-config.ts
 
-const API_BASE_URL = typeof window !== 'undefined' ?
-  '/api' // Client-side: use relative path
-   :
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'; // Server-side: use absolute path
+import { STRATOS_API_BASE_URL, LOCAL_API_BASE_URL } from './api-config';
 
 // Generic API response type
 export interface ApiResponse<T> {
@@ -17,21 +15,24 @@ export interface ApiResponse<T> {
 
 // API Client class
 class StratosApiClient {
-  private baseUrl: string;
+  private stratosBaseUrl: string;
+  private localBaseUrl: string;
 
-  constructor (baseUrl: string = API_BASE_URL) {
-    this.baseUrl = baseUrl;
+  constructor (stratosBaseUrl: string = STRATOS_API_BASE_URL, localBaseUrl: string = LOCAL_API_BASE_URL) {
+    this.stratosBaseUrl = stratosBaseUrl;
+    this.localBaseUrl = localBaseUrl;
   }
 
   // Generic request method
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+  private async request<T>(endpoint: string, options: RequestInit = {}, use_stratos_api = true): Promise<ApiResponse<T>> {
     try {
-      const url = `${this.baseUrl}${endpoint}`;
-      console.log('[v0] API Request:', url); // Debug logging
+      const base_url = use_stratos_api ? this.stratosBaseUrl : this.localBaseUrl;
+      const url = `${base_url}${endpoint}`;
+      console.log('[Stratos API] Request:', url); // Debug logging
 
       const response = await fetch(url, { headers: { 'Content-Type': 'application/json', ...options.headers }, ...options });
 
-      console.log('[v0] API Response status:', response.status); // Debug logging
+      console.log('[Stratos API] Response status:', response.status); // Debug logging
 
       const contentType = response.headers.get('content-type') || '';
       let data: any = null;
@@ -49,7 +50,7 @@ class StratosApiClient {
 
       return data;
     } catch (error: any) {
-      console.error(`[v0] API Error [${endpoint}]:`, error);
+      console.error(`[Stratos API] Error [${endpoint}]:`, error);
       return { success: false, error: error.message || 'An unexpected error occurred' };
     }
   }
@@ -177,21 +178,21 @@ class StratosApiClient {
     }
   };
 
-  // Portfolio API
+  // Portfolio API (uses local Next.js API routes as proxy to Dune API)
   portfolio = {
     // Get portfolio for wallet
     get: async (walletAddress: string) => {
-      return this.request<any>(`/portfolio?walletAddress=${walletAddress}`);
+      return this.request<any>(`/portfolio/${walletAddress}`, {}, false);
     },
 
     // Create/update portfolio
     update: async (walletAddress: string, data: any) => {
-      return this.request<any>('/portfolio', { method: 'POST', body: JSON.stringify({ walletAddress, ...data }) });
+      return this.request<any>('/portfolio', { method: 'POST', body: JSON.stringify({ walletAddress, ...data }) }, false);
     },
 
     // Get portfolio history
     getHistory: async (walletAddress: string, timeframe = '30d') => {
-      return this.request<any[]>(`/portfolio/history?walletAddress=${walletAddress}&timeframe=${timeframe}`);
+      return this.request<any[]>(`/portfolio/history?walletAddress=${walletAddress}&timeframe=${timeframe}`, {}, false);
     },
 
     // Get transactions
@@ -205,7 +206,7 @@ class StratosApiClient {
         });
       }
 
-      return this.request<any[]>(`/portfolio/transactions?${queryParams.toString()}`);
+      return this.request<any[]>(`/portfolio/transactions?${queryParams.toString()}`, {}, false);
     }
   };
 
@@ -230,17 +231,17 @@ class StratosApiClient {
       }
 
       const query = queryParams.toString();
-      return this.request<any[]>(`/market${query ? `?${query}` : ''}`);
+      return this.request<any[]>(`/market${query ? `?${query}` : ''}`, {}, false);
     },
 
     // Get detailed market data for specific asset
     get: async (symbol: string) => {
-      return this.request<any>(`/market/${symbol}`);
+      return this.request<any>(`/market/${symbol}`, {}, false);
     },
 
     // Get chart data
     getChart: async (symbol: string, interval = '1h', limit = 100) => {
-      return this.request<any[]>(`/market/${symbol}/chart?interval=${interval}&limit=${limit}`);
+      return this.request<any[]>(`/market/${symbol}/chart?interval=${interval}&limit=${limit}`, {}, false);
     }
   };
 }

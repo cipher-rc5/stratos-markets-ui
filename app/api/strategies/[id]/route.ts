@@ -5,11 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const CATALOG_API_BASE_URL = process.env.STRATOS_DATA_API_BASE_URL;
-const FALLBACK_MESSAGES = {
-  fetch: 'Failed to fetch strategy',
-  update: 'Failed to update strategy',
-  delete: 'Failed to delete strategy'
-};
+const FALLBACK_MESSAGES = { fetch: 'Failed to fetch strategy', update: 'Failed to update strategy', delete: 'Failed to delete strategy' };
 
 const ensureCatalogConfigured = () => {
   if (!CATALOG_API_BASE_URL) {

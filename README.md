@@ -52,7 +52,10 @@ bun install
 
 # Set up environment variables
 
-cp env.example .env.local
+cp .env.example .env.local
+
+# Edit .env.local and configure the API endpoint
+# Default: NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
 
 # Start the development server
 
@@ -63,8 +66,10 @@ Visit `http://localhost:3000` to see the app in action! 🎉
 
 ## 📚 Documentation
 
+- **[API Integration Guide](./API_INTEGRATION.md)** - Complete API integration documentation
+- **[API Migration Summary](./API_MIGRATION_SUMMARY.md)** - API configuration changes
+- **[Bun Guide](./BUN_GUIDE.md)** - Complete Bun runtime and package manager guide
 - **[Setup Guide](./SETUP_GUIDE.md)** - Complete setup and configuration guide
-- **[API Documentation](./API_DOCUMENTATION.md)** - Full API reference
 - **[Contributing](#)** - How to contribute to the project
 
 ## 🏗️ Architecture
@@ -247,20 +252,36 @@ Create a `.env.local` file:
 \`\`\`env
 
 # API Configuration
-
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+# Stratos Markets API (external)
+NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
 
 # External Services (server-side only)
-
 ALCHEMY_API_KEY=
 INFURA_API_KEY=
 DUNE_API_KEY=
 
-# Authentication
+# x402 Payment Configuration
+X402_NETWORK=base-sepolia
+X402_FACILITATOR=https://x402.org/facilitator
+X402_PAY_TO=0x90a7130B48764D9613666A14D00eA0b824C8b390
 
+# Authentication
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=http://localhost:3000
 \`\`\`
+
+### API Architecture
+
+The application uses a **hybrid API architecture**:
+
+- **External API** (`https://stratos-markets-api.vercel.app/v1`): Handles strategies, agents, and marketplace data
+- **Local API Routes** (`/api/*`): Proxies for portfolio data (Dune API), market data, and other services
+
+This architecture provides:
+- ✅ Separation of concerns
+- ✅ Server-side API key protection
+- ✅ Flexible data source management
+- ✅ Optimal performance with caching
 
 ## 🤝 Contributing
 
