@@ -1,5 +1,3 @@
-
-
 [v0] API route called with address: 0xE8a090Cf0a138c971ffDbdf52c2B7AD2f7bCeBb6
 [v0] Fetching portfolio data for chains: all
 [v0] Dune API positions error: 429 Too Many Requests - {"error":"Too many requests. Please contact sales@dune.com to increase your limit."}
