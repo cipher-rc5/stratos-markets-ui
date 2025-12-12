@@ -35,7 +35,7 @@ Handles:
 - ✅ Server-side API key protection
 - ✅ Data transformation and caching
 
-```
+\`\`\`
 ┌─────────────────────────────────────────────┐
 │           Frontend (React)                  │
 │  ┌──────────────────────────────────────┐  │
@@ -57,7 +57,7 @@ Handles:
                          │  (Dune,    │
                          │  Alchemy)  │
                          └────────────┘
-```
+\`\`\`
 
 ## 🔗 API Endpoints
 
@@ -65,18 +65,18 @@ Handles:
 
 #### Strategies
 
-```typescript
+\`\`\`typescript
 GET    /v1/strategies              // List all strategies
 GET    /v1/strategies/:id          // Get strategy details
 POST   /v1/strategies              // Create new strategy
 PATCH  /v1/strategies/:id          // Update strategy
 DELETE /v1/strategies/:id          // Delete strategy
 POST   /v1/strategies/:id/subscribe // Subscribe to strategy
-```
+\`\`\`
 
 #### Agents
 
-```typescript
+\`\`\`typescript
 GET    /v1/agents                  // List all agents
 GET    /v1/agents/:id              // Get agent details
 POST   /v1/agents                  // Deploy new agent
@@ -84,31 +84,31 @@ PATCH  /v1/agents/:id              // Update agent
 DELETE /v1/agents/:id              // Delete agent
 POST   /v1/agents/:id/execute      // Execute agent
 GET    /v1/agents/:id/execute      // Get execution history
-```
+\`\`\`
 
 #### Authentication
 
-```typescript
+\`\`\`typescript
 POST   /v1/auth                    // Authenticate user
-```
+\`\`\`
 
 ### Local API Routes
 
 #### Portfolio
 
-```typescript
+\`\`\`typescript
 GET    /api/portfolio/:address          // Get portfolio for wallet
 GET    /api/portfolio/history           // Get portfolio history
 GET    /api/portfolio/transactions      // Get transactions
-```
+\`\`\`
 
 #### Market Data
 
-```typescript
+\`\`\`typescript
 GET    /api/market                      // List market data
 GET    /api/market/:symbol              // Get asset details
 GET    /api/market/:symbol/chart        // Get chart data
-```
+\`\`\`
 
 ## ⚙️ Configuration
 
@@ -116,7 +116,7 @@ GET    /api/market/:symbol/chart        // Get chart data
 
 Create a `.env.local` file:
 
-```bash
+\`\`\`bash
 # Required: External API endpoint
 NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
 
@@ -129,13 +129,13 @@ INFURA_API_KEY=your_infura_api_key
 X402_NETWORK=base-sepolia
 X402_FACILITATOR=https://x402.org/facilitator
 X402_PAY_TO=0x90a7130B48764D9613666A14D00eA0b824C8b390
-```
+\`\`\`
 
 ### API Configuration File
 
 The API configuration is centralized in `lib/api-config.ts`:
 
-```typescript
+\`\`\`typescript
 import { STRATOS_API_BASE_URL, LOCAL_API_BASE_URL, API_ENDPOINTS } from './api-config';
 
 // Use external API
@@ -143,7 +143,7 @@ const strategiesUrl = API_ENDPOINTS.strategies.list();
 
 // Use local API
 const portfolioUrl = API_ENDPOINTS.portfolio.get('0x123...');
-```
+\`\`\`
 
 ## 💻 Usage Examples
 
@@ -151,7 +151,7 @@ const portfolioUrl = API_ENDPOINTS.portfolio.get('0x123...');
 
 The recommended way to interact with APIs is through the `apiClient`:
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Fetch strategies (external API)
@@ -173,13 +173,13 @@ const portfolio = await apiClient.portfolio.get('0x742d35Cc6634C0532925a3b844Bc9
 if (portfolio.success) {
   console.log('Portfolio:', portfolio.data);
 }
-```
+\`\`\`
 
 ### Using React Hooks
 
 For React components, use the provided hooks:
 
-```typescript
+\`\`\`typescript
 import { useStrategies } from '@/lib/hooks/use-strategies';
 import { usePortfolio } from '@/lib/hooks/use-portfolio';
 
@@ -203,13 +203,13 @@ function MyComponent() {
     </div>
   );
 }
-```
+\`\`\`
 
 ### Direct Fetch (Not Recommended)
 
 If you need to make direct fetch calls:
 
-```typescript
+\`\`\`typescript
 // External API
 const response = await fetch('https://stratos-markets-api.vercel.app/v1/strategies');
 const data = await response.json();
@@ -217,7 +217,7 @@ const data = await response.json();
 // Local API (client-side)
 const response = await fetch('/api/portfolio/0x123...');
 const data = await response.json();
-```
+\`\`\`
 
 ## 🚨 Error Handling
 
@@ -225,7 +225,7 @@ const data = await response.json();
 
 All API responses follow this format:
 
-```typescript
+\`\`\`typescript
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -233,11 +233,11 @@ interface ApiResponse<T> {
   message?: string;
   meta?: any;
 }
-```
+\`\`\`
 
 ### Error Handling Example
 
-```typescript
+\`\`\`typescript
 const response = await apiClient.strategies.get('strategy-id');
 
 if (!response.success) {
@@ -257,7 +257,7 @@ if (!response.success) {
 
 // Success - use data
 const strategy = response.data;
-```
+\`\`\`
 
 ### HTTP Status Codes
 
@@ -275,7 +275,7 @@ const strategy = response.data;
 
 ### Testing with the API Client
 
-```typescript
+\`\`\`typescript
 import { describe, test, expect } from 'bun:test';
 import { apiClient } from '@/lib/api-client';
 
@@ -294,11 +294,11 @@ describe('API Client', () => {
     expect(response.error).toBeDefined();
   });
 });
-```
+\`\`\`
 
 ### Testing Local API Routes
 
-```typescript
+\`\`\`typescript
 import { GET } from '@/app/api/portfolio/[address]/route';
 import { NextRequest } from 'next/server';
 
@@ -314,18 +314,18 @@ describe('Portfolio API', () => {
     expect(data.balances).toBeDefined();
   });
 });
-```
+\`\`\`
 
 ### Manual Testing
 
-```bash
+\`\`\`bash
 # Test external API
 curl https://stratos-markets-api.vercel.app/v1/strategies
 
 # Test local API (requires dev server running)
 bun dev
 curl http://localhost:3000/api/portfolio/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-```
+\`\`\`
 
 ## 🔒 Security Best Practices
 
@@ -353,7 +353,7 @@ curl http://localhost:3000/api/portfolio/0x742d35Cc6634C0532925a3b844Bc9e7595f0b
 
 ### Caching
 
-```typescript
+\`\`\`typescript
 // Cache strategy responses for 5 minutes
 const CACHE_TTL = 5 * 60 * 1000;
 const cache = new Map();
@@ -371,18 +371,18 @@ async function get_strategies_cached() {
   
   return response;
 }
-```
+\`\`\`
 
 ### Request Batching
 
-```typescript
+\`\`\`typescript
 // Batch multiple requests
 const [strategies, agents, portfolio] = await Promise.all([
   apiClient.strategies.list(),
   apiClient.agents.list(),
   apiClient.portfolio.get(walletAddress)
 ]);
-```
+\`\`\`
 
 ## 🔄 Migration Guide
 
