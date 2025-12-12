@@ -54,7 +54,7 @@ This document summarizes the changes made to integrate the external Stratos Mark
 
 ### Hybrid API Architecture
 
-```
+\`\`\`
 Frontend (React Components)
          │
          ▼
@@ -68,7 +68,7 @@ Frontend (React Components)
          │             │             │
          ▼             ▼             ▼
    Stratos API    Dune API    Price Feeds
-```
+\`\`\`
 
 ### Why Hybrid?
 
@@ -114,23 +114,23 @@ Frontend (React Components)
 
 ### Default Configuration
 
-```typescript
+\`\`\`typescript
 // External API (Strategies, Agents)
 NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
 
 // Local API (Portfolio, Market Data)
 // Automatically uses /api for client-side
 // Uses http://localhost:3000/api for server-side
-```
+\`\`\`
 
 ### Custom Configuration
 
 To use a different API endpoint:
 
-```bash
+\`\`\`bash
 # .env.local
 NEXT_PUBLIC_API_URL=https://your-custom-api.com/v1
-```
+\`\`\`
 
 ## 🔄 API Endpoint Mapping
 
@@ -161,27 +161,27 @@ NEXT_PUBLIC_API_URL=https://your-custom-api.com/v1
 
 ### Test External API Connection
 
-```bash
+\`\`\`bash
 # Test strategies endpoint
 curl https://stratos-markets-api.vercel.app/v1/strategies
 
 # Expected response:
 # { "success": true, "data": [...] }
-```
+\`\`\`
 
 ### Test Local API Routes
 
-```bash
+\`\`\`bash
 # Start dev server
 bun dev
 
 # Test portfolio endpoint
 curl http://localhost:3000/api/portfolio/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-```
+\`\`\`
 
 ### Test in Application
 
-```typescript
+\`\`\`typescript
 import { apiClient } from '@/lib/api-client';
 
 // Test external API
@@ -191,13 +191,13 @@ console.log('Strategies:', strategies);
 // Test local API
 const portfolio = await apiClient.portfolio.get('0x742d35Cc...');
 console.log('Portfolio:', portfolio);
-```
+\`\`\`
 
 ## 📊 x402 Payment Integration
 
 The external API includes x402 payment configuration:
 
-```json
+\`\`\`json
 {
   "x402": {
     "network": "base-sepolia",
@@ -205,7 +205,7 @@ The external API includes x402 payment configuration:
     "payTo": "0x90a7130B48764D9613666A14D00eA0b824C8b390"
   }
 }
-```
+\`\`\`
 
 This enables:
 - ✅ Micropayments for API access
@@ -238,20 +238,20 @@ This enables:
 ### For Developers
 
 1. **Set up environment**:
-   ```bash
+   \`\`\`bash
    cp .env.example .env.local
    # Edit .env.local with your API keys
-   ```
+   \`\`\`
 
 2. **Install dependencies**:
-   ```bash
+   \`\`\`bash
    bun install
-   ```
+   \`\`\`
 
 3. **Start development**:
-   ```bash
+   \`\`\`bash
    bun dev
-   ```
+   \`\`\`
 
 4. **Test API integration**:
    - Visit http://localhost:3000
@@ -266,20 +266,20 @@ This enables:
    - Other: Follow platform documentation
 
 2. **Configure API URL**:
-   ```bash
+   \`\`\`bash
    NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
-   ```
+   \`\`\`
 
 3. **Add service API keys**:
-   ```bash
+   \`\`\`bash
    DUNE_API_KEY=your_production_key
    ALCHEMY_API_KEY=your_production_key
-   ```
+   \`\`\`
 
 4. **Deploy**:
-   ```bash
+   \`\`\`bash
    bun run build
-   ```
+   \`\`\`
 
 ## 📚 Documentation
 
@@ -292,7 +292,7 @@ This enables:
 ### Issue: API requests failing
 
 **Solution:**
-```bash
+\`\`\`bash
 # Check environment variables
 echo $NEXT_PUBLIC_API_URL
 
@@ -300,7 +300,7 @@ echo $NEXT_PUBLIC_API_URL
 curl https://stratos-markets-api.vercel.app/v1/strategies
 
 # Check browser console for errors
-```
+\`\`\`
 
 ### Issue: CORS errors
 
