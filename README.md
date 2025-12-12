@@ -1,34 +1,15 @@
-# Stratos Markets UI
+# 🚀 Stratos Markets UI
 
-A next-generation DeFi trading platform with AI-powered agents and institutional-grade strategies.
+> A next-generation DeFi trading platform with AI-powered agents and institutional-grade strategies
 
 [![Built with Bun](https://img.shields.io/badge/Built%20with-Bun-black?style=flat&logo=bun)](https://bun.sh)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 
-## Links
+## ✨ Features
 
-- **Documentation**: [https://stratos-docs-zeta.vercel.app/](https://stratos-docs-zeta.vercel.app/)
-- **API**: [https://stratos-markets-api.vercel.app/](https://stratos-markets-api.vercel.app/)
-- **Live Application**: [https://stratos-markets-ui.vercel.app/](https://stratos-markets-ui.vercel.app/)
-
-## Table of Contents
-
-- [Features](#features)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [API Endpoints](#api-endpoints)
-- [Environment Variables](#environment-variables)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Features
-
-### Core Capabilities
+### 🎯 Core Capabilities
 
 - **Trading Strategies Marketplace** - Browse, subscribe, and deploy institutional-grade trading strategies
 - **AI Agent Framework** - Autonomous trading bots with MEV protection and flash loan integration
@@ -36,21 +17,21 @@ A next-generation DeFi trading platform with AI-powered agents and institutional
 - **Market Data** - Live price feeds, charts, and technical indicators
 - **Risk Analytics** - Comprehensive risk metrics and performance tracking
 
-### Built with Bun
+### ⚡ Built with Bun
 
 - **Lightning Fast** - Up to 30x faster package installation than npm
 - **Native TypeScript** - Run .ts files directly without compilation
 - **Optimized Runtime** - Faster startup and execution
 - **All-in-One Toolkit** - Package manager, test runner, and bundler
 
-### Fully Integrated APIs
+### 🔌 Fully Integrated APIs
 
 - **RESTful API** - Complete backend API with Next.js App Router
 - **Type-Safe Client** - TypeScript API client with full type safety
 - **React Hooks** - Custom hooks for effortless data fetching
 - **Real-time Updates** - Live data synchronization
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -58,83 +39,76 @@ A next-generation DeFi trading platform with AI-powered agents and institutional
 
 ### Installation
 
-```bash
+\`\`\`bash
+
 # Clone the repository
+
 git clone https://github.com/cipher-rc5/stratos-markets-ui.git
 cd stratos-markets-ui
 
 # Install dependencies with Bun
+
 bun install
 
 # Set up environment variables
+
 cp .env.example .env.local
 
 # Edit .env.local and configure the API endpoint
 # Default: NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
 
 # Start the development server
+
 bun dev
-```
+\`\`\`
 
-Visit `http://localhost:3000` to see the application in action.
+Visit `http://localhost:3000` to see the app in action! 🎉
 
-## Documentation
+## 📚 Documentation
 
 - **[API Integration Guide](./API_INTEGRATION.md)** - Complete API integration documentation
 - **[API Migration Summary](./API_MIGRATION_SUMMARY.md)** - API configuration changes
 - **[Bun Guide](./BUN_GUIDE.md)** - Complete Bun runtime and package manager guide
-- **[Official Documentation](https://stratos-docs-zeta.vercel.app/)** - Full project documentation
+- **[Setup Guide](./SETUP_GUIDE.md)** - Complete setup and configuration guide
+- **[Contributing](#)** - How to contribute to the project
 
-## Architecture
+## 🏗️ Architecture
 
-```
+\`\`\`
 ┌─────────────────────────────────────────────────┐
-│ Frontend (Next.js)                              │
-│ ┌──────────────┐ ┌─────────────────────────┐   │
-│ │ UI Layer     │ │ React Hooks             │   │
-│ │              │ │ - useStrategies()       │   │
-│ │ - Pages      │ │ - usePortfolio()        │   │
-│ │ - Components │ │ - useMarketData()       │   │
-│ └──────────────┘ └─────────────────────────┘   │
-│                                                  │
-│ ┌──────────────────────────────────────────┐   │
-│ │ API Client (TypeScript)                  │   │
-│ │ - Type-safe requests                     │   │
-│ │ - Error handling                         │   │
-│ │ - Request/response validation            │   │
-│ └──────────────────────────────────────────┘   │
+│ Frontend (Next.js) │
+│ ┌──────────────┐ ┌─────────────────────────┐ │
+│ │ UI Layer │ │ React Hooks │ │
+│ │ │ │ - useStrategies() │ │
+│ │ - Pages │ │ - usePortfolio() │ │
+│ │ - Components│ │ - useMarketData() │ │
+│ └──────────────┘ └─────────────────────────┘ │
+│ │
+│ ┌──────────────────────────────────────────┐ │
+│ │ API Client (TypeScript) │ │
+│ │ - Type-safe requests │ │
+│ │ - Error handling │ │
+│ │ - Request/response validation │ │
+│ └──────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────┘
-                        ↕
+↕
 ┌─────────────────────────────────────────────────┐
-│ Backend API (Next.js API)                       │
-│ ┌──────────────┐ ┌──────────────┐              │
-│ │ Strategies   │ │ Agents       │              │
-│ │ /api/        │ │ /api/        │              │
-│ │ strategies   │ │ agents       │              │
-│ └──────────────┘ └──────────────┘              │
-│                                                  │
-│ ┌──────────────┐ ┌──────────────┐              │
-│ │ Portfolio    │ │ Market       │              │
-│ │ /api/        │ │ /api/        │              │
-│ │ portfolio    │ │ market       │              │
-│ └──────────────┘ └──────────────┘              │
+│ Backend API (Next.js API) │
+│ ┌──────────────┐ ┌──────────────┐ │
+│ │ Strategies │ │ Agents │ │
+│ │ /api/ │ │ /api/ │ │
+│ │ strategies │ │ agents │ │
+│ └──────────────┘ └──────────────┘ │
+│ │
+│ ┌──────────────┐ ┌──────────────┐ │
+│ │ Portfolio │ │ Market │ │
+│ │ /api/ │ │ /api/ │ │
+│ │ portfolio │ │ market │ │
+│ └──────────────┘ └──────────────┘ │
 └─────────────────────────────────────────────────┘
-```
+\`\`\`
 
-### Hybrid API Architecture
-
-The application uses a **hybrid API architecture**:
-
-- **External API** (`https://stratos-markets-api.vercel.app/v1`): Handles strategies, agents, and marketplace data
-- **Local API Routes** (`/api/*`): Proxies for portfolio data (Dune API), market data, and other services
-
-This architecture provides:
-- Separation of concerns
-- Server-side API key protection
-- Flexible data source management
-- Optimal performance with caching
-
-## Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 
@@ -156,48 +130,48 @@ This architecture provides:
 - **ESLint** - Code linting
 - **Prettier** - Code formatting (optional)
 
-## API Endpoints
+## 📦 API Endpoints
 
 ### Strategies
 
-```
-GET    /api/strategies              - List all strategies
-GET    /api/strategies/:id          - Get strategy details
-POST   /api/strategies              - Create strategy
-PATCH  /api/strategies/:id          - Update strategy
-DELETE /api/strategies/:id          - Delete strategy
-POST   /api/strategies/:id/subscribe - Subscribe to strategy
-```
+\`\`\`
+GET /api/strategies - List all strategies
+GET /api/strategies/:id - Get strategy details
+POST /api/strategies - Create strategy
+PATCH /api/strategies/:id - Update strategy
+DELETE /api/strategies/:id - Delete strategy
+POST /api/strategies/:id/subscribe - Subscribe to strategy
+\`\`\`
 
 ### Agents
 
-```
-GET    /api/agents                  - List all agents
-GET    /api/agents/:id              - Get agent details
-POST   /api/agents                  - Deploy agent
-POST   /api/agents/:id/execute      - Execute agent
-GET    /api/agents/:id/execute      - Get execution history
-```
+\`\`\`
+GET /api/agents - List all agents
+GET /api/agents/:id - Get agent details
+POST /api/agents - Deploy agent
+POST /api/agents/:id/execute - Execute agent
+GET /api/agents/:id/execute - Get execution history
+\`\`\`
 
 ### Portfolio
 
-```
-GET    /api/portfolio               - Get portfolio
-GET    /api/portfolio/history       - Get historical data
-GET    /api/portfolio/transactions  - Get transactions
-```
+\`\`\`
+GET /api/portfolio - Get portfolio
+GET /api/portfolio/history - Get historical data
+GET /api/portfolio/transactions - Get transactions
+\`\`\`
 
 ### Market Data
 
-```
-GET    /api/market                  - List market data
-GET    /api/market/:symbol          - Get asset details
-GET    /api/market/:symbol/chart    - Get chart data
-```
+\`\`\`
+GET /api/market - List market data
+GET /api/market/:symbol - Get asset details
+GET /api/market/:symbol/chart - Get chart data
+\`\`\`
 
-See [API Integration Guide](./API_INTEGRATION.md) for complete details.
+See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete details.
 
-## Features Overview
+## 🎨 Features Overview
 
 ### 1. Strategies Marketplace
 
@@ -238,7 +212,7 @@ Live market intelligence:
 - Market correlations
 - Volatility metrics
 
-## Performance
+## 🚀 Performance
 
 ### Bun Optimizations
 
@@ -254,24 +228,29 @@ Live market intelligence:
 - **Code Splitting** - Route-based code splitting
 - **Static Generation** - Pre-rendered pages
 
-## Testing
+## 🧪 Testing
 
-```bash
+\`\`\`bash
+
 # Run tests with Bun's built-in test runner
+
 bun test
 
 # Watch mode
+
 bun test --watch
 
 # Coverage
-bun test --coverage
-```
 
-## Environment Variables
+bun test --coverage
+\`\`\`
+
+## 📝 Environment Variables
 
 Create a `.env.local` file:
 
-```env
+\`\`\`env
+
 # API Configuration
 # Stratos Markets API (external)
 NEXT_PUBLIC_API_URL=https://stratos-markets-api.vercel.app/v1
@@ -289,9 +268,22 @@ X402_PAY_TO=0x90a7130B48764D9613666A14D00eA0b824C8b390
 # Authentication
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=http://localhost:3000
-```
+\`\`\`
 
-## Contributing
+### API Architecture
+
+The application uses a **hybrid API architecture**:
+
+- **External API** (`https://stratos-markets-api.vercel.app/v1`): Handles strategies, agents, and marketplace data
+- **Local API Routes** (`/api/*`): Proxies for portfolio data (Dune API), market data, and other services
+
+This architecture provides:
+- ✅ Separation of concerns
+- ✅ Server-side API key protection
+- ✅ Flexible data source management
+- ✅ Optimal performance with caching
+
+## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](#) for details.
 
@@ -301,23 +293,22 @@ We welcome contributions! Please see our [Contributing Guide](#) for details.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - Built with [Bun](https://bun.sh)
 - Powered by [Next.js](https://nextjs.org)
 - Styled with [Tailwind CSS](https://tailwindcss.com)
 - UI components from [Radix UI](https://radix-ui.com)
 
-## Contact
+## 📧 Contact
 
 - GitHub: [@cipher-rc5](https://github.com/cipher-rc5)
 - Project Link: [https://github.com/cipher-rc5/stratos-markets-ui](https://github.com/cipher-rc5/stratos-markets-ui)
-- Documentation: [https://stratos-docs-zeta.vercel.app/](https://stratos-docs-zeta.vercel.app/)
 
 ---
 
-<p align="center">Built using Bun and Next.js</p>
+<p align="center">Built with ❤️ using Bun and Next.js</p>
