@@ -1,17 +1,10 @@
-// file: app/api/market/[symbol]/route.ts
-// description: API route returning detailed live market data for a specific symbol
-// reference: lib/market-data.ts
-
+import { fetchCoinDetail } from '@/lib/market-data';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { fetchCoinDetail } from '@/lib/market-data';
-
-const FALLBACK_ERROR_MESSAGE = 'Failed to fetch market data';
-
 // GET /api/market/[symbol] - Get detailed live market data for a specific asset
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ symbol: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: { symbol: string } }) {
   try {
-    const { symbol } = await params;
+    const { symbol } = params;
     const marketData = await fetchCoinDetail(symbol);
 
     if (!marketData) {
@@ -19,8 +12,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     }
 
     return NextResponse.json({ success: true, data: marketData });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : FALLBACK_ERROR_MESSAGE;
-    return NextResponse.json({ success: false, error: message }, { status: 502 });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message || 'Failed to fetch market data' }, { status: 502 });
   }
 }

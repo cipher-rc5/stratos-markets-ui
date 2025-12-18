@@ -15,8 +15,12 @@
         "target": { "symbol": "ETH", "chain_id": 1 },
         "base": { "symbol": "USDC", "decimals": 6, "chain_id": 1 }
       },
-      "data_feeds": [{ "id": "eth-price", "type": "price", "source": { "provider": "chainlink" } }],
-      "signals": [{ "id": "weekly", "type": "time", "condition": { "operator": "eq" } }],
+      "data_feeds": [
+        { "id": "eth-price", "type": "price", "source": { "provider": "chainlink" } }
+      ],
+      "signals": [
+        { "id": "weekly", "type": "time", "condition": { "operator": "eq" } }
+      ],
       "actions": [
         {
           "id": "buy-eth",
@@ -28,7 +32,10 @@
         }
       ]
     },
-    "execution": { "mode": "automation", "automation": { "cron": "0 0 * * 1" } }
+    "execution": {
+      "mode": "automation",
+      "automation": { "cron": "0 0 * * 1" }
+    }
   },
   {
     "id": "aave-usdc-supply-loop",
@@ -46,7 +53,9 @@
         "target": { "symbol": "USDC", "decimals": 6, "chain_id": 1 },
         "base": { "symbol": "USDC", "decimals": 6, "chain_id": 1 }
       },
-      "signals": [{ "id": "monthly", "type": "time", "condition": { "operator": "eq" } }],
+      "signals": [
+        { "id": "monthly", "type": "time", "condition": { "operator": "eq" } }
+      ],
       "actions": [
         {
           "id": "supply",
@@ -86,7 +95,11 @@
         {
           "id": "drift",
           "type": "band",
-          "condition": { "operator": "outside", "left": { "ref": "allocation-drift" }, "right": [-0.05, 0.05] }
+          "condition": {
+            "operator": "outside",
+            "left": { "ref": "allocation-drift" },
+            "right": [-0.05, 0.05]
+          }
         }
       ],
       "actions": [
@@ -114,7 +127,10 @@
     },
     "components": {
       "vault": { "id": "loop-vault", "type": "erc4626" },
-      "assets": { "target": { "symbol": "stETH", "chain_id": 1 }, "base": { "symbol": "WETH", "chain_id": 1 } },
+      "assets": {
+        "target": { "symbol": "stETH", "chain_id": 1 },
+        "base": { "symbol": "WETH", "chain_id": 1 }
+      },
       "actions": [
         {
           "id": "supply-steth",
@@ -170,13 +186,11 @@
         "target": { "symbol": "USDC", "decimals": 6, "chain_id": 1 },
         "base": { "symbol": "DAI", "decimals": 18, "chain_id": 1 }
       },
-      "data_feeds": [{ "id": "vol", "type": "volatility", "source": { "provider": "custom-oracle" } }],
+      "data_feeds": [
+        { "id": "vol", "type": "volatility", "source": { "provider": "custom-oracle" } }
+      ],
       "signals": [
-        {
-          "id": "vol-spike",
-          "type": "threshold",
-          "condition": { "operator": "gt", "left": { "ref": "vol" }, "right": 0.02 }
-        }
+        { "id": "vol-spike", "type": "threshold", "condition": { "operator": "gt", "left": { "ref": "vol" }, "right": 0.02 } }
       ],
       "actions": [
         {

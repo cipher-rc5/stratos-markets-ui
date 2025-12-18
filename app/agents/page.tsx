@@ -135,7 +135,7 @@ export default function AgentsPage() {
             {loading && !error && <div className='text-gray-500 text-sm mb-4'>Loading live strategies…</div>}
             {!loading && !error && (
               <>
-                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
                   {filteredStrategies.map((strategy) => (
                     <div
                       key={strategy.id}
@@ -160,9 +160,7 @@ export default function AgentsPage() {
                             </h3>
                             <p className='text-gray-600 text-xs mb-2'>{strategy.description}</p>
                           </div>
-                          <div className='ml-2 px-2 py-1 bg-gray-900 rounded-none text-[10px] text-gray-500 font-mono'>
-                            v{strategy.version}
-                          </div>
+                          <div className='ml-2 px-2 py-1 bg-gray-900 rounded-none text-[10px] text-gray-500 font-mono'>v{strategy.version}</div>
                         </div>
 
                         {/* Performance Metrics */}

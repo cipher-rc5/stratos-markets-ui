@@ -5,7 +5,8 @@ const spec = {
   info: {
     title: 'Stratos Markets API',
     version: '0.0.1',
-    description: 'Decentralized marketplace infrastructure for the creation, discovery, and monetization of DeFi intelligence.'
+    description:
+      'Decentralized marketplace infrastructure for the creation, discovery, and monetization of DeFi intelligence.'
   },
   servers: [{ url: '/' }],
   tags: [

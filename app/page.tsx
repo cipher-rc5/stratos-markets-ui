@@ -1,6 +1,3 @@
-// file: app/page.tsx
-// description: Stratos landing page with hero, feature highlights, and marketplace feed
-// reference: components/navbar.tsx, lib/hooks/use-strategies.ts
 'use client';
 
 import Navbar from '@/components/navbar';
@@ -9,24 +6,6 @@ import { Activity, ArrowRight, BarChart3, ChevronRight, Shield, Terminal, Trendi
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { siDiscord, siGithub, siX } from 'simple-icons/icons';
-
-type SimpleIconSymbol = { title: string, slug: string, hex: string, path: string };
-
-const SimpleIcon = ({ icon, size = 20, className }: { icon: SimpleIconSymbol, size?: number, className?: string }) => (
-  <svg
-    role='img'
-    aria-label={icon.title}
-    width={size}
-    height={size}
-    viewBox='0 0 24 24'
-    className={className}
-    fill='currentColor'
-    xmlns='http://www.w3.org/2000/svg'
-    focusable='false'>
-    <path d={icon.path} />
-  </svg>
-);
 
 // --- Components ---
 
@@ -523,11 +502,9 @@ export default function StratosPage() {
                 {['ALL STRATEGIES', 'YIELD FARMING', 'ARBITRAGE', 'MEV', 'VERIFIED'].map((filter) => (
                   <button
                     key={filter}
-                    onClick={() => setCategoryFilter(filter)}
+                    onClick={() => {}}
                     className={`font-bold tracking-wider uppercase px-6 py-2.5 transition-all duration-300 text-sm ${
-                      categoryFilter === filter ?
-                        'bg-[#ccff00] text-black' :
-                        'bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600'
+                      false ? 'bg-[#ccff00] text-black' : 'bg-transparent border border-gray-800 text-gray-400 hover:border-gray-600'
                     }`}>
                     {filter}
                   </button>
@@ -537,11 +514,7 @@ export default function StratosPage() {
               {/* Search Bar - Increased width */}
               <div className='w-full md:w-auto'>
                 <div className='relative'>
-                  <input
-                    type='text'
-                    placeholder='Search strategies...'
-                    className='w-full md:w-auto px-4 py-2.5 bg-[#111] border border-gray-800 text-gray-400 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#ccff00]' />
-                  <div className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-700'>{/* Search icon */}</div>
+                  <div className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-700'></div>
                 </div>
               </div>
             </div>
@@ -638,7 +611,14 @@ export default function StratosPage() {
       <footer className='border-t border-gray-900 bg-black pt-20 pb-10'>
         <div className='max-w-[1920px] mx-auto px-6 md:px-12'>
           <div className='grid grid-cols-1 md:grid-cols-6 gap-12 mb-16'>
-            {/* Platform Links */}
+            <div className='col-span-1 md:col-span-2'>
+              <StratosLogo />
+              <p className='mt-6 text-gray-500 text-xs leading-relaxed max-w-xs'>
+                Stratos defines the intersection of high-stakes strategy and digital ownership. Secured by the blockchain, powered by
+                vision.
+              </p>
+            </div>
+
             <div className='col-span-1'>
               <h4 className='text-white text-xs font-bold uppercase tracking-widest mb-6'>Platform</h4>
               <ul className='space-y-4 text-gray-500 text-xs uppercase tracking-wide'>
@@ -657,7 +637,6 @@ export default function StratosPage() {
               </ul>
             </div>
 
-            {/* Company Links */}
             <div className='col-span-1'>
               <h4 className='text-white text-xs font-bold uppercase tracking-widest mb-6'>Company</h4>
               <ul className='space-y-4 text-gray-500 text-xs uppercase tracking-wide'>
@@ -667,27 +646,21 @@ export default function StratosPage() {
               </ul>
             </div>
 
-            {/* Legal Links */}
             <div className='col-span-1'>
               <h4 className='text-white text-xs font-bold uppercase tracking-widest mb-6'>Legal</h4>
               <ul className='space-y-4 text-gray-500 text-xs uppercase tracking-wide'>
                 <li>
-                  <Link href='/legal' className='hover:text-[#ccff00] cursor-pointer transition-colors'>Legal</Link>
+                  <Link href='/legal/terms' className='hover:text-[#ccff00] cursor-pointer transition-colors'>Terms of Service</Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => {
-                      localStorage.removeItem('cookie-consent');
-                      window.location.reload();
-                    }}
-                    className='hover:text-[#ccff00] cursor-pointer transition-colors text-left'>
-                    Cookie Preferences
-                  </button>
+                  <Link href='/legal/privacy' className='hover:text-[#ccff00] cursor-pointer transition-colors'>Privacy Policy</Link>
+                </li>
+                <li>
+                  <Link href='/legal/cookies' className='hover:text-[#ccff00] cursor-pointer transition-colors'>Cookies</Link>
                 </li>
               </ul>
             </div>
 
-            {/* Resources Links */}
             <div className='col-span-1'>
               <h4 className='text-white text-xs font-bold uppercase tracking-widest mb-6'>Resources</h4>
               <ul className='space-y-4 text-gray-500 text-xs uppercase tracking-wide'>
@@ -699,40 +672,17 @@ export default function StratosPage() {
                 </li>
               </ul>
             </div>
-
-            {/* Stratos Logo and Social Icons - Right Side */}
-            <div className='col-span-1 md:col-span-2 md:ml-auto'>
-              <StratosLogo />
-              <p className='mt-6 text-gray-500 text-xs leading-relaxed max-w-xs'>
-                Stratos defines the intersection of high-stakes strategy and digital ownership. Secured by the blockchain, powered by
-                vision.
-              </p>
-              {/* Social Icons below logo */}
-              <div className='flex gap-6 mt-8'>
-                <Link
-                  href='https://twitter.com/stratosinc'
-                  className='text-gray-500 hover:text-[#ccff00] cursor-pointer transition-colors'
-                  aria-label='Twitter'>
-                  <SimpleIcon icon={siX} size={20} />
-                </Link>
-                <Link
-                  href='https://discord.com/invite/stratos'
-                  className='text-gray-500 hover:text-[#ccff00] cursor-pointer transition-colors'
-                  aria-label='Discord'>
-                  <SimpleIcon icon={siDiscord} size={20} />
-                </Link>
-                <Link
-                  href='https://github.com/stratosinc'
-                  className='text-gray-500 hover:text-[#ccff00] cursor-pointer transition-colors'
-                  aria-label='GitHub'>
-                  <SimpleIcon icon={siGithub} size={20} />
-                </Link>
-              </div>
-            </div>
           </div>
 
-          <div className='pt-8 flex flex-col md:flex-row justify-center items-center text-[10px] text-gray-600 uppercase tracking-widest'>
+          <div className='border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-600 uppercase tracking-widest'>
             <span>© 2025 Stratos Inc. All rights reserved.</span>
+            <div className='flex gap-8 mt-4 md:mt-0'>
+              <Link href='https://twitter.com/stratosinc' className='hover:text-[#ccff00] cursor-pointer transition-colors'>Twitter</Link>
+              <Link href='https://discord.com/invite/stratos' className='hover:text-[#ccff00] cursor-pointer transition-colors'>
+                Discord
+              </Link>
+              <Link href='https://github.com/stratosinc' className='hover:text-[#ccff00] cursor-pointer transition-colors'>GitHub</Link>
+            </div>
           </div>
         </div>
       </footer>

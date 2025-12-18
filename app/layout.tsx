@@ -1,4 +1,3 @@
-import { CookieConsentBanner } from '@/components/cookie-consent-banner';
 import { PageTransition } from '@/components/page-transition';
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
@@ -34,7 +33,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang='en'>
       <body className={`${orbitron.variable} ${rajdhani.variable} font-rajdhani antialiased`}>
         <PageTransition>{children}</PageTransition>
-        <CookieConsentBanner />
         <Analytics />
       </body>
     </html>
